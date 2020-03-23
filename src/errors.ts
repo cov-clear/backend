@@ -8,18 +8,29 @@ const defaultStatusMessages: { [key: string]: string } = {
 };
 
 export class ApplicationError extends Error {
-  constructor(public status: number = 500, public message: string = defaultStatusMessages[500]) {
+  constructor(
+    public status: number = 500,
+    public message: string = defaultStatusMessages[500]
+  ) {
     super(message);
   }
 }
 
 export function errorHandling() {
-  return (err: Error, _: Request, res: Response, next: (...things: any[]) => any) => {
+  return (
+    err: Error,
+    _: Request,
+    res: Response,
+    next: (...things: any[]) => any
+  ) => {
     if (res.headersSent) {
       return next(err);
     }
     const status = ((err as any).status as number) || 500;
-    const message = err.message || defaultStatusMessages[status] || defaultStatusMessages[500];
+    const message =
+      err.message ||
+      defaultStatusMessages[status] ||
+      defaultStatusMessages[500];
     if (status >= 500) {
       if (err.stack) {
         logger.error(err.stack);

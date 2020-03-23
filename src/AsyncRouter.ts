@@ -1,6 +1,10 @@
 import { Router, RequestHandler, Request, Response } from 'express';
 
-type AsyncRouteHandler = (req: Request, res: Response, next: () => any) => Promise<any>;
+type AsyncRouteHandler = (
+  req: Request,
+  res: Response,
+  next: () => any
+) => Promise<any>;
 
 function wrapAsyncRoute(fn: AsyncRouteHandler) {
   return (req: Request, res: Response, next: () => any) => {
