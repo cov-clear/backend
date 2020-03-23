@@ -18,8 +18,7 @@
   },
   "lint-staged": {
     "*.ts": [
-      "npm run format",
-      "git add"
+      "npm run format"
     ]
   },
   "repository": {
