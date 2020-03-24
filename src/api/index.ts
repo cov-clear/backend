@@ -3,6 +3,6 @@ import hello from './routes/hello';
 
 export default () => {
   const app = Router();
-  hello(app);
+  app.use('/v1', hello());
   return app;
 };
