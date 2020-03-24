@@ -25,8 +25,7 @@
     "type": "git",
     "url": "git+https://github.com/cov-clear/backend.git"
   },
-  "author": "",
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/cov-clear/backend/issues"
   },
