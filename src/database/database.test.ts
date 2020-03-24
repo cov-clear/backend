@@ -7,3 +7,8 @@ describe('database connector', () => {
     ).toBe(false);
   });
 });
+
+afterAll((done) => {
+  database.destroy();
+  done();
+});
