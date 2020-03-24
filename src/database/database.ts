@@ -1,16 +1,22 @@
 import knex from 'knex';
 
-import { DB_CONNECTION_URL } from '../config';
+import * as config from '../config';
 
 const database = knex({
   client: 'pg',
-  connection: DB_CONNECTION_URL,
+  connection: config.get('db.connectionUrl'),
 });
 
-export function migrateLatest(): PromiseLike<any> {
-  return database.migrate.latest({
-    directory: `${__dirname}/migrations`,
-  });
+const migrationConfig = {
+  directory: `${__dirname}/migrations`,
+};
+
+export async function migrateLatest() {
+  return database.migrate.latest(migrationConfig);
+}
+
+export async function cleanupDatabase() {
+  return database.migrate.rollback(migrationConfig);
 }
 
 export default database;

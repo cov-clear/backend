@@ -8,3 +8,11 @@ services:
       POSTGRES_DB: dev_db
     ports:
       - '5432:5432'
+  test-db:
+    image: postgres:12.2
+    environment:
+      POSTGRES_PASSWORD: dev_password
+      POSTGRES_USER: dev_user
+      POSTGRES_DB: dev_db
+    ports:
+      - '5433:5432'

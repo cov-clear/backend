@@ -1,0 +1,6 @@
+{
+  "db": {
+    "connectionUrl": "postgresql://dev_user:dev_password@localhost/dev_db"
+  },
+  "port": 1337
+}
