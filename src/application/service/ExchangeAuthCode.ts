@@ -1,17 +1,12 @@
-import jwt from 'jsonwebtoken';
-import magicLinkRepository, {
-  MagicLinkRepository,
-} from '../../domain/model/magiclink/MagicLinkRepository';
-import * as config from '../../config';
-import generateAuthToken, { GenerateAuthToken } from './generateAuthToken';
-import { User } from '../../domain/model/user/User';
-import { v4 } from 'uuid';
-import getExistingOrCreateNewUser from './getExistingOrCreateNewUser';
+import { MagicLinkRepository } from '../../domain/model/magiclink/MagicLinkRepository';
+import { GenerateAuthToken } from './GenerateAuthToken';
+import { GetExistingOrCreateNewUser } from './GetExistingOrCreateNewUser';
 
 export class ExchangeAuthCode {
   constructor(
     private magicLinkRepository: MagicLinkRepository,
-    private generateAuthToken: GenerateAuthToken
+    private generateAuthToken: GenerateAuthToken,
+    private getExistingOrCreateNewUser: GetExistingOrCreateNewUser
   ) {}
 
   public async execute(email: string, authCode: string) {
@@ -35,7 +30,7 @@ export class ExchangeAuthCode {
       );
     }
 
-    const user = await getExistingOrCreateNewUser.execute(email);
+    const user = await this.getExistingOrCreateNewUser.execute(email);
     const token = this.generateAuthToken.execute(user);
 
     magicLink.active = false;
@@ -56,8 +51,3 @@ export enum AuthorisationFailureReason {
   AUTH_CODE_EXPIRED = 'AUTH_CODE_EXPIRED',
   AUTH_CODE_ALREADY_USED = 'AUTH_CODE_ALREADY_USED',
 }
-
-export const exchangeAuthCode = new ExchangeAuthCode(
-  magicLinkRepository,
-  generateAuthToken
-);

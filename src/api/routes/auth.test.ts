@@ -1,7 +1,7 @@
 import request from 'supertest';
 import expressApp from '../../loaders/express';
-import { createMagicLink } from '../../application/service/createNewMagicLink';
 import { v4 } from 'uuid';
+import { createMagicLink } from '../../application/service';
 
 describe('auth endpoints', () => {
   const app = expressApp();

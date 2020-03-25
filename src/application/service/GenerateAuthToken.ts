@@ -1,5 +1,4 @@
 import { User } from '../../domain/model/user/User';
-import * as config from '../../config';
 import jwt from 'jsonwebtoken';
 
 export class GenerateAuthToken {
@@ -21,8 +20,3 @@ export class GenerateAuthToken {
     );
   }
 }
-
-export default new GenerateAuthToken(
-  config.get('jwt.secret'),
-  config.get('jwt.timeToLiveInDays')
-);

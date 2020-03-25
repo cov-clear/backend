@@ -1,11 +1,8 @@
 import { Request, Response } from 'express';
 import AsyncRouter from '../AsyncRouter';
-import { createMagicLink } from '../../application/service/createNewMagicLink';
-import {
-  AuthorisationFailedError,
-  exchangeAuthCode,
-} from '../../application/service/exchangeAuthCode';
 import logger from '../../logger';
+import { createMagicLink, exchangeAuthCode } from '../../application/service';
+import { AuthorisationFailedError } from '../../application/service/ExchangeAuthCode';
 
 export default () => {
   const route = new AsyncRouter();

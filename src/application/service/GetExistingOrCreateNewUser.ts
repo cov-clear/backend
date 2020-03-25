@@ -7,5 +7,3 @@ export class GetExistingOrCreateNewUser {
     return new User(v4(), new Email(email));
   }
 }
-
-export default new GetExistingOrCreateNewUser();
