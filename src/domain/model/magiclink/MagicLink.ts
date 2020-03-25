@@ -13,8 +13,10 @@ export class MagicLink {
   ) {}
 
   public isExpired(): boolean {
-    const expirationTime =
-      this.creationTime.getTime() + MAGIC_LINK_LIFETIME_MSEC;
-    return Date.now() > expirationTime;
+    return Date.now() > this.expirationTime().getTime();
+  }
+
+  public expirationTime(): Date {
+    return new Date(this.creationTime.getTime() + MAGIC_LINK_LIFETIME_MSEC);
   }
 }

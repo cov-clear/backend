@@ -12,7 +12,7 @@ export class ExchangeAuthCode {
   public async execute(email: string, authCode: string) {
     const magicLink = await this.magicLinkRepository.findByCode(authCode);
 
-    if (!magicLink) {
+    if (!magicLink || magicLink.email.value !== email) {
       throw new AuthorisationFailedError(
         AuthorisationFailureReason.AUTH_CODE_OR_EMAIL_NOT_FOUND
       );
