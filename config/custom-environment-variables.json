@@ -1,0 +1,10 @@
+{
+  "db": {
+    "connectionUrl": "DB_CONNECTION_URL"
+  },
+  "port": "PORT",
+  "jwt": {
+    "timeToLiveInDays": "JWT_TIME_TO_LIVE_IN_DAYS",
+    "secret": "JWT_SECRET"
+  }
+}
