@@ -9,7 +9,7 @@ describe('PsqlMagicLinkRepository', () => {
   const psqlMagicLinkRepository = new PsqlMagicLinkRepository(database);
 
   beforeEach(async () => {
-    await cleanupDatabase(database);
+    await cleanupDatabase();
   });
 
   it('inserts new and retrieves a magic link', async () => {

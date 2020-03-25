@@ -9,7 +9,7 @@ describe('auth endpoints', () => {
   const app = expressApp();
 
   beforeEach(async () => {
-    await cleanupDatabase(database);
+    await cleanupDatabase();
   });
 
   describe('POST /auth/magic-links', () => {

@@ -5,7 +5,7 @@ import { createMagicLink } from './index';
 
 describe('CreateMagicLink', () => {
   beforeEach(async () => {
-    await cleanupDatabase(database);
+    await cleanupDatabase();
   });
 
   it('creates a new magic link for a given email', async () => {

@@ -20,7 +20,7 @@ describe('ExchangeAuthCode', () => {
   );
 
   beforeEach(async () => {
-    await cleanupDatabase(database);
+    await cleanupDatabase();
   });
 
   afterEach(async () => {
