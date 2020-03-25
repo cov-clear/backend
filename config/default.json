@@ -2,5 +2,9 @@
   "db": {
     "connectionUrl": "postgresql://dev_user:dev_password@localhost/dev_db"
   },
-  "port": 1337
+  "port": 1337,
+  "jwt": {
+    "timeToLiveInDays": 14,
+    "secret": "1-9182fj1wofj1-08fj182fj1-90fj21-0r89j12-8rh"
+  }
 }

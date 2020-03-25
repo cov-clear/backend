@@ -1,5 +1,5 @@
 import * as EmailValidator from 'email-validator';
-import { DomainValidationError } from './DomainValidationError';
+import { DomainValidationError } from '../DomainValidationError';
 
 export class Email {
   constructor(public value: string) {

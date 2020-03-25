@@ -51,10 +51,12 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
+    "@types/jsonwebtoken": "^8.3.8",
     "config": "^3.3.0",
     "email-validator": "^2.0.4",
     "express": "^4.17.1",
     "helmet": "^3.21.3",
+    "jsonwebtoken": "^8.5.1",
     "knex": "^0.20.13",
     "pg": "^7.18.2",
     "uuid": "^7.0.2"

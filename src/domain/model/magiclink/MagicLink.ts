@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Email } from './Email';
+import { Email } from '../user/Email';
 
 const MAGIC_LINK_LIFETIME_MSEC = 5 * 60_000;
 

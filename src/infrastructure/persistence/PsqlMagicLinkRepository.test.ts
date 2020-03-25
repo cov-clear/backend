@@ -1,8 +1,8 @@
 import database, { cleanupDatabase, migrateLatest } from '../../database';
 import { PsqlMagicLinkRepository } from './PsqlMagicLinkRepository';
-import { MagicLink } from '../../domain/model/MagicLink';
+import { MagicLink } from '../../domain/model/magiclink/MagicLink';
 import { v4 } from 'uuid';
-import { Email } from '../../domain/model/Email';
+import { Email } from '../../domain/model/user/Email';
 
 describe('PsqlMagicLinkRepository', () => {
   const psqlMagicLinkRepository = new PsqlMagicLinkRepository(database);

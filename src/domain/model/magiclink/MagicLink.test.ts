@@ -1,7 +1,7 @@
 import { MagicLink } from './MagicLink';
 import { v4 as uuidv4 } from 'uuid';
 import MockDate from 'mockdate';
-import { Email } from './Email';
+import { Email } from '../user/Email';
 
 describe('Magic Link', () => {
   afterEach(() => {

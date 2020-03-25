@@ -1,9 +1,9 @@
-import { MagicLink } from '../../domain/model/MagicLink';
+import { MagicLink } from '../../domain/model/magiclink/MagicLink';
 import { v4 } from 'uuid';
-import { Email } from '../../domain/model/Email';
+import { Email } from '../../domain/model/user/Email';
 import magicLinkRepository, {
   MagicLinkRepository,
-} from '../../domain/model/MagicLinkRepository';
+} from '../../domain/model/magiclink/MagicLinkRepository';
 
 export class CreateNewMagicLink {
   constructor(private magicLinkRepository: MagicLinkRepository) {}

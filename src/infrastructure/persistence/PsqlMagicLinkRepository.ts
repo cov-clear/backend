@@ -1,13 +1,12 @@
 import knex from 'knex';
-import { MagicLinkRepository } from '../../domain/model/MagicLinkRepository';
-import { MagicLink } from '../../domain/model/MagicLink';
-import { Email } from '../../domain/model/Email';
-import logger from '../../logger';
+import { MagicLinkRepository } from '../../domain/model/magiclink/MagicLinkRepository';
+import { MagicLink } from '../../domain/model/magiclink/MagicLink';
+import { Email } from '../../domain/model/user/Email';
 
 export class PsqlMagicLinkRepository implements MagicLinkRepository {
   constructor(private db: knex) {}
 
-  async findByCode(code: string): Promise<MagicLink> {
+  async findByCode(code: string): Promise<MagicLink | undefined> {
     const magicLinkRow = await this.db('magic_link')
       .where('code', '=', code)
       .select([
@@ -19,7 +18,7 @@ export class PsqlMagicLinkRepository implements MagicLinkRepository {
       ])
       .first();
     if (!magicLinkRow) {
-      throw new Error(`Magic link code ${code} could not be found`);
+      return undefined;
     }
     // @ts-ignore
     return new MagicLink(

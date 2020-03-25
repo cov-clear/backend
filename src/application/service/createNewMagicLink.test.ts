@@ -1,5 +1,5 @@
 import { CreateNewMagicLink } from './createNewMagicLink';
-import magicLinkRepository from '../../domain/model/MagicLinkRepository';
+import magicLinkRepository from '../../domain/model/magiclink/MagicLinkRepository';
 
 jest.mock('../../domain/model/MagicLinkRepository');
 
