@@ -3,11 +3,13 @@ import securityHeaders from 'helmet';
 import * as config from '../config';
 import routes from '../api';
 import logger from '../logger';
+import bodyParser from 'body-parser';
 import { ApiError, defaultStatusMessages } from '../api/ApiError';
 
 export default () => {
   return express()
     .use(securityHeaders())
+    .use(bodyParser.json())
     .use('/api', routes())
     .use(notFoundHandling())
     .use(errorHandling());
