@@ -5,8 +5,8 @@ export async function migrateDatabase() {
   try {
     await cleanupDatabase();
     await migrateLatest();
-  } catch (e) {
-    logger.error('Failed to apply migrations', e);
+  } catch (error) {
+    logger.error('Failed to apply migrations', error);
     process.exit(1);
   }
 }

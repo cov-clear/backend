@@ -28,14 +28,14 @@ export default () => {
           token,
         })
         .status(200);
-    } catch (e) {
-      if (e instanceof AuthorisationFailedError) {
+    } catch (error) {
+      if (error instanceof AuthorisationFailedError) {
         res.status(403).json({
-          code: e.failureReason.toString(),
+          code: error.failureReason.toString(),
         });
         return;
       }
-      throw e;
+      throw error;
     }
   });
 
