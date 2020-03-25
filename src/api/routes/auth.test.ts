@@ -2,14 +2,14 @@ import request from 'supertest';
 import expressApp from '../../loaders/express';
 import { v4 } from 'uuid';
 import { createMagicLink } from '../../application/service';
-import database, { cleanupDatabase, migrateLatest } from '../../database';
+import database from '../../database';
+import { cleanupDatabase } from '../../test/cleanupDatabase';
 
 describe('auth endpoints', () => {
   const app = expressApp();
 
   beforeEach(async () => {
-    await cleanupDatabase();
-    await migrateLatest();
+    await cleanupDatabase(database);
   });
 
   describe('POST /auth/magic-links', () => {
@@ -43,7 +43,7 @@ describe('auth endpoints', () => {
         .post('/api/v1/auth/login')
         .send({
           method: 'magic-link',
-          email: magicLink.email.value,
+          email: magicLink.email.value(),
           authCode: magicLink.code,
         })
         .expect(200)
@@ -55,6 +55,5 @@ describe('auth endpoints', () => {
 });
 
 afterAll((done) => {
-  database.destroy();
-  done();
+  database.destroy().then(done);
 });

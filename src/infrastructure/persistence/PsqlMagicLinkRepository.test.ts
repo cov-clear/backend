@@ -1,15 +1,15 @@
-import database, { cleanupDatabase, migrateLatest } from '../../database';
+import database from '../../database';
 import { PsqlMagicLinkRepository } from './PsqlMagicLinkRepository';
 import { MagicLink } from '../../domain/model/magiclink/MagicLink';
 import { v4 } from 'uuid';
 import { Email } from '../../domain/model/user/Email';
+import { cleanupDatabase } from '../../test/cleanupDatabase';
 
 describe('PsqlMagicLinkRepository', () => {
   const psqlMagicLinkRepository = new PsqlMagicLinkRepository(database);
 
   beforeEach(async () => {
-    await cleanupDatabase();
-    await migrateLatest();
+    await cleanupDatabase(database);
   });
 
   it('inserts new and retrieves a magic link', async () => {
@@ -49,6 +49,5 @@ describe('PsqlMagicLinkRepository', () => {
 });
 
 afterAll((done) => {
-  database.destroy();
-  done();
+  database.destroy().then(done);
 });

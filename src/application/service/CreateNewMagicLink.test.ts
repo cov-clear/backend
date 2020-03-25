@@ -1,19 +1,23 @@
-import { CreateNewMagicLink } from './CreateNewMagicLink';
+import database from '../../database';
+import { magicLinkRepository } from '../../infrastructure/persistence';
+import { cleanupDatabase } from '../../test/cleanupDatabase';
+import { createMagicLink } from './index';
 
 describe('CreateMagicLink', () => {
-  const mockMagicLinkRepository = {
-    save: jest.fn(),
-    findByCode: jest.fn(),
-  };
-  const createMagicLink = new CreateNewMagicLink(mockMagicLinkRepository);
-
-  beforeEach(() => {
-    // @ts-ignore
-    mockMagicLinkRepository.save.mockClear();
+  beforeEach(async () => {
+    await cleanupDatabase(database);
   });
 
   it('creates a new magic link for a given email', async () => {
-    await createMagicLink.execute('some@email.com');
-    expect(mockMagicLinkRepository.save).toHaveBeenCalled();
+    const createdMagicLink = await createMagicLink.execute('some@email.com');
+
+    const persistedMagicLink = await magicLinkRepository.findByCode(
+      createdMagicLink.code
+    );
+    expect(persistedMagicLink).toEqual(createdMagicLink);
   });
+});
+
+afterAll((done) => {
+  database.destroy().then(done);
 });

@@ -1,22 +1,45 @@
 import knex from 'knex';
-
 import * as config from '../config';
+import logger from '../logger';
+
+const migrationConfig = {
+  directory: `${__dirname}/migrations`,
+};
 
 const database = knex({
   client: 'pg',
   connection: config.get('db.connectionUrl'),
 });
 
-const migrationConfig = {
-  directory: `${__dirname}/migrations`,
-};
-
 export async function migrateLatest() {
-  return database.migrate.latest(migrationConfig);
+  const connection = knex({
+    client: 'pg',
+    connection: config.get('db.connectionUrl'),
+  });
+  try {
+    await connection.migrate.latest(migrationConfig);
+    logger.info('Successfully migrated database to latest');
+  } catch (e) {
+    logger.error('Failed to migrate database', e);
+  } finally {
+    await connection.destroy();
+  }
 }
 
-export async function cleanupDatabase() {
-  return database.migrate.rollback(migrationConfig);
+export async function rollbackDatabase() {
+  const connection = knex({
+    client: 'pg',
+    connection: config.get('db.connectionUrl'),
+  });
+  try {
+    await connection.migrate.rollback(migrationConfig);
+    logger.info('Successfully rolled back database');
+  } catch (e) {
+    logger.error('Failed to rollback database', e);
+    throw e;
+  } finally {
+    await connection.destroy();
+  }
 }
 
 export default database;

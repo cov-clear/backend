@@ -1,6 +1,6 @@
-import Knex from 'knex';
+import knex from 'knex';
 
-export async function up(db: Knex) {
+export async function up(db: knex) {
   await db.schema.createTable('magic_link', (table) => {
     table.uuid('id').primary();
     table.string('email').notNullable();
@@ -10,6 +10,6 @@ export async function up(db: Knex) {
   });
 }
 
-export async function down(db: Knex) {
+export async function down(db: knex) {
   await db.schema.dropTable('magic_link');
 }

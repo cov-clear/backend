@@ -6,9 +6,8 @@ import { Email } from '../../domain/model/user/Email';
 export class PsqlMagicLinkRepository implements MagicLinkRepository {
   constructor(private db: knex) {}
 
-  async findByCode(code: string): Promise<MagicLink | undefined> {
-    const magicLinkRow = await this.db('magic_link')
-      .where('code', '=', code)
+  async findByCode(code: string) {
+    const linkRow: any = await this.db('magic_link')
       .select([
         'id',
         'email',
@@ -16,36 +15,40 @@ export class PsqlMagicLinkRepository implements MagicLinkRepository {
         'active',
         'creation_time as creationTime',
       ])
+      .where('code', '=', code)
       .first();
-    if (!magicLinkRow) {
-      return undefined;
+
+    if (!linkRow) {
+      return null;
     }
-    // @ts-ignore
     return new MagicLink(
-      magicLinkRow.id,
-      new Email(magicLinkRow.email),
-      magicLinkRow.code,
-      magicLinkRow.active,
-      magicLinkRow.creationTime
+      linkRow.id,
+      new Email(linkRow.email),
+      linkRow.code,
+      linkRow.active,
+      linkRow.creationTime
     );
   }
 
   async save(magicLink: MagicLink) {
-    await this.db.raw(
-      `
+    return await this.db
+      .raw(
+        `
       insert into magic_link (id, email, code, active, creation_time)
       values (:id, :email, :code, :active, :creation_time)
       on conflict(id) do update
       set active = excluded.active
     `,
-      {
-        id: magicLink.id,
-        email: magicLink.email.value,
-        code: magicLink.code,
-        active: magicLink.active,
-        creation_time: magicLink.creationTime,
-      }
-    );
-    return magicLink;
+        {
+          id: magicLink.id,
+          email: magicLink.email.value(),
+          code: magicLink.code,
+          active: magicLink.active,
+          creation_time: magicLink.creationTime,
+        }
+      )
+      .then(() => {
+        return magicLink;
+      });
   }
 }

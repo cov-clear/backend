@@ -9,6 +9,5 @@ describe('database connector', () => {
 });
 
 afterAll((done) => {
-  database.destroy();
-  done();
+  database.destroy().then(done);
 });

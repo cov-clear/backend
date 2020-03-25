@@ -1,15 +1,15 @@
-import Knex from 'knex';
+import knex from 'knex';
 
-export async function up(db: Knex) {
+export async function up(db: knex) {
   await db.schema.createTable('user', (table) => {
-    table.bigIncrements('id').primary();
+    table.uuid('id').primary();
     table.string('email').unique().notNullable();
-    table.timestamp('creation_time').nullable().index();
+    table.timestamp('creation_time').notNullable();
     table.jsonb('personal_information').nullable();
     table.jsonb('latest_address').nullable();
   });
 }
 
-export async function down(db: Knex) {
+export async function down(db: knex) {
   await db.schema.dropTable('user');
 }

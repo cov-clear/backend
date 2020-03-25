@@ -5,11 +5,12 @@ import {
   ExchangeAuthCode,
 } from './ExchangeAuthCode';
 import { magicLinkRepository } from '../../infrastructure/persistence';
-import { generateAuthToken, getExistingOrCreateNewUser } from './index';
-import database, { cleanupDatabase, migrateLatest } from '../../database';
+import database from '../../database';
 import { v4 } from 'uuid';
 import { MagicLink } from '../../domain/model/magiclink/MagicLink';
 import { Email } from '../../domain/model/user/Email';
+import { cleanupDatabase } from '../../test/cleanupDatabase';
+import { generateAuthToken, getExistingOrCreateNewUser } from './index';
 
 describe('ExchangeAuthCode', () => {
   const exchangeAuthCode = new ExchangeAuthCode(
@@ -19,11 +20,10 @@ describe('ExchangeAuthCode', () => {
   );
 
   beforeEach(async () => {
-    await cleanupDatabase();
-    await migrateLatest();
+    await cleanupDatabase(database);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     MockDate.reset();
   });
 
@@ -60,7 +60,7 @@ describe('ExchangeAuthCode', () => {
     MockDate.set(link.expirationTime().getTime() + 10);
 
     await expect(
-      exchangeAuthCode.execute(email.value, link.code)
+      exchangeAuthCode.execute(email.value(), link.code)
     ).rejects.toEqual(
       new AuthorisationFailedError(AuthorisationFailureReason.AUTH_CODE_EXPIRED)
     );
@@ -73,7 +73,7 @@ describe('ExchangeAuthCode', () => {
     );
 
     await expect(
-      exchangeAuthCode.execute(email.value, link.code)
+      exchangeAuthCode.execute(email.value(), link.code)
     ).rejects.toEqual(
       new AuthorisationFailedError(
         AuthorisationFailureReason.AUTH_CODE_ALREADY_USED
@@ -87,12 +87,12 @@ describe('ExchangeAuthCode', () => {
       new MagicLink(v4(), email, v4())
     );
 
-    const token = exchangeAuthCode.execute(email.value, link.code);
+    const token = await exchangeAuthCode.execute(email.value(), link.code);
 
     await expect(token).toBeDefined();
   });
 });
 
-afterAll(async () => {
-  await database.destroy();
+afterAll((done) => {
+  database.destroy().then(done);
 });
