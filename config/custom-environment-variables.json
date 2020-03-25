@@ -4,7 +4,7 @@
   },
   "port": "PORT",
   "jwt": {
-    "timeToLiveInDays": "JWT_TIME_TO_LIVE_IN_DAYS",
+    "timeToLiveInHours": "JWT_TIME_TO_LIVE_IN_HOURS",
     "secret": "JWT_SECRET"
   }
 }

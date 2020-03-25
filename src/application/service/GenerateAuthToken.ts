@@ -4,8 +4,8 @@ import jwt from 'jsonwebtoken';
 export class GenerateAuthToken {
   private jwtTimeToLiveInMs: number;
 
-  constructor(private jwtSecret: string, jwtTimeToLiveInDays: number) {
-    this.jwtTimeToLiveInMs = jwtTimeToLiveInDays * 24 * 60 * 60_000;
+  constructor(private jwtSecret: string, jwtTimeToLiveInHours: number) {
+    this.jwtTimeToLiveInMs = jwtTimeToLiveInHours * 60 * 60_000;
   }
 
   public async execute(user: User) {
