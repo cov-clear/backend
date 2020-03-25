@@ -2,9 +2,15 @@ import request from 'supertest';
 import expressApp from '../../loaders/express';
 import { v4 } from 'uuid';
 import { createMagicLink } from '../../application/service';
+import database, { cleanupDatabase, migrateLatest } from '../../database';
 
 describe('auth endpoints', () => {
   const app = expressApp();
+
+  beforeEach(async () => {
+    await cleanupDatabase();
+    await migrateLatest();
+  });
 
   describe('POST /auth/magic-links', () => {
     it('creates a new magic link', async () => {
@@ -12,7 +18,7 @@ describe('auth endpoints', () => {
         .post('/api/v1/auth/magic-links')
         .send({ email: 'kostas@gmail.com' })
         .expect(200)
-        .then((response) => {
+        .expect((response) => {
           expect(response.body.code).toBeDefined();
           expect(response.body.creationTime).toBeDefined();
           expect(response.body.active).toBeDefined();
@@ -41,9 +47,14 @@ describe('auth endpoints', () => {
           authCode: magicLink.code,
         })
         .expect(200)
-        .then((response) => {
+        .expect((response) => {
           expect(response.body.token).toBeDefined();
         });
     });
   });
+});
+
+afterAll((done) => {
+  database.destroy();
+  done();
 });

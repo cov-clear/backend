@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import AsyncRouter from '../AsyncRouter';
-import logger from '../../logger';
 import { createMagicLink, exchangeAuthCode } from '../../application/service';
 import { AuthorisationFailedError } from '../../application/service/ExchangeAuthCode';
 
@@ -24,7 +23,6 @@ export default () => {
 
     try {
       const token = await exchangeAuthCode.execute(email, authCode);
-      logger.info(token);
       res
         .json({
           token,
