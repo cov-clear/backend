@@ -34,6 +34,6 @@ describe('GetUser', () => {
   });
 });
 
-afterAll((done) => {
-  database.destroy().then(done);
+afterAll(() => {
+  return database.destroy();
 });

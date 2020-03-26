@@ -93,6 +93,6 @@ describe('ExchangeAuthCode', () => {
   });
 });
 
-afterAll((done) => {
-  database.destroy().then(done);
+afterAll(() => {
+  return database.destroy();
 });
