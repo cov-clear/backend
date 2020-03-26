@@ -11,7 +11,7 @@ export class GenerateAuthToken {
   public async execute(user: User) {
     return jwt.sign(
       {
-        userId: user.id(),
+        userId: user.id().value(),
         roles: [],
         expiration: new Date(Date.now() + this.jwtTimeToLiveInMs),
       },
