@@ -34,12 +34,18 @@ export class PsqlTestTypeRepository implements TestTypeRepository {
         'id',
         'name',
         'results_schema as resultsSchema',
+        'require_trusted as requireTrusted',
       ]);
     } else {
       // Filter out test types that require trusted
       testTypeRows: Array = await this.db(TEST_TYPE_TABLE_NAME)
         .where('require_trusted', '=', 'true') // How do we handle boolean ???
-        .select(['id', 'name', 'results_schema as resultsSchema']);
+        .select([
+          'id',
+          'name',
+          'results_schema as resultsSchema',
+          'require_trusted as requireTrusted',
+        ]);
     }
 
     if (!testTypeRows) {
