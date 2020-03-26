@@ -17,7 +17,7 @@ describe('user endpoints', () => {
   describe('GET /users/:id', () => {
     it('returns 404 if user is not found', async () => {
       const id = new UserId();
-      await request(app).get(`/api/v1/users/${id.value()}`).expect(404);
+      await request(app).get(`/api/v1/users/${id.value}`).expect(404);
     });
 
     it('returns 200 with the existing if user is found', async () => {
@@ -26,11 +26,11 @@ describe('user endpoints', () => {
       await userRepository.save(new User(id, new Email('kostas@tw.ee')));
 
       await request(app)
-        .get(`/api/v1/users/${id.value()}`)
+        .get(`/api/v1/users/${id.value}`)
         .expect(200)
         .expect((response) => {
           const user = response.body;
-          expect((user.id = id.value())).toEqual(id.value());
+          expect((user.id = id.value)).toEqual(id.value);
           expect(user.creationTime).toBeDefined();
           expect(user.email).toBeDefined();
         });

@@ -17,9 +17,9 @@ export default () => {
 
     res
       .json({
-        id: user.id().value(),
-        email: user.email().value(),
-        creationTime: user.creationTime(),
+        id: user.id.value,
+        email: user.email.value,
+        creationTime: user.creationTime,
       })
       .status(200);
   });

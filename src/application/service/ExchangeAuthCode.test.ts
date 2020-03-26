@@ -60,7 +60,7 @@ describe('ExchangeAuthCode', () => {
     MockDate.set(link.expirationTime().getTime() + 10);
 
     await expect(
-      exchangeAuthCode.execute(email.value(), link.code)
+      exchangeAuthCode.execute(email.value, link.code)
     ).rejects.toEqual(
       new AuthorisationFailedError(AuthorisationFailureReason.AUTH_CODE_EXPIRED)
     );
@@ -73,7 +73,7 @@ describe('ExchangeAuthCode', () => {
     );
 
     await expect(
-      exchangeAuthCode.execute(email.value(), link.code)
+      exchangeAuthCode.execute(email.value, link.code)
     ).rejects.toEqual(
       new AuthorisationFailedError(
         AuthorisationFailureReason.AUTH_CODE_ALREADY_USED
@@ -87,7 +87,7 @@ describe('ExchangeAuthCode', () => {
       new MagicLink(v4(), email, v4())
     );
 
-    const token = await exchangeAuthCode.execute(email.value(), link.code);
+    const token = await exchangeAuthCode.execute(email.value, link.code);
 
     await expect(token).toBeDefined();
   });

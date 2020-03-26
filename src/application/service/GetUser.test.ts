@@ -18,7 +18,7 @@ describe('GetUser', () => {
 
   describe('byId', () => {
     it('returns no user if one does not exist', async () => {
-      const user = await getUser.byId(new UserId().value());
+      const user = await getUser.byId(new UserId().value);
       expect(user).toBeNull();
     });
 
@@ -27,7 +27,7 @@ describe('GetUser', () => {
 
       await userRepository.save(new User(id, new Email('kostas@tw.ee')));
 
-      const user = await getUser.byId(id.value());
+      const user = await getUser.byId(id.value);
 
       expect(user).toBeDefined();
     });

@@ -21,7 +21,7 @@ describe('GetExistingOrCreateNewUser', () => {
       new User(new UserId(), email, new Date())
     );
 
-    const resultUser = await getExistingOrCreateNewUser.execute(email.value());
+    const resultUser = await getExistingOrCreateNewUser.execute(email.value);
 
     expect(resultUser).toEqual(existingUser);
   });
@@ -29,10 +29,10 @@ describe('GetExistingOrCreateNewUser', () => {
   it('creates a new user when one does not already exist for a given email', async () => {
     const email = new Email('kostas2@tw.ee');
 
-    const resultUser = await getExistingOrCreateNewUser.execute(email.value());
+    const resultUser = await getExistingOrCreateNewUser.execute(email.value);
 
     expect(resultUser).toBeDefined();
-    expect(resultUser.email()).toEqual(email);
+    expect(resultUser.email).toEqual(email);
   });
 });
 

@@ -18,9 +18,9 @@ export class PsqlUserRepository implements UserRepository {
       on conflict do nothing
     `,
         {
-          id: user.id().value(),
-          email: user.email().value(),
-          creation_time: user.creationTime(),
+          id: user.id.value,
+          email: user.email.value,
+          creation_time: user.creationTime,
         }
       )
       .then(() => user);
@@ -28,7 +28,7 @@ export class PsqlUserRepository implements UserRepository {
 
   async findByEmail(email: Email): Promise<User | null> {
     const userRow: any = await this.db(USER_TABLE_NAME)
-      .where('email', '=', email.value())
+      .where('email', '=', email.value)
       .select(['id', 'email', 'creation_time as creationTime'])
       .first();
 
@@ -44,7 +44,7 @@ export class PsqlUserRepository implements UserRepository {
 
   async findByUserId(userId: UserId): Promise<User | null> {
     const userRow: any = await this.db(USER_TABLE_NAME)
-      .where('id', '=', userId.value())
+      .where('id', '=', userId.value)
       .select(['id', 'email', 'creation_time as creationTime'])
       .first();
 

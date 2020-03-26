@@ -17,7 +17,7 @@ describe('PsqlUserRepository', () => {
       new User(new UserId(), new Email('kostas1@transferwise.com'))
     );
 
-    const persistedUser = await psqlUserRepository.findByUserId(user.id());
+    const persistedUser = await psqlUserRepository.findByUserId(user.id);
 
     expect(persistedUser).toEqual(user);
   });
@@ -27,7 +27,7 @@ describe('PsqlUserRepository', () => {
       new User(new UserId(), new Email('kostas2@transferwise.com'))
     );
 
-    const persistedUser = await psqlUserRepository.findByEmail(user.email());
+    const persistedUser = await psqlUserRepository.findByEmail(user.email);
 
     expect(persistedUser).toEqual(user);
   });
@@ -38,7 +38,7 @@ describe('PsqlUserRepository', () => {
     );
     await psqlUserRepository.save(user);
 
-    const persistedUser = await psqlUserRepository.findByUserId(user.id());
+    const persistedUser = await psqlUserRepository.findByUserId(user.id);
     expect(persistedUser).toEqual(user);
   });
 });
