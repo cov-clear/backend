@@ -10,7 +10,7 @@
 // import { User } from "../../domain/model/user/User";
 // import { Email } from "../../domain/model/user/Email";
 //
-// describe("user endpoints", () => {
+// describe("test type endpoints", () => {
 //   const app = expressApp();
 //
 //   beforeEach(async () => {
