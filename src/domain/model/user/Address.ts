@@ -1,3 +1,5 @@
+import { Country } from './Country';
+
 export class Address {
   constructor(
     public readonly address1: string,
@@ -5,6 +7,6 @@ export class Address {
     readonly city: string,
     readonly region: string,
     readonly postcode: string,
-    readonly countryCode: string
+    readonly country: Country
   ) {}
 }
