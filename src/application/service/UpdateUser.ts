@@ -8,6 +8,7 @@ import {
 import { Profile } from '../../domain/model/user/Profile';
 import { Address } from '../../domain/model/user/Address';
 import { Sex } from '../../domain/model/user/Sex';
+import { Country } from '../../domain/model/user/Country';
 
 export class UpdateUser {
   constructor(private userRepository: UserRepository) {}
@@ -19,17 +20,17 @@ export class UpdateUser {
     }
 
     if (command.profile) {
-      existingUser.profile = mapProfile(command.profile);
+      existingUser.profile = mapApiProfileToProfile(command.profile);
     }
     if (command.address) {
-      existingUser.address = mapAddress(command.address);
+      existingUser.address = mapApiAddressToAddress(command.address);
     }
 
     return this.userRepository.save(existingUser);
   }
 }
 
-function mapProfile(profile: ApiProfile): Profile {
+function mapApiProfileToProfile(profile: ApiProfile): Profile {
   return new Profile(
     profile.firstName,
     profile.lastName,
@@ -38,8 +39,19 @@ function mapProfile(profile: ApiProfile): Profile {
   );
 }
 
-function mapAddress(address?: ApiAddress): Address {
-  return address as Address;
+export function mapApiAddressToAddress(
+  address?: ApiAddress
+): Address | undefined {
+  return address
+    ? {
+        address1: address?.address1,
+        address2: address?.address2,
+        country: new Country(address?.countryCode),
+        region: address.region,
+        city: address.city,
+        postcode: address.postcode,
+      }
+    : address;
 }
 
 export class UserNotFoundError extends Error {

@@ -31,8 +31,31 @@ describe('UpdateUser', () => {
 
     const updatedUser = await userRepository.findByUserId(user.id);
 
-    expect(updatedUser?.profile).toEqual(updateCommand.profile);
-    expect(updatedUser?.address).toEqual(updateCommand.address);
+    expect(updatedUser?.profile?.firstName).toEqual(
+      updateCommand.profile?.firstName
+    );
+    expect(updatedUser?.profile?.lastName).toEqual(
+      updateCommand.profile?.lastName
+    );
+    expect(updatedUser?.profile?.sex).toEqual(updateCommand.profile?.sex);
+    expect(updatedUser?.profile?.dateOfBirth).toEqual(
+      updateCommand.profile?.dateOfBirth
+    );
+
+    expect(updatedUser?.address?.address1).toEqual(
+      updateCommand.address?.address1
+    );
+    expect(updatedUser?.address?.address2).toEqual(
+      updateCommand.address?.address2
+    );
+    expect(updatedUser?.address?.country?.code).toEqual(
+      updateCommand.address?.countryCode
+    );
+    expect(updatedUser?.address?.city).toEqual(updateCommand.address?.city);
+    expect(updatedUser?.address?.postcode).toEqual(
+      updateCommand.address?.postcode
+    );
+    expect(updatedUser?.address?.region).toEqual(updateCommand.address?.region);
   });
 });
 

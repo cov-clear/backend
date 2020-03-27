@@ -12,6 +12,7 @@ import { UserNotFoundError } from '../../application/service/UpdateUser';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
 import { User } from '../../domain/model/user/User';
 import logger from '../../logger';
+import { Address } from '../../domain/model/user/Address';
 
 export default () => {
   const route = new AsyncRouter();
@@ -24,7 +25,7 @@ export default () => {
       throw new ApiError(404, 'user.not-found');
     }
 
-    res.json(mapUserToApiResponse(user)).status(200);
+    res.json(mapUserToApiUser(user)).status(200);
   });
 
   route.patch('/users/:id', async (req: Request, res: Response) => {
@@ -33,7 +34,7 @@ export default () => {
 
     try {
       const user = await updateUser.execute(id, command);
-      res.status(200).json(mapUserToApiResponse(user));
+      res.status(200).json(mapUserToApiUser(user));
     } catch (error) {
       handleUserUpdateError(error);
     }
@@ -42,14 +43,29 @@ export default () => {
   return route.middleware();
 };
 
-function mapUserToApiResponse(user: User): ApiUser {
+export function mapUserToApiUser(user: User): ApiUser {
   return {
     id: user.id.value,
     email: user.email.value,
     creationTime: user.creationTime,
     profile: user.profile as ApiProfile,
-    address: user.address as ApiAddress,
+    address: mapAddressToApiAddress(user.address),
   };
+}
+
+export function mapAddressToApiAddress(
+  address?: Address
+): ApiAddress | undefined {
+  return address
+    ? {
+        address1: address.address1,
+        address2: address.address2,
+        countryCode: address.country.code,
+        postcode: address.postcode,
+        city: address.city,
+        region: address.region,
+      }
+    : address;
 }
 
 function handleUserUpdateError(error: Error) {

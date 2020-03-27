@@ -2,9 +2,20 @@
   "db": {
     "connectionUrl": "postgresql://dev_user:dev_password@localhost/dev_db"
   },
-  "port": 1337,
+  "frontend": {
+    "baseUrl": "https://cov-clear.netify.com"
+  },
+  "emailNotifier": {
+    "type": "logging",
+    "fromEmailHeader": "cov-clear@example.com",
+    "mailGunConfig": {
+      "apiKey": "dummy",
+      "domain": "dummy"
+    }
+  },
   "jwt": {
     "timeToLiveInHours": 336,
     "secret": "1-9182fj1wofj1-08fj182fj1-90fj21-0r89j12-8rh"
-  }
+  },
+  "port": 1337
 }

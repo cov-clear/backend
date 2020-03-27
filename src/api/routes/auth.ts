@@ -19,10 +19,10 @@ export default () => {
   });
 
   route.post('/auth/login', async (req: Request, res: Response) => {
-    const { email, authCode } = req.body;
+    const { authCode } = req.body;
 
     try {
-      const token = await exchangeAuthCode.execute(email, authCode);
+      const token = await exchangeAuthCode.execute(authCode);
       res
         .json({
           token,

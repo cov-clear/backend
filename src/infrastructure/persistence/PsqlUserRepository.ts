@@ -7,6 +7,7 @@ import { Address } from '../../domain/model/user/Address';
 import { Profile } from '../../domain/model/user/Profile';
 import { Sex } from '../../domain/model/user/Sex';
 import database from '../../database';
+import { Country } from '../../domain/model/user/Country';
 
 const USER_TABLE_NAME = 'user';
 
@@ -101,7 +102,7 @@ function toDbAddress(address?: Address): DbAddress | undefined {
         city: address.city,
         region: address.region,
         postcode: address.postcode,
-        countryCode: address.countryCode,
+        countryCode: address.country.code,
       }
     : undefined;
 }
@@ -122,7 +123,7 @@ function fromDbAddress(dbAddress?: DbAddress): Address | undefined {
     ? {
         address1: dbAddress.address1,
         address2: dbAddress.address2,
-        countryCode: dbAddress.countryCode,
+        country: new Country(dbAddress.countryCode),
         postcode: dbAddress.postcode,
         city: dbAddress.city,
         region: dbAddress.region,
