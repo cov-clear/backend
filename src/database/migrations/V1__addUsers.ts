@@ -5,8 +5,9 @@ export async function up(db: knex) {
     table.uuid('id').primary();
     table.string('email').unique().notNullable();
     table.timestamp('creation_time').notNullable();
-    table.jsonb('personal_information').nullable();
-    table.jsonb('latest_address').nullable();
+    table.timestamp('modification_time').notNullable();
+    table.jsonb('profile').nullable();
+    table.jsonb('address').nullable();
   });
 }
 
