@@ -1,6 +1,7 @@
 import AsyncRouter from '../AsyncRouter';
 import { Request, Response } from 'express';
 import { getTestTypes } from '../../application/service';
+import { TestType } from '../../domain/model/testType/TestType';
 import { ApiError } from '../ApiError';
 
 export default () => {
@@ -20,8 +21,16 @@ export default () => {
 
     const testTypes = await getTestTypes.byTrusted(trusted);
 
-    res.json(testTypes).status(200);
+    res.json(testTypes.map(mapTestTypeToApiResponse)).status(200);
   });
 
   return route.middleware();
 };
+
+function mapTestTypeToApiResponse(testType: TestType) {
+  return {
+    id: testType.id.value,
+    name: testType.name,
+    resultsSchema: testType.resultsSchema,
+  };
+}
