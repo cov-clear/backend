@@ -3,13 +3,14 @@ import { AccessRequest } from '../../domain/model/accessRequest/AccessRequest';
 import { AccessRequestRepository } from '../../domain/model/accessRequest/AccessRequestRepository';
 
 export class CreateAccessRequest {
-  constructor(private accessRequestRepository: AccessRequestRepository) {}
+  constructor() {}
 
   public async withIdAndSharingCode(
     userId: string,
     code: string
   ): Promise<AccessRequest> {
     const accessRequest = new AccessRequest(new UserId(userId), code);
-    return this.accessRequestRepository.save(accessRequest);
+    // TODO we need to set up permissions for this user somehow.
+    return accessRequest;
   }
 }
