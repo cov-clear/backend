@@ -12,6 +12,7 @@ import {
 
 import { GetTestTypes } from './GetTestTypes';
 import { GetUser } from './GetUser';
+import { UpdateUser } from './UpdateUser';
 
 export const generateAuthToken = new GenerateAuthToken(
   config.get('jwt.secret'),
@@ -20,6 +21,8 @@ export const generateAuthToken = new GenerateAuthToken(
 export const createMagicLink = new CreateNewMagicLink(magicLinkRepository);
 
 export const getUser = new GetUser(userRepository);
+
+export const updateUser = new UpdateUser(userRepository);
 
 export const getExistingOrCreateNewUser = new GetExistingOrCreateNewUser(
   userRepository
