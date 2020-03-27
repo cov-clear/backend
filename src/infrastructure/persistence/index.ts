@@ -1,6 +1,5 @@
 import database from '../../database';
 import { PsqlMagicLinkRepository } from './PsqlMagicLinkRepository';
-
 import { PsqlTestTypeRepository } from './PsqlTestTypeRepository';
 import { PsqlUserRepository } from './PsqlUserRepository';
 import { PsqlSharingCodeRepository } from './PsqlSharingCodeRepository';
