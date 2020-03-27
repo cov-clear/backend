@@ -1,8 +1,15 @@
 {
   "db": {
-    "connectionUrl": "DB_CONNECTION_URL"
+    "connectionUrl": "DATABASE_URL"
   },
   "port": "PORT",
+  "emailNotifier": {
+    "type": "mailgun",
+    "mailGunConfig": {
+      "apiKey": "MAILGUN_API_KEY",
+      "domain": "MAILGUN_DOMAIN"
+    }
+  },
   "jwt": {
     "timeToLiveInHours": "JWT_TIME_TO_LIVE_IN_HOURS",
     "secret": "JWT_SECRET"

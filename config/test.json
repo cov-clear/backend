@@ -2,5 +2,15 @@
   "db": {
     "connectionUrl": "postgresql://dev_user:dev_password@localhost:5433/dev_db"
   },
+  "frontend": {
+    "baseUrl": "https://TODO"
+  },
+  "emailNotifier": {
+    "type": "logging",
+    "mailGunConfig": {
+      "apiKey": "dummy",
+      "domain": "dummy"
+    }
+  },
   "port": 1337
 }

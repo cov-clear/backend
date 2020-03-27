@@ -30,4 +30,4 @@ jobs:
     - name: Run tests
       run: npm run test
       env:
-        DB_CONNECTION_URL: postgresql://postgres:postgres@localhost/postgres
+        DATABASE_URL: postgresql://postgres:postgres@localhost/postgres

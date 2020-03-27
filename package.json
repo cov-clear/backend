@@ -31,6 +31,7 @@
   },
   "homepage": "https://github.com/cov-clear/backend#readme",
   "devDependencies": {
+    "@types/mailgun-js": "^0.22.4",
     "@types/config": "0.0.36",
     "@types/email-validator": "^1.0.6",
     "@types/country-list": "^2.1.0",
@@ -60,6 +61,7 @@
     "helmet": "^3.21.3",
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.20.13",
+    "mailgun-js": "^0.22.0",
     "pg": "^7.18.2",
     "uuid": "^7.0.2"
   }
