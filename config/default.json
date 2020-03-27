@@ -3,7 +3,7 @@
     "connectionUrl": "postgresql://dev_user:dev_password@localhost/dev_db"
   },
   "frontend": {
-    "baseUrl": "https://cov-clear.netify.com"
+    "baseUrl": "https://cov-clear.netlify.com"
   },
   "emailNotifier": {
     "type": "logging",
