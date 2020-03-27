@@ -1,5 +1,5 @@
-import { testTypeRepository } from '../../infrastructure/persistence';
 import database from '../../database';
+import { testTypeRepository } from '../../infrastructure/persistence';
 import { GetTestTypes } from './GetTestTypes';
 import { TestTypeId } from '../../domain/model/testType/TestTypeId';
 import { cleanupDatabase } from '../../test/cleanupDatabase';

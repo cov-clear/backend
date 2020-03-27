@@ -19,7 +19,7 @@ export class PsqlTestTypeRepository implements TestTypeRepository {
         {
           id: testType.id.value,
           name: testType.name,
-          results_schema: testType.resultsSchema,
+          results_schema: JSON.stringify(testType.resultsSchema),
           require_trusted: testType.requireTrusted,
         }
       )
@@ -27,7 +27,7 @@ export class PsqlTestTypeRepository implements TestTypeRepository {
   }
 
   async findByTrusted(trusted: boolean): Promise<Array<any>> {
-    let testTypeRows;
+    let testTypeRows: Array<any>;
 
     const columns = [
       'id',
@@ -38,11 +38,11 @@ export class PsqlTestTypeRepository implements TestTypeRepository {
 
     if (trusted) {
       // Return all
-      testTypeRows: Array = await this.db(TEST_TYPE_TABLE_NAME).select(columns);
+      testTypeRows = await this.db(TEST_TYPE_TABLE_NAME).select(columns);
     } else {
       // Filter out test types that require trusted
-      testTypeRows: Array = await this.db(TEST_TYPE_TABLE_NAME)
-        .where('require_trusted', '=', 'true') // How do we handle boolean ???
+      testTypeRows = await this.db(TEST_TYPE_TABLE_NAME)
+        .where({ require_trusted: true })
         .select(columns);
     }
 
@@ -51,7 +51,7 @@ export class PsqlTestTypeRepository implements TestTypeRepository {
     }
 
     return testTypeRows.map(
-      (testTypeRow: object) =>
+      (testTypeRow: any) =>
         new TestType(
           new TestTypeId(testTypeRow.id),
           testTypeRow.name,

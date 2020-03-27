@@ -3,7 +3,11 @@ import { ExchangeAuthCode } from './ExchangeAuthCode';
 import { CreateNewMagicLink } from './CreateNewMagicLink';
 import * as config from '../../config';
 import { GetExistingOrCreateNewUser } from './GetExistingOrCreateNewUser';
-import { magicLinkRepository } from '../../infrastructure/persistence';
+import { GetTestTypes } from './GetTestTypes';
+import {
+  magicLinkRepository,
+  testTypeRepository,
+} from '../../infrastructure/persistence';
 
 export const generateAuthToken = new GenerateAuthToken(
   config.get('jwt.secret'),
@@ -18,3 +22,5 @@ export const exchangeAuthCode = new ExchangeAuthCode(
   generateAuthToken,
   getExistingOrCreateNewUser
 );
+
+export const getTestTypes = new GetTestTypes(testTypeRepository);
