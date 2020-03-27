@@ -1,5 +1,5 @@
 import AsyncRouter from '../AsyncRouter';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { getUser, updateUser } from '../../application/service';
 import { ApiError } from '../ApiError';
 import {
@@ -14,6 +14,7 @@ import { User } from '../../domain/model/user/User';
 import logger from '../../logger';
 import { Address } from '../../domain/model/user/Address';
 import { isAuthenticated } from '../middleware/isAuthenticated';
+import { AuthenticatedRequest } from '../AuthenticatedRequest';
 
 export default () => {
   const route = new AsyncRouter();
@@ -21,7 +22,7 @@ export default () => {
   route.get(
     '/users/:id',
     isAuthenticated,
-    async (req: Request, res: Response) => {
+    async (req: AuthenticatedRequest, res: Response) => {
       const { id } = req.params;
       const user = await getUser.byId(id);
 
@@ -36,7 +37,7 @@ export default () => {
   route.patch(
     '/users/:id',
     isAuthenticated,
-    async (req: Request, res: Response) => {
+    async (req: AuthenticatedRequest, res: Response) => {
       const { id } = req.params;
       const command = req.body as UpdateUserCommand;
 

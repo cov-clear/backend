@@ -1,14 +1,13 @@
-import { Request, Response } from 'express';
-import { Authentication } from '../../domain/model/authentication/Authentication';
+import { Response } from 'express';
 import { ApiError } from '../ApiError';
+import { AuthenticatedRequest } from '../AuthenticatedRequest';
 
 export async function isAuthenticated(
-  req: Request,
+  req: AuthenticatedRequest,
   res: Response,
   next: () => any
 ) {
-  const authentication = Reflect.get(req, 'authentication') as Authentication;
-  if (!authentication) {
+  if (!req.authentication) {
     throw new ApiError(401, 'authentication.missing');
   }
   return next();

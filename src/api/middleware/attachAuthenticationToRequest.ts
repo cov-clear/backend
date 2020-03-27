@@ -7,6 +7,7 @@ import {
   userRepository,
 } from '../../infrastructure/persistence';
 import { UserId } from '../../domain/model/user/UserId';
+import { AuthenticatedRequest } from '../AuthenticatedRequest';
 
 const jwtSecret: string = config.get('jwt.secret');
 
@@ -21,7 +22,7 @@ function getTokenFromHeader(req: Request) {
 }
 
 export async function attachAuthenticationToRequest(
-  req: Request,
+  req: AuthenticatedRequest,
   res: Response,
   next: () => any
 ) {
@@ -36,10 +37,8 @@ export async function attachAuthenticationToRequest(
     if (!user) {
       return next();
     }
-    const authentication = await authenticationRepository.getAuthentication(
-      user
-    );
-    Reflect.set(req, 'authentication', authentication);
+
+    req.authentication = await authenticationRepository.getAuthentication(user);
     return next();
   } catch (tokenError) {
     logger.error(`Failed to authenticate`, tokenError);
