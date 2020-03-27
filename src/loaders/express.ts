@@ -4,7 +4,7 @@ import * as config from '../config';
 import routes from '../api';
 import logger from '../logger';
 import bodyParser from 'body-parser';
-import { ApiError, defaultStatusMessages } from '../api/ApiError';
+import { ApiError } from '../api/ApiError';
 
 export default () => {
   return express()
@@ -17,7 +17,7 @@ export default () => {
 
 function notFoundHandling() {
   return (_: Request, __: Response, next: (...things: any[]) => any) => {
-    next(new ApiError(404, 'Not Found'));
+    next(new ApiError(404, 'resource.not-found', 'Not Found'));
   };
 }
 
@@ -32,18 +32,17 @@ function errorHandling() {
       return next(err);
     }
     const status = ((err as any).status as number) || 500;
-    const message =
-      err.message ||
-      defaultStatusMessages[status] ||
-      defaultStatusMessages[500];
+    const code = ((err as any).code as string) || 'unexpected.error';
+
     if (status >= 500) {
       if (err.stack) {
         logger.error(err.stack);
       } else {
-        logger.error(message);
+        logger.error(err);
       }
     }
-    const body: any = { message };
+
+    const body: any = { code };
     if (config.isDevelopment) {
       body.stack = err.stack;
     }

@@ -14,8 +14,6 @@ export class GetExistingOrCreateNewUser {
       return existingUser;
     }
 
-    return this.userRepository.save(
-      new User(new UserId(), new Email(email), new Date())
-    );
+    return this.userRepository.save(new User(new UserId(), new Email(email)));
   }
 }
