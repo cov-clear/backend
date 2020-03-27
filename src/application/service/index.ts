@@ -9,6 +9,9 @@ import {
 } from '../../infrastructure/persistence';
 import { GetUser } from './GetUser';
 import { UpdateUser } from './UpdateUser';
+import { GetCountries } from './GetCountries';
+
+export const getCountries = new GetCountries();
 
 export const generateAuthToken = new GenerateAuthToken(
   config.get('jwt.secret'),

@@ -6,8 +6,7 @@ import { Email } from '../../domain/model/user/Email';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import { Profile } from '../../domain/model/user/Profile';
 import { Sex } from '../../domain/model/user/Sex';
-import logger from '../../logger';
-import { Address } from '../../domain/model/user/Address';
+import { anAddress } from '../../test/domainFactories';
 
 describe('PsqlUserRepository', () => {
   const psqlUserRepository = new PsqlUserRepository(database);
@@ -53,14 +52,7 @@ describe('PsqlUserRepository', () => {
       new User(new UserId(), new Email('kostas3@transferwise.com'))
     );
 
-    user.address = new Address(
-      '42 Some road',
-      'Some street',
-      'London',
-      'London',
-      'E1 6JJ',
-      'GR'
-    );
+    user.address = anAddress();
     await psqlUserRepository.save(user);
 
     const persistedUser = await psqlUserRepository.findByUserId(user.id);

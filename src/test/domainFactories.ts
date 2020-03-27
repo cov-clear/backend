@@ -4,6 +4,7 @@ import { Email } from '../domain/model/user/Email';
 import { Profile } from '../domain/model/user/Profile';
 import { Sex } from '../domain/model/user/Sex';
 import { Address } from '../domain/model/user/Address';
+import { Country } from '../domain/model/user/Country';
 
 export function aNewUser() {
   return new User(new UserId(), anEmail());
@@ -28,6 +29,6 @@ export function anAddress() {
     'London',
     'Region',
     'E8132',
-    'GR'
+    new Country('GR')
   );
 }
