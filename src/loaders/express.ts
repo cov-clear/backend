@@ -5,11 +5,14 @@ import routes from '../api';
 import logger from '../logger';
 import bodyParser from 'body-parser';
 import { ApiError } from '../api/ApiError';
+import { attachAuthenticationToRequest } from '../api/middleware/attachAuthenticationToRequest';
+import { wrapAsyncFunction } from '../api/AsyncRouter';
 
 export default () => {
   return express()
     .use(securityHeaders())
     .use(bodyParser.json())
+    .use('/api', wrapAsyncFunction(attachAuthenticationToRequest))
     .use('/api', routes())
     .use(notFoundHandling())
     .use(errorHandling());
