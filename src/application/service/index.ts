@@ -6,10 +6,16 @@ import { ExchangeAuthCode } from './ExchangeAuthCode';
 import { CreateNewMagicLink } from './CreateNewMagicLink';
 import * as config from '../../config';
 import { GetExistingOrCreateNewUser } from './GetExistingOrCreateNewUser';
-import { magicLinkRepository, userRepository, } from '../../infrastructure/persistence';
+import {
+  magicLinkRepository,
+  userRepository,
+  sharingCodeRepository,
+} from '../../infrastructure/persistence';
 import { GetUser } from './GetUser';
 import { UpdateUser } from './UpdateUser';
 import { GetCountries } from './GetCountries';
+import { GetSharingCode } from './GetSharingCode';
+import { CreateSharingCode } from './CreateSharingCode';
 
 import { LoggingEmailNotifier } from '../../infrastructure/emails/LoggingEmailNotifier';
 import { MailGunEmailNotifier } from '../../infrastructure/emails/MailGunEmailNotifier';
@@ -52,3 +58,6 @@ export const exchangeAuthCode = new ExchangeAuthCode(
   generateAuthToken,
   getExistingOrCreateNewUser
 );
+
+export const getSharingCode = new GetSharingCode(sharingCodeRepository);
+export const createSharingCode = new CreateSharingCode(sharingCodeRepository);
