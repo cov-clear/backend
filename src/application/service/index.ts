@@ -14,7 +14,6 @@ import {
 import { GetUser } from './GetUser';
 import { UpdateUser } from './UpdateUser';
 import { GetCountries } from './GetCountries';
-import { GetSharingCode } from './GetSharingCode';
 import { CreateSharingCode } from './CreateSharingCode';
 
 import { LoggingEmailNotifier } from '../../infrastructure/emails/LoggingEmailNotifier';
@@ -59,5 +58,4 @@ export const exchangeAuthCode = new ExchangeAuthCode(
   getExistingOrCreateNewUser
 );
 
-export const getSharingCode = new GetSharingCode(sharingCodeRepository);
 export const createSharingCode = new CreateSharingCode(sharingCodeRepository);
