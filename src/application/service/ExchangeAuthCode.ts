@@ -9,12 +9,12 @@ export class ExchangeAuthCode {
     private getExistingOrCreateNewUser: GetExistingOrCreateNewUser
   ) {}
 
-  public async execute(email: string, authCode: string) {
+  public async execute(authCode: string) {
     const magicLink = await this.magicLinkRepository.findByCode(authCode);
 
-    if (!magicLink || magicLink.email.value !== email) {
+    if (!magicLink) {
       throw new AuthorisationFailedError(
-        AuthorisationFailureReason.AUTH_CODE_OR_EMAIL_NOT_FOUND
+        AuthorisationFailureReason.AUTH_CODE_NOT_FOUND
       );
     }
 
@@ -30,7 +30,9 @@ export class ExchangeAuthCode {
       );
     }
 
-    const user = await this.getExistingOrCreateNewUser.execute(email);
+    const user = await this.getExistingOrCreateNewUser.execute(
+      magicLink.email.value
+    );
     const token = this.generateAuthToken.execute(user);
 
     magicLink.active = false;
@@ -47,7 +49,7 @@ export class AuthorisationFailedError extends Error {
 }
 
 export enum AuthorisationFailureReason {
-  AUTH_CODE_OR_EMAIL_NOT_FOUND = 'AUTH_CODE_OR_EMAIL_NOT_FOUND',
+  AUTH_CODE_NOT_FOUND = 'AUTH_CODE_NOT_FOUND',
   AUTH_CODE_EXPIRED = 'AUTH_CODE_EXPIRED',
   AUTH_CODE_ALREADY_USED = 'AUTH_CODE_ALREADY_USED',
 }

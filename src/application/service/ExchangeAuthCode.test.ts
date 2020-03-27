@@ -28,25 +28,9 @@ describe('ExchangeAuthCode', () => {
   });
 
   it('throws error when auth code cannot be found', async () => {
-    await expect(
-      exchangeAuthCode.execute('kostas@email.com', v4())
-    ).rejects.toEqual(
+    await expect(exchangeAuthCode.execute(v4())).rejects.toEqual(
       new AuthorisationFailedError(
-        AuthorisationFailureReason.AUTH_CODE_OR_EMAIL_NOT_FOUND
-      )
-    );
-  });
-
-  it('throws error when auth code is not associated to the same email', async () => {
-    const link = await magicLinkRepository.save(
-      new MagicLink(v4(), new Email('some@email.com'), v4())
-    );
-
-    await expect(
-      exchangeAuthCode.execute('kostas@email.com', link.code)
-    ).rejects.toEqual(
-      new AuthorisationFailedError(
-        AuthorisationFailureReason.AUTH_CODE_OR_EMAIL_NOT_FOUND
+        AuthorisationFailureReason.AUTH_CODE_NOT_FOUND
       )
     );
   });
@@ -59,9 +43,7 @@ describe('ExchangeAuthCode', () => {
 
     MockDate.set(link.expirationTime().getTime() + 10);
 
-    await expect(
-      exchangeAuthCode.execute(email.value, link.code)
-    ).rejects.toEqual(
+    await expect(exchangeAuthCode.execute(link.code)).rejects.toEqual(
       new AuthorisationFailedError(AuthorisationFailureReason.AUTH_CODE_EXPIRED)
     );
   });
@@ -72,9 +54,7 @@ describe('ExchangeAuthCode', () => {
       new MagicLink(v4(), email, v4(), false)
     );
 
-    await expect(
-      exchangeAuthCode.execute(email.value, link.code)
-    ).rejects.toEqual(
+    await expect(exchangeAuthCode.execute(link.code)).rejects.toEqual(
       new AuthorisationFailedError(
         AuthorisationFailureReason.AUTH_CODE_ALREADY_USED
       )
@@ -87,7 +67,7 @@ describe('ExchangeAuthCode', () => {
       new MagicLink(v4(), email, v4())
     );
 
-    const token = await exchangeAuthCode.execute(email.value, link.code);
+    const token = await exchangeAuthCode.execute(link.code);
 
     await expect(token).toBeDefined();
   });
