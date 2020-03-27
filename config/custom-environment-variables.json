@@ -4,7 +4,7 @@
   },
   "port": "PORT",
   "emailNotifier": {
-    "type": "mailgun",
+    "type": "EMAIL_NOTIFIER_TYPE",
     "mailGunConfig": {
       "apiKey": "MAILGUN_API_KEY",
       "domain": "MAILGUN_DOMAIN"
