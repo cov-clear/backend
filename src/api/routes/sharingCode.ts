@@ -1,25 +1,41 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import AsyncRouter from '../AsyncRouter';
-import { createSharingCode } from '../../application/service';
-import { User } from '../../domain/model/user/User';
+import {
+  accessManagerFactory,
+  createSharingCode,
+} from '../../application/service';
+import { isAuthenticated } from '../middleware/isAuthenticated';
+import { AuthenticatedRequest } from '../AuthenticatedRequest';
+import { UserId } from '../../domain/model/user/UserId';
+import { ApiError } from '../ApiError';
 
 export default () => {
   const route = new AsyncRouter();
 
-  route.post('/users/:id/sharing-code', async (req: Request, res: Response) => {
-    const { id } = req.params;
+  route.post(
+    '/users/:id/sharing-code',
+    isAuthenticated,
+    async (req: AuthenticatedRequest, res: Response) => {
+      const { id } = req.params;
 
-    // Check if this id belongs to the current user !!!!
+      if (
+        !accessManagerFactory
+          .forAuthentication(req.authentication)
+          .isLoggedInAsUser(new UserId(id))
+      ) {
+        throw new ApiError(404, 'user.not-found');
+      }
 
-    const sharingCode = await createSharingCode.withUserId(id);
+      const sharingCode = await createSharingCode.withUserId(id);
 
-    res
-      .json({
-        code: sharingCode.code,
-        expiryTime: sharingCode.expirationTime(),
-      })
-      .status(200);
-  });
+      res
+        .json({
+          code: sharingCode.code,
+          expiryTime: sharingCode.expirationTime(),
+        })
+        .status(200);
+    }
+  );
 
   return route.middleware();
 };

@@ -1,13 +1,8 @@
 import AsyncRouter from '../AsyncRouter';
 import { Response } from 'express';
-import { getUser, updateUser } from '../../application/service';
+import { accessManagerFactory, getUser, updateUser, } from '../../application/service';
 import { ApiError } from '../ApiError';
-import {
-  Address as ApiAddress,
-  Profile as ApiProfile,
-  UpdateUserCommand,
-  User as ApiUser,
-} from '../interface';
+import { Address as ApiAddress, Profile as ApiProfile, UpdateUserCommand, User as ApiUser, } from '../interface';
 import { UserNotFoundError } from '../../application/service/UpdateUser';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
 import { User } from '../../domain/model/user/User';
@@ -15,6 +10,7 @@ import { Address } from '../../domain/model/user/Address';
 import { isAuthenticated } from '../middleware/isAuthenticated';
 import { AuthenticatedRequest } from '../AuthenticatedRequest';
 import { Profile } from '../../domain/model/user/Profile';
+import { UserId } from '../../domain/model/user/UserId';
 
 export default () => {
   const route = new AsyncRouter();
@@ -26,7 +22,12 @@ export default () => {
       const { id } = req.params;
       const user = await getUser.byId(id);
 
-      if (!user) {
+      if (
+        !user ||
+        !accessManagerFactory
+          .forAuthentication(req.authentication)
+          .isLoggedInAsUser(user.id)
+      ) {
         throw new ApiError(404, 'user.not-found');
       }
 
@@ -40,6 +41,14 @@ export default () => {
     async (req: AuthenticatedRequest, res: Response) => {
       const { id } = req.params;
       const command = req.body as UpdateUserCommand;
+
+      if (
+        !accessManagerFactory
+          .forAuthentication(req.authentication)
+          .isLoggedInAsUser(new UserId(id))
+      ) {
+        throw new ApiError(404, 'user.not-found');
+      }
 
       try {
         const user = await updateUser.execute(id, command);

@@ -33,6 +33,16 @@ describe('user endpoints', () => {
         .expect(404);
     });
 
+    it('returns 404 if trying to access a different user id', async () => {
+      const user = await userRepository.save(aNewUser());
+      const otherUser = await userRepository.save(aNewUser());
+
+      await request(app)
+        .get(`/api/v1/users/${otherUser.id.value}`)
+        .set({ Authorization: `Bearer ${await getTokenForUser(user)}` })
+        .expect(404);
+    });
+
     it('returns 200 with the existing if user is found', async () => {
       const id = new UserId();
 
@@ -68,6 +78,27 @@ describe('user endpoints', () => {
   });
 
   describe('PATCH /users/:id', () => {
+    it('returns 404 if trying to access a different user id', async () => {
+      const user = await userRepository.save(aNewUser());
+      const otherUser = await userRepository.save(aNewUser());
+      const address = anAddress();
+
+      await request(app)
+        .patch(`/api/v1/users/${otherUser.id.value}`)
+        .set({ Authorization: `Bearer ${await getTokenForUser(user)}` })
+        .send({
+          address: {
+            address1: address.address1,
+            address2: address.address2,
+            city: address.city,
+            region: address.region,
+            postcode: address.postcode,
+            countryCode: address.country.code,
+          },
+        })
+        .expect(404);
+    });
+
     it('updates address correctly', async () => {
       const user = await userRepository.save(aNewUser());
       const address = anApiAddress();
