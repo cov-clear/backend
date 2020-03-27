@@ -1,14 +1,10 @@
-import { v4String } from 'uuid/interfaces';
 import { Email } from './Email';
+import { UserId } from './UserId';
 
 export class User {
-  constructor(private _id: string, private _email: Email) {}
-
-  public id() {
-    return this._id;
-  }
-
-  public email() {
-    return this._email;
-  }
+  constructor(
+    readonly id: UserId,
+    readonly email: Email,
+    readonly creationTime: Date = new Date()
+  ) {}
 }

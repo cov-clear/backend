@@ -41,7 +41,7 @@ export class PsqlMagicLinkRepository implements MagicLinkRepository {
     `,
         {
           id: magicLink.id,
-          email: magicLink.email.value(),
+          email: magicLink.email.value,
           code: magicLink.code,
           active: magicLink.active,
           creation_time: magicLink.creationTime,

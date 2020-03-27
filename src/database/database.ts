@@ -18,7 +18,6 @@ export async function migrateLatest() {
   });
   try {
     await connection.migrate.latest(migrationConfig);
-    logger.info('Successfully migrated database to latest');
   } catch (e) {
     logger.error('Failed to migrate database', e);
   } finally {
@@ -33,7 +32,6 @@ export async function rollbackDatabase() {
   });
   try {
     await connection.migrate.rollback(migrationConfig);
-    logger.info('Successfully rolled back database');
   } catch (e) {
     logger.error('Failed to rollback database', e);
     throw e;
