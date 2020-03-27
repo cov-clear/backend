@@ -12,7 +12,7 @@ import {
   aProfile,
   aUserWithAllInformation,
 } from '../../test/domainFactories';
-import { Address as ApiAddress, Profile as ApiProfile } from '../interface';
+import { getTokenForUser } from '../../test/authentication';
 
 describe('user endpoints', () => {
   const app = expressApp();
@@ -23,17 +23,25 @@ describe('user endpoints', () => {
 
   describe('GET /users/:id', () => {
     it('returns 404 if user is not found', async () => {
+      const user = await userRepository.save(aNewUser());
       const id = new UserId();
-      await request(app).get(`/api/v1/users/${id.value}`).expect(404);
+
+      await request(app)
+        .get(`/api/v1/users/${id.value}`)
+        .set({ Authorization: `Bearer ${await getTokenForUser(user)}` })
+        .expect(404);
     });
 
     it('returns 200 with the existing if user is found', async () => {
       const id = new UserId();
 
-      await userRepository.save(new User(id, new Email('kostas@tw.ee')));
+      const user = await userRepository.save(
+        new User(id, new Email('kostas@tw.ee'))
+      );
 
       await request(app)
         .get(`/api/v1/users/${id.value}`)
+        .set({ Authorization: `Bearer ${await getTokenForUser(user)}` })
         .expect(200)
         .expect((response) => {
           const user = response.body;
@@ -48,6 +56,7 @@ describe('user endpoints', () => {
 
       await request(app)
         .get(`/api/v1/users/${user.id.value}`)
+        .set({ Authorization: `Bearer ${await getTokenForUser(user)}` })
         .expect(200)
         .expect((res) => {
           const user = res.body;
@@ -64,6 +73,7 @@ describe('user endpoints', () => {
 
       await request(app)
         .patch(`/api/v1/users/${user.id.value}`)
+        .set({ Authorization: `Bearer ${await getTokenForUser(user)}` })
         .send({
           address: {
             address1: address.address1,
@@ -87,6 +97,7 @@ describe('user endpoints', () => {
 
       await request(app)
         .patch(`/api/v1/users/${user.id.value}`)
+        .set({ Authorization: `Bearer ${await getTokenForUser(user)}` })
         .send({
           profile: {
             firstName: profile.firstName,

@@ -1,5 +1,5 @@
 import AsyncRouter from '../AsyncRouter';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { getUser, updateUser } from '../../application/service';
 import { ApiError } from '../ApiError';
 import {
@@ -13,32 +13,42 @@ import { DomainValidationError } from '../../domain/model/DomainValidationError'
 import { User } from '../../domain/model/user/User';
 import logger from '../../logger';
 import { Address } from '../../domain/model/user/Address';
+import { isAuthenticated } from '../middleware/isAuthenticated';
+import { AuthenticatedRequest } from '../AuthenticatedRequest';
 
 export default () => {
   const route = new AsyncRouter();
 
-  route.get('/users/:id', async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const user = await getUser.byId(id);
+  route.get(
+    '/users/:id',
+    isAuthenticated,
+    async (req: AuthenticatedRequest, res: Response) => {
+      const { id } = req.params;
+      const user = await getUser.byId(id);
 
-    if (!user) {
-      throw new ApiError(404, 'user.not-found');
+      if (!user) {
+        throw new ApiError(404, 'user.not-found');
+      }
+
+      res.json(mapUserToApiUser(user)).status(200);
     }
+  );
 
-    res.json(mapUserToApiUser(user)).status(200);
-  });
+  route.patch(
+    '/users/:id',
+    isAuthenticated,
+    async (req: AuthenticatedRequest, res: Response) => {
+      const { id } = req.params;
+      const command = req.body as UpdateUserCommand;
 
-  route.patch('/users/:id', async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const command = req.body as UpdateUserCommand;
-
-    try {
-      const user = await updateUser.execute(id, command);
-      res.status(200).json(mapUserToApiUser(user));
-    } catch (error) {
-      handleUserUpdateError(error);
+      try {
+        const user = await updateUser.execute(id, command);
+        res.status(200).json(mapUserToApiUser(user));
+      } catch (error) {
+        handleUserUpdateError(error);
+      }
     }
-  });
+  );
 
   return route.middleware();
 };

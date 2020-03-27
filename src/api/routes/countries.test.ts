@@ -2,6 +2,9 @@ import request from 'supertest';
 import expressApp from '../../loaders/express';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import database from '../../database';
+import { getTokenForUser } from '../../test/authentication';
+import { userRepository } from '../../infrastructure/persistence';
+import { aNewUser } from '../../test/domainFactories';
 
 describe('GET /countries', () => {
   const app = expressApp();
@@ -11,8 +14,11 @@ describe('GET /countries', () => {
   });
 
   it('gets a list of all the countries', async () => {
+    const user = await userRepository.save(aNewUser());
+
     await request(app)
       .get(`/api/v1/countries`)
+      .set({ Authorization: `Bearer ${await getTokenForUser(user)}` })
       .expect(200)
       .expect((res) => {
         const countries = res.body as Array<{ code: string; name: string }>;
