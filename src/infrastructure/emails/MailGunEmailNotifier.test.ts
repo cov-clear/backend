@@ -1,5 +1,4 @@
 import mailgun from 'mailgun-js';
-import type { Mailgun, Messages } from 'mailgun-js';
 
 import { MailGunEmailNotifier } from './MailGunEmailNotifier';
 import { Email } from '../../domain/model/user/Email';

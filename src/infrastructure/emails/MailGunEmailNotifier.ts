@@ -1,10 +1,7 @@
-import knex from 'knex';
-
 import { Email } from '../../domain/model/user/Email';
 import { EmailNotifier } from '../../domain/model/EmailNotifier';
-import { MagicLink } from '../../domain/model/magiclink/MagicLink';
 
-import type { Mailgun } from 'mailgun-js';
+import { Mailgun } from 'mailgun-js';
 
 export class MailGunEmailNotifier implements EmailNotifier {
   constructor(private mailGunClient: Mailgun) {}
