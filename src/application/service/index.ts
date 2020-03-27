@@ -10,13 +10,15 @@ import { GetExistingOrCreateNewUser } from './GetExistingOrCreateNewUser';
 import {
   magicLinkRepository,
   userRepository,
+  sharingCodeRepository,
   testTypeRepository,
 } from '../../infrastructure/persistence';
 
-import { GetTestTypes } from './GetTestTypes';
 import { GetUser } from './GetUser';
 import { UpdateUser } from './UpdateUser';
 import { GetCountries } from './GetCountries';
+import { CreateSharingCode } from './CreateSharingCode';
+import { GetTestTypes } from './GetTestTypes';
 
 import { LoggingEmailNotifier } from '../../infrastructure/emails/LoggingEmailNotifier';
 import { MailGunEmailNotifier } from '../../infrastructure/emails/MailGunEmailNotifier';
@@ -61,3 +63,5 @@ export const exchangeAuthCode = new ExchangeAuthCode(
 );
 
 export const getTestTypes = new GetTestTypes(testTypeRepository);
+
+export const createSharingCode = new CreateSharingCode(sharingCodeRepository);
