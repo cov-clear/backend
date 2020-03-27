@@ -1,6 +1,7 @@
-import database from '../../database';
 import { testTypeRepository } from '../../infrastructure/persistence';
+import database from '../../database';
 import { GetTestTypes } from './GetTestTypes';
+import { TestType } from '../../domain/model/testType/TestType';
 import { TestTypeId } from '../../domain/model/testType/TestTypeId';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import { getTestTypes } from './index';
@@ -34,6 +35,10 @@ describe('GetTestTypes', () => {
       const testTypes = await getTestTypes.byTrusted(false);
       expect(testTypes.length).toBe(1);
     });
+  });
+
+  it('expects true to be true', () => {
+    expect(true).toBe(true);
   });
 });
 
