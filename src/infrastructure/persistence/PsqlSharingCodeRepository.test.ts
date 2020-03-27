@@ -13,7 +13,7 @@ describe('PsqlSharingCodeRepository', () => {
   });
 
   it('inserts new and retrieves a sharing code', async () => {
-    const sharingCode = new SharingCode(uuidv4(), new UserId());
+    const sharingCode = new SharingCode(new UserId());
 
     await psqlSharingCodeRepository.save(sharingCode);
 

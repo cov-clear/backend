@@ -13,7 +13,7 @@ describe('GetSharingCode', () => {
 
   it('finds a saved sharing code using the code', async () => {
     const sharingCode = await sharingCodeRepository.save(
-      new SharingCode(uuidv4(), new UserId())
+      new SharingCode(new UserId())
     );
 
     const persistedSharingCode = await getSharingCode.byCode(sharingCode.code);

@@ -16,8 +16,8 @@ export class PsqlSharingCodeRepository implements SharingCodeRepository {
       return null;
     }
     return new SharingCode(
-      linkRow.code,
       new UserId(linkRow.userId),
+      linkRow.code,
       linkRow.creationTime
     );
   }
