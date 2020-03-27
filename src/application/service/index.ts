@@ -6,14 +6,18 @@ import { ExchangeAuthCode } from './ExchangeAuthCode';
 import { CreateNewMagicLink } from './CreateNewMagicLink';
 import * as config from '../../config';
 import { GetExistingOrCreateNewUser } from './GetExistingOrCreateNewUser';
+
 import {
   magicLinkRepository,
   userRepository,
+  testTypeRepository,
   sharingCodeRepository,
 } from '../../infrastructure/persistence';
+
 import { GetUser } from './GetUser';
 import { UpdateUser } from './UpdateUser';
 import { GetCountries } from './GetCountries';
+import { GetTestTypes } from './GetTestTypes';
 import { CreateSharingCode } from './CreateSharingCode';
 import { CreateAccessRequest } from './CreateAccessRequest';
 
@@ -59,8 +63,8 @@ export const exchangeAuthCode = new ExchangeAuthCode(
   getExistingOrCreateNewUser
 );
 
+export const getTestTypes = new GetTestTypes(testTypeRepository);
+
 export const createSharingCode = new CreateSharingCode(sharingCodeRepository);
 
-export const createAccessRequest = new CreateAccessRequest(
-  accessRequestRepository
-);
+export const createAccessRequest = new CreateAccessRequest();
