@@ -43,7 +43,7 @@ describe('auth endpoints', () => {
         .post('/api/v1/auth/login')
         .send({
           method: 'magic-link',
-          email: magicLink.email.value(),
+          email: magicLink.email.value,
           authCode: magicLink.code,
         })
         .expect(200)
@@ -54,6 +54,6 @@ describe('auth endpoints', () => {
   });
 });
 
-afterAll((done) => {
-  database.destroy().then(done);
+afterAll(() => {
+  return database.destroy();
 });
