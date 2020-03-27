@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import AsyncRouter from '../AsyncRouter';
-import { getUser, createSharingCode } from '../../application/service';
+import { createSharingCode } from '../../application/service';
 import { User } from '../../domain/model/user/User';
 
 export default () => {
