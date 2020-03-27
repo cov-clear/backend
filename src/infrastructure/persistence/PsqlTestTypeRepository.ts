@@ -1,7 +1,7 @@
 import knex from 'knex';
 import { TestTypeRepository } from '../../domain/model/testType/TestTypeRepository';
-import { TestType } from '../../domain/model/testType/testType';
-import { TestTypeId } from '../../domain/model/testType/testTypeId';
+import { TestType } from '../../domain/model/testType/TestType';
+import { TestTypeId } from '../../domain/model/testType/TestTypeId';
 
 const TEST_TYPE_TABLE_NAME = 'test-type';
 
