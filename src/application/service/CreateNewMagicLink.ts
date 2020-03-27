@@ -22,7 +22,7 @@ export class CreateNewMagicLink {
       this.fromEmailHeader,
       magicLink.email,
       'Create a new account with COV-Clear',
-      `Here is your link: ${this.frontendBaseUrl}/link/${magicLink.code}`
+      `Here is your link: ${this.frontendBaseUrl}link/${magicLink.code}`
     );
 
     return magicLink;
