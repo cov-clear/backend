@@ -20,8 +20,9 @@ export interface UpdateUserCommand {
 }
 
 export interface User {
-  id?: string;
+  id: string;
   email: string;
+  creationTime: Date;
   profile?: Profile;
   address?: Address;
 }

@@ -6,7 +6,12 @@ import { UserId } from '../../domain/model/user/UserId';
 import { userRepository } from '../../infrastructure/persistence';
 import { User } from '../../domain/model/user/User';
 import { Email } from '../../domain/model/user/Email';
-import { anAddress, aNewUser, aProfile } from '../../test/domainFactories';
+import {
+  anAddress,
+  aNewUser,
+  aProfile,
+  aUserWithAllInformation,
+} from '../../test/domainFactories';
 import { Address as ApiAddress, Profile as ApiProfile } from '../interface';
 
 describe('user endpoints', () => {
@@ -35,6 +40,19 @@ describe('user endpoints', () => {
           expect((user.id = id.value)).toEqual(id.value);
           expect(user.creationTime).toBeDefined();
           expect(user.email).toBeDefined();
+        });
+    });
+
+    it('returns 200 with all the information for an existing user', async () => {
+      const user = await userRepository.save(aUserWithAllInformation());
+
+      await request(app)
+        .get(`/api/v1/users/${user.id.value}`)
+        .expect(200)
+        .expect((res) => {
+          const user = res.body;
+          expect(user.profile).toEqual(user.profile);
+          expect(user.address).toEqual(user.address);
         });
     });
   });

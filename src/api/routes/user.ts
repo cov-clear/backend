@@ -24,13 +24,7 @@ export default () => {
       throw new ApiError(404, 'user.not-found');
     }
 
-    res
-      .json({
-        id: user.id.value,
-        email: user.email.value,
-        creationTime: user.creationTime,
-      })
-      .status(200);
+    res.json(mapUserToApiResponse(user)).status(200);
   });
 
   route.patch('/users/:id', async (req: Request, res: Response) => {
@@ -52,6 +46,7 @@ function mapUserToApiResponse(user: User): ApiUser {
   return {
     id: user.id.value,
     email: user.email.value,
+    creationTime: user.creationTime,
     profile: user.profile as ApiProfile,
     address: user.address as ApiAddress,
   };
