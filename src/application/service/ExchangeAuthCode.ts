@@ -1,6 +1,7 @@
 import { MagicLinkRepository } from '../../domain/model/magiclink/MagicLinkRepository';
 import { GenerateAuthToken } from './GenerateAuthToken';
 import { GetExistingOrCreateNewUser } from './GetExistingOrCreateNewUser';
+import { MagicLinkCode } from '../../domain/model/magiclink/MagicLink';
 
 export class ExchangeAuthCode {
   constructor(
@@ -10,7 +11,9 @@ export class ExchangeAuthCode {
   ) {}
 
   public async execute(authCode: string) {
-    const magicLink = await this.magicLinkRepository.findByCode(authCode);
+    const magicLink = await this.magicLinkRepository.findByCode(
+      new MagicLinkCode(authCode)
+    );
 
     if (!magicLink) {
       throw new AuthorisationFailedError(

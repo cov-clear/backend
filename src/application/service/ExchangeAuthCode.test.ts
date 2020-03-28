@@ -6,8 +6,10 @@ import {
 } from './ExchangeAuthCode';
 import { magicLinkRepository } from '../../infrastructure/persistence';
 import database from '../../database';
-import { v4 } from 'uuid';
-import { MagicLink } from '../../domain/model/magiclink/MagicLink';
+import {
+  MagicLink,
+  MagicLinkCode,
+} from '../../domain/model/magiclink/MagicLink';
 import { Email } from '../../domain/model/user/Email';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import { generateAuthToken, getExistingOrCreateNewUser } from './index';
@@ -28,7 +30,9 @@ describe('ExchangeAuthCode', () => {
   });
 
   it('throws error when auth code cannot be found', async () => {
-    await expect(exchangeAuthCode.execute(v4())).rejects.toEqual(
+    await expect(
+      exchangeAuthCode.execute(new MagicLinkCode().value)
+    ).rejects.toEqual(
       new AuthorisationFailedError(
         AuthorisationFailureReason.AUTH_CODE_NOT_FOUND
       )
@@ -38,12 +42,12 @@ describe('ExchangeAuthCode', () => {
   it('throws error when the magic link is expired', async () => {
     const email = new Email('kostas@tw.ee');
     const link = await magicLinkRepository.save(
-      new MagicLink(v4(), email, v4())
+      new MagicLink(new MagicLinkCode(), email)
     );
 
     MockDate.set(link.expirationTime().getTime() + 10);
 
-    await expect(exchangeAuthCode.execute(link.code)).rejects.toEqual(
+    await expect(exchangeAuthCode.execute(link.code.value)).rejects.toEqual(
       new AuthorisationFailedError(AuthorisationFailureReason.AUTH_CODE_EXPIRED)
     );
   });
@@ -51,10 +55,10 @@ describe('ExchangeAuthCode', () => {
   it('throws error when the magic link has already been used', async () => {
     const email = new Email('kostas@tw.ee');
     const link = await magicLinkRepository.save(
-      new MagicLink(v4(), email, v4(), false)
+      new MagicLink(new MagicLinkCode(), email, false)
     );
 
-    await expect(exchangeAuthCode.execute(link.code)).rejects.toEqual(
+    await expect(exchangeAuthCode.execute(link.code.value)).rejects.toEqual(
       new AuthorisationFailedError(
         AuthorisationFailureReason.AUTH_CODE_ALREADY_USED
       )
@@ -64,10 +68,10 @@ describe('ExchangeAuthCode', () => {
   it('creates a new token for a valid link', async () => {
     const email = new Email('kostas@tw.ee');
     const link = await magicLinkRepository.save(
-      new MagicLink(v4(), email, v4())
+      new MagicLink(new MagicLinkCode(new MagicLinkCode().value), email)
     );
 
-    const token = await exchangeAuthCode.execute(link.code);
+    const token = await exchangeAuthCode.execute(link.code.value);
 
     await expect(token).toBeDefined();
   });

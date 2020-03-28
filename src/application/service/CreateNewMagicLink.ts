@@ -1,8 +1,10 @@
 import { Email } from '../../domain/model/user/Email';
 import { EmailNotifier } from '../../domain/model/EmailNotifier';
-import { MagicLink } from '../../domain/model/magiclink/MagicLink';
+import {
+  MagicLink,
+  MagicLinkCode,
+} from '../../domain/model/magiclink/MagicLink';
 import { MagicLinkRepository } from '../../domain/model/magiclink/MagicLinkRepository';
-import { v4 } from 'uuid';
 
 export class CreateNewMagicLink {
   constructor(
@@ -14,7 +16,7 @@ export class CreateNewMagicLink {
 
   public async execute(emailValue: string) {
     const magicLink = await this.magicLinkRepository.save(
-      new MagicLink(v4(), new Email(emailValue), v4())
+      new MagicLink(new MagicLinkCode(), new Email(emailValue))
     );
 
     // TODO: Create the final copies and template of the email
@@ -22,7 +24,7 @@ export class CreateNewMagicLink {
       this.fromEmailHeader,
       magicLink.email,
       'Create a new account with COV-Clear',
-      `Here is your link: ${this.frontendBaseUrl}link/${magicLink.code}`
+      `Here is your link: ${this.frontendBaseUrl}link/${magicLink.code.value}`
     );
 
     return magicLink;
