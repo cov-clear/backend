@@ -1,13 +1,19 @@
-import { v4 } from 'uuid';
+import { DomainValidationError } from '../DomainValidationError';
+
+const PERMISSION_NAME_REG_EXP = /^[A-Z]+[A-Z_]*[A-Z]+$/;
 
 export class Permission {
   constructor(
-    readonly id: PermissionId,
     readonly name: string,
-    readonly creationTime: Date
+    readonly creationTime: Date = new Date()
   ) {}
 }
 
-export class PermissionId {
-  constructor(readonly value: string = v4()) {}
+function validateName(name: String) {
+  if (!name.match(PERMISSION_NAME_REG_EXP)) {
+    throw new DomainValidationError(
+      'roleName',
+      'Role name can be comprised of only capital english letters and underscores(_)'
+    );
+  }
 }

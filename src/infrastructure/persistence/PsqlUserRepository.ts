@@ -9,6 +9,10 @@ import { Sex } from '../../domain/model/user/Sex';
 import database from '../../database';
 import { Country } from '../../domain/model/user/Country';
 import { DateOfBirth } from '../../domain/model/user/DateOfBirth';
+import { RoleAssignmentAction } from '../../domain/model/authentication/RoleAssignmentAction';
+import { createRoleWithAssignedPermissions } from './PsqlRoleRepository';
+import { AssignmentId } from '../../domain/model/authentication/AssignmentAction';
+import { AssignmentActionType } from '../../domain/model/authentication/AssignmentActionType';
 
 const USER_TABLE_NAME = 'user';
 
@@ -45,7 +49,17 @@ export class PsqlUserRepository implements UserRepository {
           modification_time: user.modificationTime,
         });
     }
+    await this.saveUserRoleAssignments(user);
     return user;
+  }
+
+  private async saveUserRoleAssignments(user: User) {
+    await Promise.all(
+      user.roleAssignments.newAssignmentActions.map(
+        this.saveRoleAssignment.bind(this)
+      )
+    );
+    Reflect.set(user.roleAssignments, 'newAssignmentActions', []);
   }
 
   async findByEmail(email: Email): Promise<User | null> {
@@ -57,7 +71,7 @@ export class PsqlUserRepository implements UserRepository {
     if (!userRow) {
       return null;
     }
-    return extractUser(userRow);
+    return this.extractUserAndPopulateRoles(userRow);
   }
 
   async findByUserId(userId: UserId): Promise<User | null> {
@@ -69,19 +83,111 @@ export class PsqlUserRepository implements UserRepository {
     if (!userRow) {
       return null;
     }
-    return extractUser(userRow);
+    return this.extractUserAndPopulateRoles(userRow);
   }
-}
 
-function extractUser(userRow: any) {
-  return new User(
-    new UserId(userRow.id),
-    new Email(userRow.email),
-    fromDbProfile(userRow.profile as DbProfile | undefined),
-    fromDbAddress(userRow.address as DbAddress | undefined),
-    userRow.creationTime,
-    userRow.modificationTime
-  );
+  private async saveRoleAssignment(roleAssignment: RoleAssignmentAction) {
+    await this.db('role_to_user_assignment').insert({
+      id: roleAssignment.id.value,
+      user_id: roleAssignment.assignedTo.id.value,
+      role_name: roleAssignment.assignedResource.name,
+      actor: roleAssignment.actor.value,
+      creation_time: roleAssignment.creationTime,
+      order: roleAssignment.order,
+      action_type: roleAssignment.actionType.toString(),
+    });
+  }
+
+  private async extractUserAndPopulateRoles(userRow: any) {
+    const user = new User(
+      new UserId(userRow.id),
+      new Email(userRow.email),
+      fromDbProfile(userRow.profile as DbProfile | undefined),
+      fromDbAddress(userRow.address as DbAddress | undefined),
+      userRow.creationTime,
+      userRow.modificationTime
+    );
+    const roleAssignmentActions = await this.getRoleAssignments(user);
+    Reflect.set(
+      user.roleAssignments,
+      'assignmentActions',
+      roleAssignmentActions
+    );
+    Reflect.set(user.roleAssignments, 'newAssignmentActions', []);
+    return user;
+  }
+
+  private async getRoleAssignments(
+    user: User
+  ): Promise<RoleAssignmentAction[]> {
+    const roleAssignmentRows: any[] = await this.db(
+      'role_to_user_assignment as rua'
+    )
+      .select([
+        'rua.id as rua_id',
+        'rua.creation_time as rua_creation_time',
+        'rua.action_type as rua_action_type',
+        'rua.actor as rua_actor',
+        'rua.order as rua_order',
+        'r.name as role_name',
+        'r.creation_time as role_creation_time',
+        'pra.id as pra_id',
+        'pra.creation_time as pra_creation_time',
+        'pra.action_type as pra_action_type',
+        'pra.actor as pra_actor',
+        'pra.order as pra_order',
+        'p.name as permission_name',
+        'p.creation_time as permission_creation_time',
+      ])
+      .leftJoin('role as r', 'r.name', 'rua.role_name')
+      .leftJoin(
+        'permission_to_role_assignment as pra',
+        'r.name',
+        'pra.role_name'
+      )
+      .leftJoin('permission as p', 'pra.permission_name', 'p.name')
+      .where('rua.user_id', '=', user.id.value);
+
+    const groupedByAssignmentId = this.groupByAssignmentId(roleAssignmentRows);
+    return this.mapToRoleAssignmentActions(groupedByAssignmentId, user);
+  }
+
+  private groupByAssignmentId(roleAssignmentRows: any[]) {
+    const groupedByAssignmentId = new Map<string, any[]>();
+    roleAssignmentRows
+      .filter((row) => row.role_name && row.role_creation_time)
+      .forEach((row) => {
+        const rowsForKey = groupedByAssignmentId.get(row.rua_id);
+        rowsForKey
+          ? rowsForKey.push(row)
+          : groupedByAssignmentId.set(row.rua_id, [row]);
+      });
+    return groupedByAssignmentId;
+  }
+
+  private mapToRoleAssignmentActions(
+    groupedByAssignmentId: Map<string, any[]>,
+    user: User
+  ) {
+    const roleAssignmentActions: RoleAssignmentAction[] = [];
+    groupedByAssignmentId.forEach((roleRows) => {
+      const role = createRoleWithAssignedPermissions(roleRows);
+      roleAssignmentActions.push(
+        new RoleAssignmentAction(
+          new AssignmentId(roleRows[0].rua_id),
+          user,
+          role,
+          roleRows[0].rua_action_type === 'ADD'
+            ? AssignmentActionType.ADD
+            : AssignmentActionType.REMOVE,
+          new UserId(roleRows[0].rua_actor),
+          roleRows[0].rua_order,
+          roleRows[0].rua_creation_time
+        )
+      );
+    });
+    return roleAssignmentActions;
+  }
 }
 
 function toDbProfile(profile?: Profile): DbProfile | undefined {
@@ -110,25 +216,25 @@ function toDbAddress(address?: Address): DbAddress | undefined {
 
 function fromDbProfile(dbProfile?: DbProfile): Profile | undefined {
   return dbProfile
-    ? {
-        firstName: dbProfile.firstName,
-        lastName: dbProfile.lastName,
-        sex: dbProfile.sex === Sex.MALE ? Sex.MALE : Sex.FEMALE,
-        dateOfBirth: DateOfBirth.fromString(dbProfile.dateOfBirth),
-      }
+    ? new Profile(
+        dbProfile.firstName,
+        dbProfile.lastName,
+        DateOfBirth.fromString(dbProfile.dateOfBirth),
+        dbProfile.sex === Sex.MALE ? Sex.MALE : Sex.FEMALE
+      )
     : undefined;
 }
 
 function fromDbAddress(dbAddress?: DbAddress): Address | undefined {
   return dbAddress
-    ? {
-        address1: dbAddress.address1,
-        address2: dbAddress.address2,
-        country: new Country(dbAddress.countryCode),
-        postcode: dbAddress.postcode,
-        city: dbAddress.city,
-        region: dbAddress.region,
-      }
+    ? new Address(
+        dbAddress.address1,
+        dbAddress.address2,
+        dbAddress.city,
+        dbAddress.region,
+        dbAddress.postcode,
+        new Country(dbAddress.countryCode)
+      )
     : undefined;
 }
 

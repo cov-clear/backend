@@ -6,6 +6,8 @@ import { Sex } from '../domain/model/user/Sex';
 import { Address } from '../domain/model/user/Address';
 import { Country } from '../domain/model/user/Country';
 import { DateOfBirth } from '../domain/model/user/DateOfBirth';
+import { Role } from '../domain/model/authentication/Role';
+import { Permission } from '../domain/model/authentication/Permission';
 
 export function aNewUser() {
   return new User(new UserId(), anEmail());
@@ -37,4 +39,26 @@ export function anAddress() {
     'E8132',
     new Country('GR')
   );
+}
+
+export function aRoleWithoutPermissions(roleName = 'USER_ROLE') {
+  return new Role(roleName);
+}
+
+export function aRoleWithPermissions(
+  roleName = 'USER',
+  permissions = [
+    aPermission('ADD_TAKE_HOME_REST_RESULT'),
+    aPermission('ADD_PCR_TEST_RESULT'),
+  ]
+) {
+  const role = aRoleWithoutPermissions(roleName);
+  permissions.forEach((permission) =>
+    role.assignPermission(permission, new UserId())
+  );
+  return role;
+}
+
+export function aPermission(permissionName = 'ADD_PCR_TEST') {
+  return new Permission(permissionName);
 }
