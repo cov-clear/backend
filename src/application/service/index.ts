@@ -18,6 +18,7 @@ import { CreateSharingCode } from './CreateSharingCode';
 import { GetTestTypes } from './GetTestTypes';
 import { LoggingEmailNotifier } from '../../infrastructure/emails/LoggingEmailNotifier';
 import { MailGunEmailNotifier } from '../../infrastructure/emails/MailGunEmailNotifier';
+import { AccessManagerFactory } from '../../domain/model/authentication/AccessManager';
 
 let emailNotifier = new LoggingEmailNotifier();
 
@@ -29,6 +30,8 @@ if (config.get('emailNotifier.type') === 'mailgun') {
     })
   );
 }
+
+export const accessManagerFactory = new AccessManagerFactory({});
 
 export const getCountries = new GetCountries();
 
