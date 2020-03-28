@@ -1,5 +1,4 @@
-import { MagicLink } from './MagicLink';
-import { v4 as uuidv4 } from 'uuid';
+import { MagicLink, MagicLinkCode } from './MagicLink';
 import MockDate from 'mockdate';
 import { Email } from '../user/Email';
 
@@ -10,13 +9,11 @@ describe('Magic Link', () => {
 
   it('creates a new magic link', () => {
     const magicLink = new MagicLink(
-      uuidv4(),
+      new MagicLinkCode(),
       new Email('kostas@gmail.com'),
-      uuidv4(),
       true,
       new Date()
     );
-    expect(magicLink.id).toBeDefined();
     expect(magicLink.email).toBeDefined();
     expect(magicLink.code).toBeDefined();
     expect(magicLink.creationTime).toBeDefined();
@@ -26,9 +23,8 @@ describe('Magic Link', () => {
   it('isExpired() works', () => {
     MockDate.set('2020-11-03 00:00:00');
     const magicLink = new MagicLink(
-      uuidv4(),
+      new MagicLinkCode(),
       new Email('kostas@gmail.com'),
-      uuidv4(),
       true,
       new Date()
     );

@@ -1,7 +1,7 @@
-import { MagicLink } from './MagicLink';
+import { MagicLink, MagicLinkCode } from './MagicLink';
 
 export interface MagicLinkRepository {
   save(magicLink: MagicLink): Promise<MagicLink>;
 
-  findByCode(code: string): Promise<MagicLink | null>;
+  findByCode(code: MagicLinkCode): Promise<MagicLink | null>;
 }
