@@ -68,7 +68,7 @@ describe('ExchangeAuthCode', () => {
   it('creates a new token for a valid link', async () => {
     const email = new Email('kostas@tw.ee');
     const link = await magicLinkRepository.save(
-      new MagicLink(new MagicLinkCode(new MagicLinkCode().value), email)
+      new MagicLink(new MagicLinkCode(), email)
     );
 
     const token = await exchangeAuthCode.execute(link.code.value);
