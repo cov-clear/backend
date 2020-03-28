@@ -38,7 +38,7 @@ describe('UpdateUser', () => {
       updateCommand.profile?.lastName
     );
     expect(updatedUser?.profile?.sex).toEqual(updateCommand.profile?.sex);
-    expect(updatedUser?.profile?.dateOfBirth).toEqual(
+    expect(updatedUser?.profile?.dateOfBirth.toString()).toEqual(
       updateCommand.profile?.dateOfBirth
     );
 

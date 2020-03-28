@@ -4,9 +4,7 @@ import { UserId } from '../../domain/model/user/UserId';
 import { User } from '../../domain/model/user/User';
 import { Email } from '../../domain/model/user/Email';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
-import { Profile } from '../../domain/model/user/Profile';
-import { Sex } from '../../domain/model/user/Sex';
-import { anAddress } from '../../test/domainFactories';
+import { anAddress, aProfile } from '../../test/domainFactories';
 
 describe('PsqlUserRepository', () => {
   const psqlUserRepository = new PsqlUserRepository(database);
@@ -40,7 +38,7 @@ describe('PsqlUserRepository', () => {
       new User(new UserId(), new Email('kostas3@transferwise.com'))
     );
 
-    user.profile = new Profile('John', 'Smith', '30-05-2010', Sex.MALE);
+    user.profile = aProfile();
     await psqlUserRepository.save(user);
 
     const persistedUser = await psqlUserRepository.findByUserId(user.id);
