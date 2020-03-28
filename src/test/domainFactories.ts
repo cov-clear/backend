@@ -5,6 +5,7 @@ import { Profile } from '../domain/model/user/Profile';
 import { Sex } from '../domain/model/user/Sex';
 import { Address } from '../domain/model/user/Address';
 import { Country } from '../domain/model/user/Country';
+import { DateOfBirth } from '../domain/model/user/DateOfBirth';
 
 export function aNewUser() {
   return new User(new UserId(), anEmail());
@@ -19,7 +20,12 @@ export function aUserWithAllInformation() {
 }
 
 export function aProfile() {
-  return new Profile('John', 'Lennon', '09-10-1940', Sex.MALE);
+  return new Profile(
+    'John',
+    'Lennon',
+    DateOfBirth.fromString('1940-10-09'),
+    Sex.MALE
+  );
 }
 
 export function anAddress() {

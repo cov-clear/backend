@@ -8,6 +8,7 @@ import { Profile } from '../../domain/model/user/Profile';
 import { Sex } from '../../domain/model/user/Sex';
 import database from '../../database';
 import { Country } from '../../domain/model/user/Country';
+import { DateOfBirth } from '../../domain/model/user/DateOfBirth';
 
 const USER_TABLE_NAME = 'user';
 
@@ -88,7 +89,7 @@ function toDbProfile(profile?: Profile): DbProfile | undefined {
     ? {
         firstName: profile.firstName,
         lastName: profile.lastName,
-        dateOfBirth: profile.dateOfBirth,
+        dateOfBirth: profile.dateOfBirth.toString(),
         sex: profile.sex,
       }
     : undefined;
@@ -113,7 +114,7 @@ function fromDbProfile(dbProfile?: DbProfile): Profile | undefined {
         firstName: dbProfile.firstName,
         lastName: dbProfile.lastName,
         sex: dbProfile.sex === Sex.MALE ? Sex.MALE : Sex.FEMALE,
-        dateOfBirth: dbProfile.dateOfBirth,
+        dateOfBirth: DateOfBirth.fromString(dbProfile.dateOfBirth),
       }
     : undefined;
 }

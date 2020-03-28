@@ -13,6 +13,7 @@ import {
   aUserWithAllInformation,
 } from '../../test/domainFactories';
 import { getTokenForUser } from '../../test/authentication';
+import { anApiAddress, anApiProfile } from '../../test/apiFactories';
 
 describe('user endpoints', () => {
   const app = expressApp();
@@ -69,47 +70,31 @@ describe('user endpoints', () => {
   describe('PATCH /users/:id', () => {
     it('updates address correctly', async () => {
       const user = await userRepository.save(aNewUser());
-      const address = anAddress();
+      const address = anApiAddress();
 
       await request(app)
         .patch(`/api/v1/users/${user.id.value}`)
         .set({ Authorization: `Bearer ${await getTokenForUser(user)}` })
-        .send({
-          address: {
-            address1: address.address1,
-            address2: address.address2,
-            city: address.city,
-            region: address.region,
-            postcode: address.postcode,
-            countryCode: address.country.code,
-          },
-        })
+        .send({ address })
         .expect(200)
         .expect((res) => {
           expect(res.body.profile).toBeUndefined();
-          expect(res.body.address).toBeDefined();
+          expect(res.body.address).toEqual(address);
         });
     });
 
     it('updates profile correctly', async () => {
       const user = await userRepository.save(aNewUser());
-      const profile = aProfile();
+      const profile = anApiProfile();
 
       await request(app)
         .patch(`/api/v1/users/${user.id.value}`)
         .set({ Authorization: `Bearer ${await getTokenForUser(user)}` })
-        .send({
-          profile: {
-            firstName: profile.firstName,
-            lastName: profile.lastName,
-            sex: profile.sex,
-            dateOfBirth: profile.dateOfBirth,
-          },
-        })
+        .send({ profile })
         .expect(200)
         .expect((res) => {
           expect(res.body.address).toBeUndefined();
-          expect(res.body.profile).toBeDefined();
+          expect(res.body.profile).toEqual(profile);
         });
     });
   });

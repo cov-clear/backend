@@ -11,10 +11,10 @@ import {
 import { UserNotFoundError } from '../../application/service/UpdateUser';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
 import { User } from '../../domain/model/user/User';
-import logger from '../../logger';
 import { Address } from '../../domain/model/user/Address';
 import { isAuthenticated } from '../middleware/isAuthenticated';
 import { AuthenticatedRequest } from '../AuthenticatedRequest';
+import { Profile } from '../../domain/model/user/Profile';
 
 export default () => {
   const route = new AsyncRouter();
@@ -58,9 +58,22 @@ export function mapUserToApiUser(user: User): ApiUser {
     id: user.id.value,
     email: user.email.value,
     creationTime: user.creationTime,
-    profile: user.profile as ApiProfile,
+    profile: mapProfileToApiProfile(user.profile),
     address: mapAddressToApiAddress(user.address),
   };
+}
+
+export function mapProfileToApiProfile(
+  profile?: Profile
+): ApiProfile | undefined {
+  return profile
+    ? {
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        sex: profile.sex,
+        dateOfBirth: profile.dateOfBirth.toString(),
+      }
+    : profile;
 }
 
 export function mapAddressToApiAddress(
@@ -79,7 +92,6 @@ export function mapAddressToApiAddress(
 }
 
 function handleUserUpdateError(error: Error) {
-  logger.warn(error);
   if (error instanceof UserNotFoundError) {
     throw new ApiError(404, 'user.not-found');
   }
