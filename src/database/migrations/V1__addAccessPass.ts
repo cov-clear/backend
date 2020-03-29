@@ -8,8 +8,8 @@ export async function up(db: knex) {
     table.uuid('actor_user_id').notNullable();
     table.uuid('subject_user_id').notNullable();
     table.timestamp('creation_time').notNullable();
+    table.index(['actor_user_id', 'subject_user_id']);
   });
-  // TODO add compound index
 }
 
 export async function down(db: knex) {
