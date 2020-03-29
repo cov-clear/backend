@@ -1,7 +1,6 @@
 import database from '../../database';
 import { PsqlSharingCodeRepository } from './PsqlSharingCodeRepository';
 import { SharingCode } from '../../domain/model/sharingCode/SharingCode';
-import { v4 as uuidv4 } from 'uuid';
 import { UserId } from '../../domain/model/user/UserId';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 

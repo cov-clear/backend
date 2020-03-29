@@ -1,8 +1,17 @@
 import AsyncRouter from '../AsyncRouter';
 import { Response } from 'express';
-import { accessManagerFactory, getUser, updateUser, } from '../../application/service';
+import {
+  accessManagerFactory,
+  getUser,
+  updateUser,
+} from '../../application/service';
 import { ApiError } from '../ApiError';
-import { Address as ApiAddress, Profile as ApiProfile, UpdateUserCommand, User as ApiUser, } from '../interface';
+import {
+  Address as ApiAddress,
+  Profile as ApiProfile,
+  UpdateUserCommand,
+  User as ApiUser,
+} from '../interface';
 import { UserNotFoundError } from '../../application/service/UpdateUser';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
 import { User } from '../../domain/model/user/User';
