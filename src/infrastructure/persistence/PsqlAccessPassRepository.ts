@@ -6,7 +6,7 @@ import { UserId } from '../../domain/model/user/UserId';
 export class PsqlAccessPassRepository implements AccessPassRepository {
   constructor(private db: knex) {}
 
-  async findByUsers(actorUserId: string, subjectUserId: string) {
+  async findByUserIds(actorUserId: string, subjectUserId: string) {
     const linkRow: any = await this.db('access_pass')
       .select([
         'id',
@@ -18,7 +18,7 @@ export class PsqlAccessPassRepository implements AccessPassRepository {
         actor_user_id: actorUserId,
         subject_user_id: subjectUserId,
       })
-      // TODO order by creation_time
+      .orderBy('creation_time', 'desc') // TODO is this the right way around :-s
       .first();
 
     if (!linkRow) {
@@ -38,8 +38,9 @@ export class PsqlAccessPassRepository implements AccessPassRepository {
         `
       insert into access_pass (id, actor_user_id, subject_user_id, creation_time)
       values (:id, :email, :code, :active, :creation_time)
+      on conflict do nothing
     `,
-        // TODO on conflict?
+        // TODO something smarter on conflict?
         {
           id: accessPass.id,
           actor_user_id: accessPass.actorUserId.value,
