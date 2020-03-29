@@ -1,6 +1,6 @@
 import { migrateLatest, rollbackDatabase } from '../database';
 import logger from '../logger';
-import { createSeedDataForTestingPeriod } from '../database/seed';
+import { createSeedDataForTestingPeriod } from '../database/testSeed';
 
 export async function migrateDatabase() {
   try {
