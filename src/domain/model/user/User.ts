@@ -72,7 +72,7 @@ export class User {
       role
         .permissions()
         .map((permission) => permission.name)
-        .forEach((permission) => permissions.add(permission));
+        .forEach((permissionName) => permissions.add(permissionName));
     });
     return Array.from(permissions);
   }
