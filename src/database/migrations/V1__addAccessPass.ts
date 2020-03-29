@@ -1,6 +1,6 @@
 import knex from 'knex';
 
-const ACCESS_PASS_TABLE = 'sharing_code';
+const ACCESS_PASS_TABLE = 'access_pass';
 
 export async function up(db: knex) {
   await db.schema.createTable(ACCESS_PASS_TABLE, (table) => {

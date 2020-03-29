@@ -1,7 +1,12 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import { AuthenticatedRequest } from '../AuthenticatedRequest';
 import AsyncRouter from '../AsyncRouter';
-import { createAccessPass } from '../../application/service';
-import { User } from '../../domain/model/accessPass/AccessPass';
+import {
+  createAccessPass,
+  getUser,
+  accessManagerFactory,
+} from '../../application/service';
+import { ApiError } from '../ApiError';
 import { AccessPassFailedError } from '../../application/service/CreateAccessPass';
 
 export default () => {
@@ -9,9 +14,20 @@ export default () => {
 
   route.post(
     '/users/:id/access-passes',
-    async (req: Request, res: Response) => {
-      const { id } = req.parmas;
+    async (req: AuthenticatedRequest, res: Response) => {
+      const { id } = req.params;
       const { code } = req.body;
+
+      const user = await getUser.byId(id);
+
+      if (
+        !user ||
+        !accessManagerFactory
+          .forAuthentication(req.authentication)
+          .isLoggedInAsUser(user.id)
+      ) {
+        throw new ApiError(404, 'user.not-found');
+      }
 
       try {
         const accessPass = await createAccessPass.withSharingCode(code, id);

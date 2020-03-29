@@ -3,7 +3,7 @@ import { PsqlMagicLinkRepository } from './PsqlMagicLinkRepository';
 import { PsqlTestTypeRepository } from './PsqlTestTypeRepository';
 import { PsqlUserRepository } from './PsqlUserRepository';
 import { PsqlSharingCodeRepository } from './PsqlSharingCodeRepository';
-import { PsqlAccessPassRepository } from './PsqlSharingCodeRepository';
+import { PsqlAccessPassRepository } from './PsqlAccessPassRepository';
 import { PsqlAuthenticationRepository } from './PsqlAuthenticationRepository';
 import { PsqlPermissionRepository } from './PsqlPermissionRepository';
 import { PsqlRoleRepository } from './PsqlRoleRepository';
