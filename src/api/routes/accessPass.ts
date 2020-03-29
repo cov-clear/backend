@@ -10,6 +10,7 @@ import {
   accessManagerFactory,
 } from '../../application/service';
 import { ApiError } from '../ApiError';
+import { UserId } from '../../domain/model/user/UserId';
 import { AccessPassFailedError } from '../../application/service/CreateAccessPass';
 
 export default () => {
@@ -21,13 +22,10 @@ export default () => {
       const { id } = req.params;
       const { code } = req.body;
 
-      const user = await getUser.byId(id);
-
       if (
-        !user ||
         !accessManagerFactory
           .forAuthentication(getAuthenticationOrFail(req))
-          .isLoggedInAsUser(user.id)
+          .isLoggedInAsUser(new UserId(id))
       ) {
         throw new ApiError(404, 'user.not-found');
       }
