@@ -8,13 +8,14 @@ import { Country } from '../domain/model/user/Country';
 import { DateOfBirth } from '../domain/model/user/DateOfBirth';
 import { Role } from '../domain/model/authentication/Role';
 import { Permission } from '../domain/model/authentication/Permission';
+import { v4 } from 'uuid';
 
 export function aNewUser() {
   return new User(new UserId(), anEmail());
 }
 
 export function anEmail() {
-  return new Email('kostas@tw.ee');
+  return new Email(`${v4()}@tw.ee`);
 }
 
 export function aUserWithAllInformation() {
@@ -51,7 +52,7 @@ export function aRoleWithPermissions(
     aPermission('ADD_TAKE_HOME_REST_RESULT'),
     aPermission('ADD_PCR_TEST_RESULT'),
   ]
-) {
+): Role {
   const role = aRoleWithoutPermissions(roleName);
   permissions.forEach((permission) =>
     role.assignPermission(permission, new UserId())

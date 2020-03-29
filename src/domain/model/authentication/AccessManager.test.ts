@@ -16,14 +16,6 @@ describe('AccessManager', () => {
       ).toBe(true);
     });
 
-    it('returns false if authentication is null', () => {
-      expect(
-        accessManagerFactory
-          .forAuthentication(undefined)
-          .isLoggedInAsUser(new UserId())
-      ).toBe(false);
-    });
-
     it('returns false if authenticated user is not the same as test user', () => {
       const authenticatedAs = new Authentication(aNewUser(), [], []);
 

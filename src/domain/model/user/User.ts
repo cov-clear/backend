@@ -5,7 +5,6 @@ import { Profile } from './Profile';
 import { DomainValidationError } from '../DomainValidationError';
 import { AssignmentActions } from '../authentication/AssignmentActions';
 import { Role } from '../authentication/Role';
-import { RoleAssignmentAction } from '../authentication/RoleAssignmentAction';
 
 export class User {
   readonly roleAssignments: AssignmentActions<User, Role>;
@@ -73,7 +72,7 @@ export class User {
       role
         .permissions()
         .map((permission) => permission.name)
-        .forEach((permissionName) => permissions.add(permissionName));
+        .forEach((permission) => permissions.add(permission));
     });
     return Array.from(permissions);
   }
