@@ -1,5 +1,8 @@
 import { Response } from 'express';
-import { AuthenticatedRequest } from '../AuthenticatedRequest';
+import {
+  AuthenticatedRequest,
+  getAuthenticationOrFail,
+} from '../AuthenticatedRequest';
 import AsyncRouter from '../AsyncRouter';
 import {
   createAccessPass,
@@ -23,7 +26,7 @@ export default () => {
       if (
         !user ||
         !accessManagerFactory
-          .forAuthentication(req.authentication)
+          .forAuthentication(getAuthenticationOrFail(req))
           .isLoggedInAsUser(user.id)
       ) {
         throw new ApiError(404, 'user.not-found');
