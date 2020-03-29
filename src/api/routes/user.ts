@@ -12,7 +12,6 @@ import {
   UpdateUserCommand,
   User as ApiUser,
 } from '../interface';
-import { UserNotFoundError } from '../../application/service/UpdateUser';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
 import { User } from '../../domain/model/user/User';
 import { Address } from '../../domain/model/user/Address';
@@ -20,6 +19,7 @@ import { isAuthenticated } from '../middleware/isAuthenticated';
 import { AuthenticatedRequest } from '../AuthenticatedRequest';
 import { Profile } from '../../domain/model/user/Profile';
 import { UserId } from '../../domain/model/user/UserId';
+import { ResourceNotFoundError } from '../../domain/model/ResourceNotFoundError';
 
 export default () => {
   const route = new AsyncRouter();
@@ -110,7 +110,7 @@ export function mapAddressToApiAddress(
 }
 
 function handleUserUpdateError(error: Error) {
-  if (error instanceof UserNotFoundError) {
+  if (error instanceof ResourceNotFoundError) {
     throw new ApiError(404, 'user.not-found');
   }
   if (error instanceof DomainValidationError) {
