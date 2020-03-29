@@ -13,6 +13,7 @@ import { RoleAssignmentAction } from '../../domain/model/authentication/RoleAssi
 import { createRoleWithAssignedPermissions } from './PsqlRoleRepository';
 import { AssignmentId } from '../../domain/model/authentication/AssignmentAction';
 import { AssignmentActionType } from '../../domain/model/authentication/AssignmentActionType';
+import { Role } from '../../domain/model/authentication/Role';
 
 const USER_TABLE_NAME = 'user';
 
@@ -173,20 +174,28 @@ export class PsqlUserRepository implements UserRepository {
     groupedByAssignmentId.forEach((roleRows) => {
       const role = createRoleWithAssignedPermissions(roleRows);
       roleAssignmentActions.push(
-        new RoleAssignmentAction(
-          new AssignmentId(roleRows[0].ruaId),
-          user,
-          role,
-          roleRows[0].ruaActionType === 'ADD'
-            ? AssignmentActionType.ADD
-            : AssignmentActionType.REMOVE,
-          new UserId(roleRows[0].ruaActor),
-          roleRows[0].ruaOrder,
-          roleRows[0].ruaCreationTime
-        )
+        this.createRoleAssignmentAction(roleRows[0], user, role)
       );
     });
     return roleAssignmentActions;
+  }
+
+  private createRoleAssignmentAction(
+    roleAssignmentRow: any,
+    user: User,
+    role: Role
+  ) {
+    return new RoleAssignmentAction(
+      new AssignmentId(roleAssignmentRow.ruaId),
+      user,
+      role,
+      roleAssignmentRow.ruaActionType === 'ADD'
+        ? AssignmentActionType.ADD
+        : AssignmentActionType.REMOVE,
+      new UserId(roleAssignmentRow.ruaActor),
+      roleAssignmentRow.ruaOrder,
+      roleAssignmentRow.ruaCreationTime
+    );
   }
 }
 
