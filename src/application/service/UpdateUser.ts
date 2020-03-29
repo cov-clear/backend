@@ -9,6 +9,7 @@ import { Profile } from '../../domain/model/user/Profile';
 import { Address } from '../../domain/model/user/Address';
 import { Sex } from '../../domain/model/user/Sex';
 import { Country } from '../../domain/model/user/Country';
+import { DateOfBirth } from '../../domain/model/user/DateOfBirth';
 
 export class UpdateUser {
   constructor(private userRepository: UserRepository) {}
@@ -34,7 +35,7 @@ function mapApiProfileToProfile(profile: ApiProfile): Profile {
   return new Profile(
     profile.firstName,
     profile.lastName,
-    profile.dateOfBirth,
+    DateOfBirth.fromString(profile.dateOfBirth),
     profile.sex === 'MALE' ? Sex.MALE : Sex.FEMALE
   );
 }

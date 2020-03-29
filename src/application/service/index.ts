@@ -1,20 +1,17 @@
 import mailgun from 'mailgun-js';
-
 import { Email } from '../../domain/model/user/Email';
 import { GenerateAuthToken } from './GenerateAuthToken';
 import { ExchangeAuthCode } from './ExchangeAuthCode';
 import { CreateNewMagicLink } from './CreateNewMagicLink';
 import * as config from '../../config';
 import { GetExistingOrCreateNewUser } from './GetExistingOrCreateNewUser';
-
 import {
-  magicLinkRepository,
-  userRepository,
-  testTypeRepository,
-  sharingCodeRepository,
   accessPassRepository,
+  magicLinkRepository,
+  sharingCodeRepository,
+  testTypeRepository,
+  userRepository,
 } from '../../infrastructure/persistence';
-
 import { GetUser } from './GetUser';
 import { UpdateUser } from './UpdateUser';
 import { GetCountries } from './GetCountries';
@@ -24,6 +21,7 @@ import { CreateAccessPass } from './CreateAccessPass';
 
 import { LoggingEmailNotifier } from '../../infrastructure/emails/LoggingEmailNotifier';
 import { MailGunEmailNotifier } from '../../infrastructure/emails/MailGunEmailNotifier';
+import { AccessManagerFactory } from '../../domain/model/authentication/AccessManager';
 
 let emailNotifier = new LoggingEmailNotifier();
 
@@ -35,6 +33,8 @@ if (config.get('emailNotifier.type') === 'mailgun') {
     })
   );
 }
+
+export const accessManagerFactory = new AccessManagerFactory({});
 
 export const getCountries = new GetCountries();
 

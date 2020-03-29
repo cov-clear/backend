@@ -20,7 +20,7 @@ describe('GetExistingOrCreateNewUser', () => {
       existingUser.email.value
     );
 
-    expect(resultUser).toEqual(existingUser);
+    expect(resultUser.id).toEqual(existingUser.id);
   });
 
   it('creates a new user when one does not already exist for a given email', async () => {

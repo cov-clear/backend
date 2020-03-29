@@ -44,7 +44,7 @@ describe('auth endpoints', () => {
         .send({
           method: 'magic-link',
           email: magicLink.email.value,
-          authCode: magicLink.code,
+          authCode: magicLink.code.value,
         })
         .expect(200)
         .expect((response) => {

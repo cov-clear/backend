@@ -1,7 +1,9 @@
 import database from '../../database';
 import { PsqlMagicLinkRepository } from './PsqlMagicLinkRepository';
-import { MagicLink } from '../../domain/model/magiclink/MagicLink';
-import { v4 } from 'uuid';
+import {
+  MagicLink,
+  MagicLinkCode,
+} from '../../domain/model/magiclink/MagicLink';
 import { Email } from '../../domain/model/user/Email';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 
@@ -14,9 +16,8 @@ describe('PsqlMagicLinkRepository', () => {
 
   it('inserts new and retrieves a magic link', async () => {
     const magicLink = new MagicLink(
-      v4(),
+      new MagicLinkCode(),
       new Email('kostas@gmail.com'),
-      v4(),
       true,
       new Date()
     );
@@ -30,9 +31,8 @@ describe('PsqlMagicLinkRepository', () => {
 
   it('updates existing magic link', async () => {
     const magicLink = new MagicLink(
-      v4(),
+      new MagicLinkCode(),
       new Email('kostas@gmail.com'),
-      v4(),
       true,
       new Date()
     );

@@ -15,7 +15,7 @@ export function anApiProfile(): ApiProfile {
   return {
     firstName: 'John',
     lastName: 'Lennon',
-    dateOfBirth: '09-10-1940',
+    dateOfBirth: '1940-10-09',
     sex: 'MALE',
   };
 }

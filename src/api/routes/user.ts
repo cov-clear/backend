@@ -1,6 +1,10 @@
 import AsyncRouter from '../AsyncRouter';
-import { Request, Response } from 'express';
-import { getUser, updateUser } from '../../application/service';
+import { Response } from 'express';
+import {
+  accessManagerFactory,
+  getUser,
+  updateUser,
+} from '../../application/service';
 import { ApiError } from '../ApiError';
 import {
   Address as ApiAddress,
@@ -11,34 +15,58 @@ import {
 import { UserNotFoundError } from '../../application/service/UpdateUser';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
 import { User } from '../../domain/model/user/User';
-import logger from '../../logger';
 import { Address } from '../../domain/model/user/Address';
+import { isAuthenticated } from '../middleware/isAuthenticated';
+import { AuthenticatedRequest } from '../AuthenticatedRequest';
+import { Profile } from '../../domain/model/user/Profile';
+import { UserId } from '../../domain/model/user/UserId';
 
 export default () => {
   const route = new AsyncRouter();
 
-  route.get('/users/:id', async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const user = await getUser.byId(id);
+  route.get(
+    '/users/:id',
+    isAuthenticated,
+    async (req: AuthenticatedRequest, res: Response) => {
+      const { id } = req.params;
+      const user = await getUser.byId(id);
 
-    if (!user) {
-      throw new ApiError(404, 'user.not-found');
+      if (
+        !user ||
+        !accessManagerFactory
+          .forAuthentication(req.authentication)
+          .isLoggedInAsUser(user.id)
+      ) {
+        throw new ApiError(404, 'user.not-found');
+      }
+
+      res.json(mapUserToApiUser(user)).status(200);
     }
+  );
 
-    res.json(mapUserToApiUser(user)).status(200);
-  });
+  route.patch(
+    '/users/:id',
+    isAuthenticated,
+    async (req: AuthenticatedRequest, res: Response) => {
+      const { id } = req.params;
+      const command = req.body as UpdateUserCommand;
 
-  route.patch('/users/:id', async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const command = req.body as UpdateUserCommand;
+      if (
+        !accessManagerFactory
+          .forAuthentication(req.authentication)
+          .isLoggedInAsUser(new UserId(id))
+      ) {
+        throw new ApiError(404, 'user.not-found');
+      }
 
-    try {
-      const user = await updateUser.execute(id, command);
-      res.status(200).json(mapUserToApiUser(user));
-    } catch (error) {
-      handleUserUpdateError(error);
+      try {
+        const user = await updateUser.execute(id, command);
+        res.status(200).json(mapUserToApiUser(user));
+      } catch (error) {
+        handleUserUpdateError(error);
+      }
     }
-  });
+  );
 
   return route.middleware();
 };
@@ -48,9 +76,22 @@ export function mapUserToApiUser(user: User): ApiUser {
     id: user.id.value,
     email: user.email.value,
     creationTime: user.creationTime,
-    profile: user.profile as ApiProfile,
+    profile: mapProfileToApiProfile(user.profile),
     address: mapAddressToApiAddress(user.address),
   };
+}
+
+export function mapProfileToApiProfile(
+  profile?: Profile
+): ApiProfile | undefined {
+  return profile
+    ? {
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        sex: profile.sex,
+        dateOfBirth: profile.dateOfBirth.toString(),
+      }
+    : profile;
 }
 
 export function mapAddressToApiAddress(
@@ -69,7 +110,6 @@ export function mapAddressToApiAddress(
 }
 
 function handleUserUpdateError(error: Error) {
-  logger.warn(error);
   if (error instanceof UserNotFoundError) {
     throw new ApiError(404, 'user.not-found');
   }

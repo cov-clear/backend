@@ -1,15 +1,14 @@
-import { v4 as uuidv4 } from 'uuid';
 import { Email } from '../user/Email';
+import { Uuid } from '../../Uuid';
 
 const MAGIC_LINK_LIFETIME_MSEC = 5 * 60_000;
 
 export class MagicLink {
   constructor(
-    public id: string = uuidv4(),
-    public email: Email,
-    public code: string,
+    readonly code: MagicLinkCode = new MagicLinkCode(),
+    readonly email: Email,
     public active: boolean = true,
-    public creationTime: Date = new Date()
+    readonly creationTime: Date = new Date()
   ) {}
 
   public isExpired(): boolean {
@@ -20,3 +19,5 @@ export class MagicLink {
     return new Date(this.creationTime.getTime() + MAGIC_LINK_LIFETIME_MSEC);
   }
 }
+
+export class MagicLinkCode extends Uuid {}
