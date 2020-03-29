@@ -24,6 +24,7 @@ import { AssignRoleToUser } from './AssignRoleToUser';
 import { AccessManagerFactory } from '../../domain/model/authentication/AccessManager';
 import { CreateRole } from './CreateRole';
 import { CreatePermission } from './CreatePermission';
+import { AssignPermissionToRole } from './AssignPermissionToRole';
 
 let emailNotifier = new LoggingEmailNotifier();
 
@@ -35,8 +36,12 @@ if (config.get('emailNotifier.type') === 'mailgun') {
     })
   );
 }
-
 export const accessManagerFactory = new AccessManagerFactory({});
+
+export const assignPermissionToRole = new AssignPermissionToRole(
+  roleRepository,
+  permissionRepository
+);
 
 export const assignRoleToUser = new AssignRoleToUser(
   userRepository,
