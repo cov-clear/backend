@@ -5,7 +5,6 @@ import { Profile } from './Profile';
 import { DomainValidationError } from '../DomainValidationError';
 import { AssignmentActions } from '../authentication/AssignmentActions';
 import { Role } from '../authentication/Role';
-import { RoleAssignmentAction } from '../authentication/RoleAssignmentAction';
 
 export class User {
   readonly roleAssignments: AssignmentActions<User, Role>;

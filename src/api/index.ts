@@ -5,6 +5,7 @@ import user from './routes/user';
 import countries from './routes/countries';
 import sharingCode from './routes/sharingCode';
 import accessPass from './routes/accessPass';
+import roles from './routes/roles';
 
 export default () => {
   const app = Router();
@@ -14,5 +15,6 @@ export default () => {
   app.use('/v1', testTypes());
   app.use('/v1', sharingCode());
   app.use('/v1', accessPass());
+  app.use('/v1', roles());
   return app;
 };

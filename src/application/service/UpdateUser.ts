@@ -10,6 +10,7 @@ import { Address } from '../../domain/model/user/Address';
 import { Sex } from '../../domain/model/user/Sex';
 import { Country } from '../../domain/model/user/Country';
 import { DateOfBirth } from '../../domain/model/user/DateOfBirth';
+import { UserNotFoundError } from '../../domain/model/user/UserNotFoundError';
 
 export class UpdateUser {
   constructor(private userRepository: UserRepository) {}
@@ -17,7 +18,7 @@ export class UpdateUser {
   public async execute(id: string, command: UpdateUserCommand) {
     const existingUser = await this.userRepository.findByUserId(new UserId(id));
     if (!existingUser) {
-      throw new UserNotFoundError(id);
+      throw new UserNotFoundError(new UserId(id));
     }
 
     if (command.profile) {
@@ -53,10 +54,4 @@ export function mapApiAddressToAddress(
         postcode: address.postcode,
       }
     : address;
-}
-
-export class UserNotFoundError extends Error {
-  constructor(readonly userId: string) {
-    super();
-  }
 }

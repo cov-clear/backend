@@ -2,11 +2,11 @@ import database from '../../database';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import { updateUser } from './index';
 import { UserId } from '../../domain/model/user/UserId';
-import { UserNotFoundError } from './UpdateUser';
 import { anApiAddress, anApiProfile } from '../../test/apiFactories';
 import { userRepository } from '../../infrastructure/persistence';
 import { aNewUser } from '../../test/domainFactories';
 import { UpdateUserCommand } from '../../api/interface';
+import { UserNotFoundError } from '../../domain/model/user/UserNotFoundError';
 
 describe('UpdateUser', () => {
   beforeEach(async () => {
@@ -16,7 +16,7 @@ describe('UpdateUser', () => {
   it('throws error if user not found', async () => {
     const userId = new UserId();
     await expect(updateUser.execute(userId.value, {})).rejects.toStrictEqual(
-      new UserNotFoundError(userId.value)
+      new UserNotFoundError(userId)
     );
   });
 

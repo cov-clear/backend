@@ -4,7 +4,7 @@ import { UserId } from '../user/UserId';
 export class AccessManagerFactory {
   constructor(private accessPassRepository: any) {}
 
-  forAuthentication(authentication?: Authentication) {
+  forAuthentication(authentication: Authentication) {
     return new AccessManager(this.accessPassRepository, authentication);
   }
 }
@@ -12,7 +12,7 @@ export class AccessManagerFactory {
 export class AccessManager {
   constructor(
     private accessPassRepository: any,
-    private authentication?: Authentication
+    private authentication: Authentication
   ) {}
 
   //TODO: Add notion of access-passes here.

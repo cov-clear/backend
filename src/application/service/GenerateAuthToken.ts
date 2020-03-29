@@ -12,7 +12,8 @@ export class GenerateAuthToken {
     return jwt.sign(
       {
         userId: user.id.value,
-        roles: [],
+        roles: user.roles,
+        permissions: user.permissions,
         expiration: new Date(Date.now() + this.jwtTimeToLiveInMs),
       },
       this.jwtSecret
