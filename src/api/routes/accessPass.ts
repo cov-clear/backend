@@ -39,10 +39,7 @@ export default () => {
           .status(200);
       } catch (error) {
         if (error instanceof AccessPassFailedError) {
-          res.status(403).json({
-            code: error.failureReason.toString(),
-          });
-          return;
+          throw new ApiError(403, error.failureReason.toString());
         }
         throw error;
       }
