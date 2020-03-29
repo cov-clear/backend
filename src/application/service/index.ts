@@ -19,7 +19,7 @@ import { UpdateUser } from './UpdateUser';
 import { GetCountries } from './GetCountries';
 import { GetTestTypes } from './GetTestTypes';
 import { CreateSharingCode } from './CreateSharingCode';
-import { CreateAccessRequest } from './CreateAccessRequest';
+import { CreateAccessPass } from './CreateAccessPass';
 
 import { LoggingEmailNotifier } from '../../infrastructure/emails/LoggingEmailNotifier';
 import { MailGunEmailNotifier } from '../../infrastructure/emails/MailGunEmailNotifier';
@@ -67,4 +67,4 @@ export const getTestTypes = new GetTestTypes(testTypeRepository);
 
 export const createSharingCode = new CreateSharingCode(sharingCodeRepository);
 
-export const createAccessRequest = new CreateAccessRequest();
+export const createAccessPass = new CreateAccessPass();

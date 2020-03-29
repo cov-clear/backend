@@ -2,7 +2,7 @@ import { UserId } from '../user/UserId';
 
 const ACCESS_REQUEST_LIFETIME_MSEC = 60 * 60_000;
 
-export class AccessRequest {
+export class AccessPass {
   constructor(
     public userId: UserId,
     public code: string,
