@@ -3,7 +3,7 @@ import { TestTypeRepository } from '../../domain/model/testType/TestTypeReposito
 import { TestType } from '../../domain/model/testType/TestType';
 import { TestTypeId } from '../../domain/model/testType/TestTypeId';
 
-const TEST_TYPE_TABLE_NAME = 'test-type';
+const TEST_TYPE_TABLE_NAME = 'test_type';
 
 export class PsqlTestTypeRepository implements TestTypeRepository {
   constructor(private db: knex) {}
