@@ -2,20 +2,22 @@ import { AssignmentAction, AssignmentId } from './AssignmentAction';
 import { AssignmentActionType } from './AssignmentActionType';
 import { UserId } from '../user/UserId';
 
-export class AssignmentActions<T, R> {
-  readonly newAssignmentActions: Array<AssignmentAction<T, R>> = [];
+export class AssignmentActions<AssignedTo, Resource> {
+  readonly newAssignmentActions: Array<
+    AssignmentAction<AssignedTo, Resource>
+  > = [];
 
   constructor(
-    private assignmentActions: AssignmentAction<T, R>[],
-    private getKey: (resource: R) => string | number
+    private assignmentActions: AssignmentAction<AssignedTo, Resource>[],
+    private getKey: (resource: Resource) => string | number
   ) {}
 
-  activeAssignments(): Array<R> {
+  activeAssignments(): Array<Resource> {
     const groupedAssignmentActions = this.groupAssignmentActionsByResourceId();
     return this.getActiveAssignedResources(groupedAssignmentActions);
   }
 
-  addAssignment(resource: R, assignTo: T, actor: UserId) {
+  addAssignment(resource: Resource, assignTo: AssignedTo, actor: UserId) {
     this.newAssignmentAction(
       new AssignmentAction(
         new AssignmentId(),
@@ -28,7 +30,7 @@ export class AssignmentActions<T, R> {
     );
   }
 
-  removeAssignment(resource: R, assignTo: T, actor: UserId) {
+  removeAssignment(resource: Resource, assignTo: AssignedTo, actor: UserId) {
     this.newAssignmentAction(
       new AssignmentAction(
         new AssignmentId(),
@@ -43,7 +45,7 @@ export class AssignmentActions<T, R> {
 
   private groupAssignmentActionsByResourceId(): Map<
     string | number,
-    Array<AssignmentAction<T, R>>
+    Array<AssignmentAction<AssignedTo, Resource>>
   > {
     const groupedAssignmentActions = new Map();
 
@@ -62,10 +64,10 @@ export class AssignmentActions<T, R> {
   private getActiveAssignedResources(
     groupedAssignmentActions: Map<
       string | number,
-      Array<AssignmentAction<T, R>>
+      Array<AssignmentAction<AssignedTo, Resource>>
     >
-  ): R[] {
-    const activeAssignments: R[] = [];
+  ): Resource[] {
+    const activeAssignments: Resource[] = [];
     groupedAssignmentActions.forEach((assignments, key) => {
       const latestAssignmentAction = assignments.reduce((p1, p2) =>
         p1.order < p2.order ? p2 : p1
@@ -77,7 +79,7 @@ export class AssignmentActions<T, R> {
     return activeAssignments;
   }
 
-  private newAssignmentAction(action: AssignmentAction<T, R>) {
+  private newAssignmentAction(action: AssignmentAction<AssignedTo, Resource>) {
     const isCurrentlyAssigned = this.activeAssignments().find(
       (t) => this.getKey(t) === this.getKey(action.assignedResource)
     );
