@@ -7,6 +7,7 @@ import * as config from '../../config';
 import { GetExistingOrCreateNewUser } from './GetExistingOrCreateNewUser';
 import {
   magicLinkRepository,
+  permissionRepository,
   roleRepository,
   sharingCodeRepository,
   testTypeRepository,
@@ -19,7 +20,11 @@ import { CreateSharingCode } from './CreateSharingCode';
 import { GetTestTypes } from './GetTestTypes';
 import { LoggingEmailNotifier } from '../../infrastructure/emails/LoggingEmailNotifier';
 import { MailGunEmailNotifier } from '../../infrastructure/emails/MailGunEmailNotifier';
+import { AssignRoleToUser } from './AssignRoleToUser';
 import { AccessManagerFactory } from '../../domain/model/authentication/AccessManager';
+import { CreateRole } from './CreateRole';
+import { CreatePermission } from './CreatePermission';
+import { AssignPermissionToRole } from './AssignPermissionToRole';
 
 let emailNotifier = new LoggingEmailNotifier();
 
@@ -31,8 +36,17 @@ if (config.get('emailNotifier.type') === 'mailgun') {
     })
   );
 }
-
 export const accessManagerFactory = new AccessManagerFactory({});
+
+export const assignPermissionToRole = new AssignPermissionToRole(
+  roleRepository,
+  permissionRepository
+);
+
+export const assignRoleToUser = new AssignRoleToUser(
+  userRepository,
+  roleRepository
+);
 
 export const getCountries = new GetCountries();
 
@@ -40,6 +54,10 @@ export const generateAuthToken = new GenerateAuthToken(
   config.get('jwt.secret'),
   config.get('jwt.timeToLiveInHours')
 );
+
+export const createRole = new CreateRole(roleRepository);
+
+export const createPermission = new CreatePermission(permissionRepository);
 
 export const createMagicLink = new CreateNewMagicLink(
   magicLinkRepository,

@@ -5,7 +5,10 @@ import {
   createSharingCode,
 } from '../../application/service';
 import { isAuthenticated } from '../middleware/isAuthenticated';
-import { AuthenticatedRequest } from '../AuthenticatedRequest';
+import {
+  AuthenticatedRequest,
+  getAuthenticationOrFail,
+} from '../AuthenticatedRequest';
 import { UserId } from '../../domain/model/user/UserId';
 import { ApiError } from '../ApiError';
 
@@ -20,7 +23,7 @@ export default () => {
 
       if (
         !accessManagerFactory
-          .forAuthentication(req.authentication)
+          .forAuthentication(getAuthenticationOrFail(req))
           .isLoggedInAsUser(new UserId(id))
       ) {
         throw new ApiError(404, 'user.not-found');
