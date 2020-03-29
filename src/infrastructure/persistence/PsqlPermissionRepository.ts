@@ -7,14 +7,14 @@ export class PsqlPermissionRepository implements PermissionRepository {
 
   async findByName(name: string): Promise<Permission | null> {
     const permissionRow: any = await this.db('permission')
-      .select(['name', 'creation_time'])
+      .select(['name', 'creation_time as creationTime'])
       .where('name', '=', name)
       .first();
 
     if (!permissionRow) {
       return null;
     }
-    return new Permission(permissionRow.name, permissionRow.creation_time);
+    return new Permission(permissionRow.name, permissionRow.creationTime);
   }
 
   async save(permission: Permission): Promise<Permission> {

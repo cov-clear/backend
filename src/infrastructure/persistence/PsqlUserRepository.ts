@@ -31,13 +31,13 @@ export class PsqlUserRepository implements UserRepository {
   async save(user: User): Promise<User> {
     await this.db.raw(
       `insert into "${USER_TABLE_NAME}" (id, email, creation_time, modification_time)
-        values (:id, :email, :creation_time, :modification_time)
+        values (:id, :email, :creationTime, :modificationTime)
         on conflict do nothing`,
       {
         id: user.id.value,
         email: user.email.value,
-        creation_time: user.creationTime,
-        modification_time: user.modificationTime,
+        creationTime: user.creationTime,
+        modificationTime: user.modificationTime,
       }
     );
     if (user.profile || user.address) {
@@ -124,20 +124,20 @@ export class PsqlUserRepository implements UserRepository {
       'role_to_user_assignment as rua'
     )
       .select([
-        'rua.id as rua_id',
-        'rua.creation_time as rua_creation_time',
-        'rua.action_type as rua_action_type',
-        'rua.actor as rua_actor',
-        'rua.order as rua_order',
-        'r.name as role_name',
-        'r.creation_time as role_creation_time',
-        'pra.id as pra_id',
-        'pra.creation_time as pra_creation_time',
-        'pra.action_type as pra_action_type',
-        'pra.actor as pra_actor',
-        'pra.order as pra_order',
-        'p.name as permission_name',
-        'p.creation_time as permission_creation_time',
+        'rua.id as ruaId',
+        'rua.creation_time as ruaCreationTime',
+        'rua.action_type as ruaActionType',
+        'rua.actor as ruaActor',
+        'rua.order as ruaOrder',
+        'r.name as roleName',
+        'r.creation_time as roleCreationTime',
+        'pra.id as praId',
+        'pra.creation_time as praCreationTime',
+        'pra.action_type as praActionType',
+        'pra.actor as praActor',
+        'pra.order as praOrder',
+        'p.name as permissionName',
+        'p.creation_time as permissionCreationTime',
       ])
       .leftJoin('role as r', 'r.name', 'rua.role_name')
       .leftJoin(
@@ -155,12 +155,12 @@ export class PsqlUserRepository implements UserRepository {
   private groupByAssignmentId(roleAssignmentRows: any[]) {
     const groupedByAssignmentId = new Map<string, any[]>();
     roleAssignmentRows
-      .filter((row) => row.role_name && row.role_creation_time)
+      .filter((row) => row.roleName && row.roleCreationTime)
       .forEach((row) => {
-        const rowsForKey = groupedByAssignmentId.get(row.rua_id);
+        const rowsForKey = groupedByAssignmentId.get(row.ruaId);
         rowsForKey
           ? rowsForKey.push(row)
-          : groupedByAssignmentId.set(row.rua_id, [row]);
+          : groupedByAssignmentId.set(row.ruaId, [row]);
       });
     return groupedByAssignmentId;
   }
@@ -174,15 +174,15 @@ export class PsqlUserRepository implements UserRepository {
       const role = createRoleWithAssignedPermissions(roleRows);
       roleAssignmentActions.push(
         new RoleAssignmentAction(
-          new AssignmentId(roleRows[0].rua_id),
+          new AssignmentId(roleRows[0].ruaId),
           user,
           role,
-          roleRows[0].rua_action_type === 'ADD'
+          roleRows[0].ruaActionType === 'ADD'
             ? AssignmentActionType.ADD
             : AssignmentActionType.REMOVE,
-          new UserId(roleRows[0].rua_actor),
-          roleRows[0].rua_order,
-          roleRows[0].rua_creation_time
+          new UserId(roleRows[0].ruaActor),
+          roleRows[0].ruaOrder,
+          roleRows[0].ruaCreationTime
         )
       );
     });

@@ -13,22 +13,22 @@ export class PsqlRoleRepository implements RoleRepository {
   async findByName(name: string): Promise<Role | null> {
     const roleRows: any[] = await this.db('role')
       .select([
-        'role.name as role_name',
-        'role.creation_time as role_creation_time',
-        'pra.id as pra_id',
-        'pra.creation_time as pra_creation_time',
-        'pra.action_type as pra_action_type',
-        'pra.actor as pra_actor',
-        'pra.order as pra_order',
-        'permission.name as permission_name',
-        'permission.creation_time as permission_creation_time',
+        'role.name as roleName',
+        'role.creation_time as roleCreationTime',
+        'pra.id as praId',
+        'pra.creation_time as praCreationTime',
+        'pra.action_type as praActionType',
+        'pra.actor as praActor',
+        'pra.order as praOrder',
+        'p.name as permissionName',
+        'p.creation_time as permissionCreationTime',
       ])
       .leftJoin(
         'permission_to_role_assignment as pra',
         'role.name',
         'pra.role_name'
       )
-      .leftJoin('permission', 'pra.permission_name', 'permission.name')
+      .leftJoin('permission as p', 'pra.permission_name', 'p.name')
       .where('role.name', '=', name);
 
     if (roleRows.length === 0) {
@@ -79,28 +79,28 @@ export class PsqlRoleRepository implements RoleRepository {
 }
 
 export function createRoleWithAssignedPermissions(roleRows: any[]): Role {
-  const role = new Role(roleRows[0].role_name, roleRows[0].role_creation_time);
+  const role = new Role(roleRows[0].roleName, roleRows[0].roleCreationTime);
   const permissionAssignmentActions = roleRows
     .filter(
       (assignmentAction) =>
-        assignmentAction.permission_name &&
-        assignmentAction.permission_creation_time
+        assignmentAction.permissionName &&
+        assignmentAction.permissionCreationTime
     )
     .map((assignmentAction) => {
       const permission = new Permission(
-        assignmentAction.permission_name,
-        assignmentAction.permission_creation_time
+        assignmentAction.permissionName,
+        assignmentAction.permissionCreationTime
       );
       return new PermissionAssignmentAction(
-        new AssignmentId(assignmentAction.pra_id),
+        new AssignmentId(assignmentAction.praId),
         role,
         permission,
-        assignmentAction.pra_action_type === 'ADD'
+        assignmentAction.praActionType === 'ADD'
           ? AssignmentActionType.ADD
           : AssignmentActionType.REMOVE,
-        new UserId(assignmentAction.pra_actor),
-        assignmentAction.pra_order,
-        assignmentAction.pra_creation_time
+        new UserId(assignmentAction.praActor),
+        assignmentAction.praOrder,
+        assignmentAction.praCreationTime
       );
     });
   Reflect.set(
