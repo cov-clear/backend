@@ -7,6 +7,7 @@ import * as config from '../../config';
 import { GetExistingOrCreateNewUser } from './GetExistingOrCreateNewUser';
 import {
   magicLinkRepository,
+  permissionRepository,
   roleRepository,
   sharingCodeRepository,
   testTypeRepository,
@@ -20,6 +21,8 @@ import { GetTestTypes } from './GetTestTypes';
 import { LoggingEmailNotifier } from '../../infrastructure/emails/LoggingEmailNotifier';
 import { MailGunEmailNotifier } from '../../infrastructure/emails/MailGunEmailNotifier';
 import { AccessManagerFactory } from '../../domain/model/authentication/AccessManager';
+import { CreateRole } from './CreateRole';
+import { CreatePermission } from './CreatePermission';
 
 let emailNotifier = new LoggingEmailNotifier();
 
@@ -40,6 +43,10 @@ export const generateAuthToken = new GenerateAuthToken(
   config.get('jwt.secret'),
   config.get('jwt.timeToLiveInHours')
 );
+
+export const createRole = new CreateRole(roleRepository);
+
+export const createPermission = new CreatePermission(permissionRepository);
 
 export const createMagicLink = new CreateNewMagicLink(
   magicLinkRepository,
