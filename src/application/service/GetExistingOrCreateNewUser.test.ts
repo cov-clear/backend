@@ -1,12 +1,17 @@
-import { userRepository } from '../../infrastructure/persistence';
+import {
+  roleRepository,
+  userRepository,
+} from '../../infrastructure/persistence';
 import database from '../../database';
 import { GetExistingOrCreateNewUser } from './GetExistingOrCreateNewUser';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import { anEmail, aNewUser } from '../../test/domainFactories';
+import { USER } from '../../domain/model/authentication/Roles';
 
 describe('GetExistingOrCreateNewUser', () => {
   const getExistingOrCreateNewUser = new GetExistingOrCreateNewUser(
-    userRepository
+    userRepository,
+    roleRepository
   );
 
   beforeEach(async () => {
@@ -29,6 +34,7 @@ describe('GetExistingOrCreateNewUser', () => {
     const resultUser = await getExistingOrCreateNewUser.execute(email.value);
 
     expect(resultUser).toBeDefined();
+    expect(resultUser.roles).toEqual([USER]);
     expect(resultUser.email).toEqual(email);
   });
 });
