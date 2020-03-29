@@ -78,8 +78,6 @@ describe('sharing code endpoints', () => {
       await userRepository.save(user1);
       await userRepository.save(user2);
 
-      const now = Date.now();
-
       const sharingCode = new SharingCode(user2.id, uuidv4(), new Date());
       sharingCodeRepository.save(sharingCode);
 

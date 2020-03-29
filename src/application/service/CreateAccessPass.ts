@@ -15,7 +15,13 @@ export class CreateAccessPass {
   ): Promise<AccessPass> {
     const sharingCode = await this.sharingCodeRepository.findByCode(code);
 
-    if (!sharingCode || sharingCode.isExpired()) {
+    if (!sharingCode) {
+      throw new AccessPassFailedError(
+        AccessPassFailureReason.INVALID_SHARING_CODE
+      );
+    }
+
+    if (sharingCode.isExpired()) {
       throw new AccessPassFailedError(
         AccessPassFailureReason.SHARING_CODE_EXPIRED
       );
@@ -35,4 +41,5 @@ export class AccessPassFailedError extends Error {
 
 export enum AccessPassFailureReason {
   SHARING_CODE_EXPIRED = 'SHARING_CODE_EXPIRED',
+  INVALID_SHARING_CODE = 'INVALID_SHARING_CODE',
 }

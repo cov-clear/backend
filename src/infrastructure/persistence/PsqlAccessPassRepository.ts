@@ -8,17 +8,17 @@ const ACCESS_PASS_TABLE_NAME = 'access_pass';
 export class PsqlAccessPassRepository implements AccessPassRepository {
   constructor(private db: knex) {}
 
-  async findByUserIds(actorUserId: string, subjectUserId: string) {
+  async findByUserIds(actorUserId: UserId, subjectUserId: UserId) {
     const linkRow: any = await this.db(ACCESS_PASS_TABLE_NAME)
       .select([
         'id',
-        'actor_id as actorUserId',
-        'subject_id as subjectUserId',
+        'actor_user_id as actorUserId',
+        'subject_user_id as subjectUserId',
         'creation_time as creationTime',
       ])
       .where({
-        actor_user_id: actorUserId,
-        subject_user_id: subjectUserId,
+        actor_user_id: actorUserId.value,
+        subject_user_id: subjectUserId.value,
       })
       .orderBy('creation_time', 'desc') // TODO is this the right way around :-s
       .first();
