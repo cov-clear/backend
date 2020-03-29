@@ -16,6 +16,9 @@ import { ApiError } from '../ApiError';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
 import { UserNotFoundError } from '../../domain/model/user/UserNotFoundError';
 import { RoleNotFoundError } from '../../domain/model/authentication/RoleNotFoundError';
+import { Role } from '../../domain/model/authentication/Role';
+import { Permission as ApiPermission, Role as ApiRole } from '../interface';
+import { Permission } from '../../domain/model/authentication/Permission';
 
 export default () => {
   const route = new AsyncRouter();
@@ -28,12 +31,12 @@ export default () => {
       const { name } = req.body;
 
       try {
-        await assignRoleToUser.execute(
+        const role = await assignRoleToUser.execute(
           name,
           id,
           getAuthenticationOrFail(req).user
         );
-        res.status(200).json({ name });
+        res.status(200).json(mapRoleToApiRole(role));
       } catch (error) {
         handleError(error);
       }
@@ -51,7 +54,7 @@ export default () => {
           name,
           getAuthenticationOrFail(req).user
         );
-        res.status(201).json({ name: role.name });
+        res.status(201).json(mapRoleToApiRole(role));
       } catch (error) {
         handleError(error);
       }
@@ -69,7 +72,7 @@ export default () => {
           name,
           getAuthenticationOrFail(req).user
         );
-        res.status(201).json({ name: permission.name });
+        res.status(201).json(mapPermissionToApiPermission(permission));
       } catch (error) {
         handleError(error);
       }
@@ -84,12 +87,12 @@ export default () => {
       const { name: permissionName } = req.body;
 
       try {
-        await assignPermissionToRole.execute(
+        const permission = await assignPermissionToRole.execute(
           permissionName,
           roleName,
           getAuthenticationOrFail(req).user
         );
-        res.status(200).json({ name: permissionName });
+        res.status(200).json(mapPermissionToApiPermission(permission));
       } catch (error) {
         handleError(error);
       }
@@ -98,6 +101,21 @@ export default () => {
 
   return route.middleware();
 };
+
+export function mapRoleToApiRole(role: Role): ApiRole {
+  return {
+    name: role.name,
+    permissions: role.permissions().map(({ name }) => name),
+  };
+}
+
+export function mapPermissionToApiPermission(
+  permission: Permission
+): ApiPermission {
+  return {
+    name: permission.name,
+  };
+}
 
 function handleError(error: Error) {
   if (error instanceof UserNotFoundError) {
