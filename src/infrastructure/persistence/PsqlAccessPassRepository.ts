@@ -25,9 +25,9 @@ export class PsqlAccessPassRepository implements AccessPassRepository {
       return null;
     }
     return new AccessPass(
-      linkRow.id,
       new UserId(linkRow.actorUserId),
       new UserId(linkRow.subjectUserId),
+      linkRow.id,
       linkRow.creationTime
     );
   }
