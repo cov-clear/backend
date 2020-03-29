@@ -16,13 +16,9 @@ export class User {
     private _profile?: Profile,
     private _address?: Address,
     readonly creationTime: Date = new Date(),
-    private _modificationTime: Date = new Date(),
-    roleAssignments: RoleAssignmentAction[] = []
+    private _modificationTime: Date = new Date()
   ) {
-    this.roleAssignments = new AssignmentActions(
-      roleAssignments,
-      (role) => role.name
-    );
+    this.roleAssignments = new AssignmentActions([], (role) => role.name);
   }
 
   set profile(newProfile) {

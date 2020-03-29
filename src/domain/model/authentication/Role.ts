@@ -1,5 +1,3 @@
-import { Uuid } from '../../Uuid';
-import { PermissionAssignmentAction } from './PermissionAssignmentAction';
 import { Permission } from './Permission';
 import { AssignmentActions } from './AssignmentActions';
 import { UserId } from '../user/UserId';
@@ -10,14 +8,10 @@ const ROLE_NAME_REG_EXP = /^[A-Z]+[A-Z_]*[A-Z]+$/;
 export class Role {
   readonly permissionAssignments: AssignmentActions<Role, Permission>;
 
-  constructor(
-    readonly name: string,
-    readonly creationTime: Date = new Date(),
-    permissionAssignments: PermissionAssignmentAction[] = []
-  ) {
+  constructor(readonly name: string, readonly creationTime: Date = new Date()) {
     validateName(name);
     this.permissionAssignments = new AssignmentActions(
-      permissionAssignments,
+      [],
       (permission) => permission.name
     );
   }
