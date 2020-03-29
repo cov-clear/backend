@@ -4,8 +4,8 @@ const ACCESS_REQUEST_LIFETIME_MSEC = 60 * 60_000;
 
 export class AccessPass {
   constructor(
-    public userId: UserId,
-    public code: string,
+    public actorUserId: UserId,
+    public subjectUserId: UserId,
     public creationTime: Date = new Date()
   ) {}
 

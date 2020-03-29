@@ -12,11 +12,13 @@ export default () => {
       const { id } = req.parmas;
       const { code } = req.body;
 
-      const accessPass = await createAccessPass.withIdAndSharingCode(id, code);
+      const accessPass = await createAccessPass.withSharingCode(code, id);
+
+      // TODO Handle expired code
 
       res
         .json({
-          userId: accessPass.userId.value,
+          userId: accessPass.subjectUserId.value,
           expiryTime: accessPass.expirationTime(),
         })
         .status(200);

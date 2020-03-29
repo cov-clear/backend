@@ -12,6 +12,7 @@ import {
   userRepository,
   testTypeRepository,
   sharingCodeRepository,
+  accessPassRepository,
 } from '../../infrastructure/persistence';
 
 import { GetUser } from './GetUser';
@@ -67,4 +68,7 @@ export const getTestTypes = new GetTestTypes(testTypeRepository);
 
 export const createSharingCode = new CreateSharingCode(sharingCodeRepository);
 
-export const createAccessPass = new CreateAccessPass();
+export const createAccessPass = new CreateAccessPass(
+  accessPassRepository,
+  sharingCodeRepository
+);
