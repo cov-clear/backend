@@ -1,17 +1,12 @@
 import { userRepository } from '../../infrastructure/persistence';
 import database from '../../database';
 import { Email } from '../../domain/model/user/Email';
-import { GetExistingOrCreateNewUser } from './GetExistingOrCreateNewUser';
 import { User } from '../../domain/model/user/User';
 import { UserId } from '../../domain/model/user/UserId';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import { getUser } from './index';
 
 describe('GetUser', () => {
-  const getExistingOrCreateNewUser = new GetExistingOrCreateNewUser(
-    userRepository
-  );
-
   beforeEach(async () => {
     await cleanupDatabase();
   });

@@ -11,7 +11,7 @@ export default () => {
     const magicLink = await createMagicLink.execute(email);
     res
       .json({
-        code: magicLink.code,
+        code: magicLink.code.value,
         creationTime: magicLink.creationTime,
         active: magicLink.active,
       })

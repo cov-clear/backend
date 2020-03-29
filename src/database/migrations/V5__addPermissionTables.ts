@@ -1,4 +1,5 @@
 import knex from 'knex';
+import { USER } from '../../domain/model/authentication/Roles';
 
 export async function up(db: knex) {
   await db.schema
@@ -29,13 +30,11 @@ export async function up(db: knex) {
       table.integer('order');
       table.timestamp('creation_time');
       table.index(['user_id', 'role_name']);
-    })
-    .then(() => {
-      db('role').insert({
-        name: 'USER',
-        creation_time: new Date(),
-      });
     });
+  await db('role').insert({
+    name: USER,
+    creation_time: new Date(),
+  });
 }
 
 export async function down(db: knex) {

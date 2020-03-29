@@ -2,12 +2,10 @@ import jwt from 'jsonwebtoken';
 import * as config from '../../config';
 import { Request, Response } from 'express';
 import logger from '../../logger';
-import {
-  authenticationRepository,
-  userRepository,
-} from '../../infrastructure/persistence';
+import { userRepository } from '../../infrastructure/persistence';
 import { UserId } from '../../domain/model/user/UserId';
 import { AuthenticatedRequest } from '../AuthenticatedRequest';
+import { Authentication } from '../../domain/model/authentication/Authentication';
 
 const jwtSecret: string = config.get('jwt.secret');
 
@@ -38,7 +36,7 @@ export async function attachAuthenticationToRequest(
       return next();
     }
 
-    req.authentication = await authenticationRepository.getAuthentication(user);
+    req.authentication = new Authentication(user, user.roles, user.permissions);
     return next();
   } catch (tokenError) {
     logger.error(`Failed to authenticate`, tokenError);

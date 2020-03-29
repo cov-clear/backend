@@ -7,6 +7,7 @@ import * as config from '../../config';
 import { GetExistingOrCreateNewUser } from './GetExistingOrCreateNewUser';
 import {
   magicLinkRepository,
+  roleRepository,
   sharingCodeRepository,
   testTypeRepository,
   userRepository,
@@ -52,7 +53,8 @@ export const getUser = new GetUser(userRepository);
 export const updateUser = new UpdateUser(userRepository);
 
 export const getExistingOrCreateNewUser = new GetExistingOrCreateNewUser(
-  userRepository
+  userRepository,
+  roleRepository
 );
 
 export const exchangeAuthCode = new ExchangeAuthCode(
