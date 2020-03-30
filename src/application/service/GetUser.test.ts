@@ -20,7 +20,7 @@ describe('GetUser', () => {
     it('returns existing user', async () => {
       const id = new UserId();
 
-      await userRepository.save(new User(id, new Email('kostas@tw.ee')));
+      await userRepository.save(new User(id, new Email('kostas@example.com')));
 
       const user = await getUser.byId(id.value);
 

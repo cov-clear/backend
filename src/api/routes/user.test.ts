@@ -47,7 +47,7 @@ describe('user endpoints', () => {
       const id = new UserId();
 
       const user = await userRepository.save(
-        new User(id, new Email('kostas@tw.ee'))
+        new User(id, new Email('kostas@example.com'))
       );
 
       await request(app)

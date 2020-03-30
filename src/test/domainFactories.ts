@@ -15,7 +15,7 @@ export function aNewUser() {
 }
 
 export function anEmail() {
-  return new Email(`${v4()}@tw.ee`);
+  return new Email(`${v4()}@example.com`);
 }
 
 export function aUserWithAllInformation() {

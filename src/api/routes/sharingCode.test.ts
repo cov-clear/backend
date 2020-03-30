@@ -28,7 +28,7 @@ describe('sharing code endpoints', () => {
     it('returns 200 with the sharing code if user is found', async () => {
       const id = new UserId();
       const user = await userRepository.save(
-        new User(id, new Email('kostas@tw.ee'))
+        new User(id, new Email('kostas@example.com'))
       );
 
       await request(app)
@@ -44,7 +44,7 @@ describe('sharing code endpoints', () => {
     it('returns 404 if trying to access a different userId', async () => {
       const id = new UserId();
       const user = await userRepository.save(
-        new User(id, new Email('kostas@tw.ee'))
+        new User(id, new Email('kostas@example.com'))
       );
 
       await request(app)
