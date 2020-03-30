@@ -1,5 +1,5 @@
 frontend:
-  baseUrl: https://cov-clear.netlify.com
+  baseUrl: https://app.cov-clear.com
 
 emailNotifier:
   type: mailgun
