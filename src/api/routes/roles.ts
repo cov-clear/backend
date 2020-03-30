@@ -19,6 +19,8 @@ import { RoleNotFoundError } from '../../domain/model/authentication/RoleNotFoun
 import { Role } from '../../domain/model/authentication/Role';
 import { Permission as ApiPermission, Role as ApiRole } from '../interface';
 import { Permission } from '../../domain/model/authentication/Permission';
+import { hasPermission } from '../middleware/hasPermission';
+import { ASSIGN_ROLE_TO_USER } from '../../domain/model/authentication/Permissions';
 
 export default () => {
   const route = new AsyncRouter();
@@ -26,6 +28,7 @@ export default () => {
   route.post(
     '/users/:id/roles',
     isAuthenticated,
+    hasPermission(ASSIGN_ROLE_TO_USER),
     async (req: AuthenticatedRequest, res: Response) => {
       const { id } = req.params;
       const { name } = req.body;
