@@ -1,4 +1,5 @@
 import { AccessPass } from './AccessPass';
+import { UserId } from '../user/UserId';
 
 export interface AccessPassRepository {
   save(accessPass: AccessPass): Promise<AccessPass>;
