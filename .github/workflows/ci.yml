@@ -6,9 +6,11 @@ jobs:
     services:
       postgres:
         image: postgres:12.2
-        ports: ['5432:5432']
+        ports: ['5433:5432']
         env:
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_PASSWORD: dev_password
+          POSTGRES_USER: dev_user
+          POSTGRES_DB: dev_db
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -24,10 +26,10 @@ jobs:
         restore-keys: |
           ${{ runner.OS }}-npm-cache-
     - name: Install dependencies
-      run: npm ci
+      run: npm install
     - name: Build project
       run: npm run build
     - name: Run tests
       run: npm run test
       env:
-        DATABASE_URL: postgresql://postgres:postgres@localhost/postgres
+        NODE_ENV: test
