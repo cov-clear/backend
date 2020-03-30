@@ -6,6 +6,7 @@ import { CreateNewMagicLink } from './CreateNewMagicLink';
 import * as config from '../../config';
 import { GetExistingOrCreateNewUser } from './GetExistingOrCreateNewUser';
 import {
+  accessPassRepository,
   magicLinkRepository,
   permissionRepository,
   roleRepository,
@@ -16,8 +17,10 @@ import {
 import { GetUser } from './GetUser';
 import { UpdateUser } from './UpdateUser';
 import { GetCountries } from './GetCountries';
-import { CreateSharingCode } from './CreateSharingCode';
 import { GetTestTypes } from './GetTestTypes';
+import { CreateSharingCode } from './CreateSharingCode';
+import { CreateAccessPass } from './CreateAccessPass';
+
 import { LoggingEmailNotifier } from '../../infrastructure/emails/LoggingEmailNotifier';
 import { MailGunEmailNotifier } from '../../infrastructure/emails/MailGunEmailNotifier';
 import { AssignRoleToUser } from './AssignRoleToUser';
@@ -90,3 +93,8 @@ export const exchangeAuthCode = new ExchangeAuthCode(
 export const getTestTypes = new GetTestTypes(testTypeRepository);
 
 export const createSharingCode = new CreateSharingCode(sharingCodeRepository);
+
+export const createAccessPass = new CreateAccessPass(
+  accessPassRepository,
+  sharingCodeRepository
+);
