@@ -138,7 +138,7 @@ describe('user endpoints', () => {
         .expect(404);
     });
 
-    it('returns 405 if a user with an access pass attempts to edit this user', async () => {
+    it('returns 403 if a user with an access pass attempts to edit this user', async () => {
       const actorUser = await userRepository.save(aNewUser());
       const subjectUser = await userRepository.save(aNewUser());
       const address = anApiAddress();
@@ -149,7 +149,7 @@ describe('user endpoints', () => {
         .patch(`/api/v1/users/${subjectUser.id.value}`)
         .set({ Authorization: `Bearer ${await getTokenForUser(actorUser)}` })
         .send({ address })
-        .expect(405);
+        .expect(403);
     });
 
     it('updates address correctly', async () => {

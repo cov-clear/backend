@@ -70,7 +70,7 @@ export default () => {
 
       if (!isLoggedInAsUser) {
         if (hasAccessPassForUser) {
-          throw new ApiError(405, apiErrorCodes.ACCESS_DENIED);
+          throw new ApiError(403, apiErrorCodes.ACCESS_DENIED);
         }
         throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
       }
