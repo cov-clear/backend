@@ -3,9 +3,14 @@ import expressApp from '../../loaders/express';
 import database from '../../database';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import { UserId } from '../../domain/model/user/UserId';
-import { userRepository } from '../../infrastructure/persistence';
+import { v4 as uuidv4 } from 'uuid';
+import {
+  userRepository,
+  accessPassRepository,
+} from '../../infrastructure/persistence';
 import { User } from '../../domain/model/user/User';
 import { Email } from '../../domain/model/user/Email';
+import { AccessPass } from '../../domain/model/accessPass/AccessPass';
 import {
   anAddress,
   aNewUser,
@@ -33,12 +38,12 @@ describe('user endpoints', () => {
     });
 
     it('returns 404 if trying to access a different user id', async () => {
-      const user = await userRepository.save(aNewUser());
-      const otherUser = await userRepository.save(aNewUser());
+      const actorUser = await userRepository.save(aNewUser());
+      const subjectUser = await userRepository.save(aNewUser());
 
       await request(app)
-        .get(`/api/v1/users/${otherUser.id.value}`)
-        .set({ Authorization: `Bearer ${await getTokenForUser(user)}` })
+        .get(`/api/v1/users/${subjectUser.id.value}`)
+        .set({ Authorization: `Bearer ${await getTokenForUser(actorUser)}` })
         .expect(404);
     });
 
@@ -74,6 +79,41 @@ describe('user endpoints', () => {
           expect(user.address).toEqual(user.address);
         });
     });
+
+    it('returns 200 if a user with an access pass requests another user', async () => {
+      const actorUser = await userRepository.save(aNewUser());
+      const subjectUser = await userRepository.save(aNewUser());
+
+      accessPassRepository.save(new AccessPass(actorUser.id, subjectUser.id));
+
+      await request(app)
+        .get(`/api/v1/users/${subjectUser.id.value}`)
+        .set({ Authorization: `Bearer ${await getTokenForUser(actorUser)}` })
+        .expect(200)
+        .expect((res) => {
+          const user = res.body;
+          expect(user.id).toEqual(subjectUser.id.value);
+        });
+    });
+
+    it('returns 404 if a user with an expired access pass requests another user', async () => {
+      const actorUser = await userRepository.save(aNewUser());
+      const subjectUser = await userRepository.save(aNewUser());
+
+      const accessPass = new AccessPass(
+        actorUser.id,
+        subjectUser.id,
+        uuidv4(),
+        new Date('1970-01-01')
+      );
+
+      accessPassRepository.save(accessPass);
+
+      await request(app)
+        .get(`/api/v1/users/${subjectUser.id.value}`)
+        .set({ Authorization: `Bearer ${await getTokenForUser(actorUser)}` })
+        .expect(404);
+    });
   });
 
   describe('PATCH /users/:id', () => {
@@ -96,6 +136,20 @@ describe('user endpoints', () => {
           },
         })
         .expect(404);
+    });
+
+    it('returns 403 if a user with an access pass attempts to edit this user', async () => {
+      const actorUser = await userRepository.save(aNewUser());
+      const subjectUser = await userRepository.save(aNewUser());
+      const address = anApiAddress();
+
+      accessPassRepository.save(new AccessPass(actorUser.id, subjectUser.id));
+
+      await request(app)
+        .patch(`/api/v1/users/${subjectUser.id.value}`)
+        .set({ Authorization: `Bearer ${await getTokenForUser(actorUser)}` })
+        .send({ address })
+        .expect(403);
     });
 
     it('updates address correctly', async () => {

@@ -42,7 +42,9 @@ if (config.get('emailNotifier.type') === 'mailgun') {
     })
   );
 }
-export const accessManagerFactory = new AccessManagerFactory({});
+export const accessManagerFactory = new AccessManagerFactory(
+  accessPassRepository
+);
 
 export const assignPermissionToRole = new AssignPermissionToRole(
   roleRepository,

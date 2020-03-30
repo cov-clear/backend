@@ -20,12 +20,13 @@ export class PsqlAccessPassRepository implements AccessPassRepository {
         actor_user_id: actorUserId.value,
         subject_user_id: subjectUserId.value,
       })
-      .orderBy('creation_time', 'desc') // TODO is this the right way around :-s
+      .orderBy('creation_time', 'desc')
       .first();
 
     if (!linkRow) {
       return null;
     }
+
     return new AccessPass(
       new UserId(linkRow.actorUserId),
       new UserId(linkRow.subjectUserId),
