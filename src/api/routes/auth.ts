@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import AsyncRouter from '../AsyncRouter';
 import { createMagicLink, exchangeAuthCode } from '../../application/service';
 import { AuthorisationFailedError } from '../../application/service/ExchangeAuthCode';
+import { ApiError } from '../ApiError';
 
 export default () => {
   const route = new AsyncRouter();
@@ -29,15 +30,16 @@ export default () => {
         })
         .status(200);
     } catch (error) {
-      if (error instanceof AuthorisationFailedError) {
-        res.status(403).json({
-          code: error.failureReason.toString(),
-        });
-        return;
-      }
-      throw error;
+      handleError(error);
     }
   });
 
   return route.middleware();
 };
+
+function handleError(error: Error) {
+  if (error instanceof AuthorisationFailedError) {
+    throw new ApiError(403, error.failureReason.toString());
+  }
+  throw error;
+}

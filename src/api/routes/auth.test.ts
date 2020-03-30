@@ -4,6 +4,7 @@ import { v4 } from 'uuid';
 import { createMagicLink } from '../../application/service';
 import database from '../../database';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
+import { AuthorisationFailureReason } from '../../application/service/ExchangeAuthCode';
 
 describe('auth endpoints', () => {
   const app = expressApp();
@@ -27,11 +28,16 @@ describe('auth endpoints', () => {
   });
 
   describe('POST /auth/login', () => {
-    it('returns 403 if the code and email combination does not exist', async () => {
+    it('returns 403 if the code does not exist', async () => {
       await request(app)
         .post('/api/v1/auth/login')
         .send({ method: 'magic-link', email: 'some@email.com', authCode: v4() })
-        .expect(403);
+        .expect(403)
+        .expect((res) => {
+          expect(res.body.code).toEqual(
+            AuthorisationFailureReason.AUTH_CODE_NOT_FOUND
+          );
+        });
     });
 
     it('exchanges an auth code for a signed JWT', async () => {
