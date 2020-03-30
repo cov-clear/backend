@@ -9,7 +9,6 @@ import { Email } from '../../domain/model/user/Email';
 import {
   anAddress,
   aNewUser,
-  aProfile,
   aUserWithAllInformation,
 } from '../../test/domainFactories';
 import { getTokenForUser } from '../../test/authentication';

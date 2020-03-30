@@ -1,13 +1,12 @@
 import { PermissionRepository } from '../../domain/model/authentication/PermissionRepository';
 import { Permission } from '../../domain/model/authentication/Permission';
-import knex from 'knex';
+import knex, { QueryBuilder } from 'knex';
 
 export class PsqlPermissionRepository implements PermissionRepository {
   constructor(private db: knex) {}
 
   async findByName(name: string): Promise<Permission | null> {
-    const permissionRow: any = await this.db('permission')
-      .select(['name', 'creation_time as creationTime'])
+    const permissionRow: any = await this.selectAllPermissionsQuery()
       .where('name', '=', name)
       .first();
 
@@ -15,6 +14,13 @@ export class PsqlPermissionRepository implements PermissionRepository {
       return null;
     }
     return new Permission(permissionRow.name, permissionRow.creationTime);
+  }
+
+  async findAll(): Promise<Permission[]> {
+    const permissionRows: any[] = await this.selectAllPermissionsQuery();
+    return permissionRows.map(
+      (row) => new Permission(row.name, row.creationTime)
+    );
   }
 
   async save(permission: Permission): Promise<Permission> {
@@ -32,5 +38,12 @@ export class PsqlPermissionRepository implements PermissionRepository {
       .then(() => {
         return permission;
       });
+  }
+
+  private selectAllPermissionsQuery(): QueryBuilder {
+    return this.db('permission').select([
+      'name',
+      'creation_time as creationTime',
+    ]);
   }
 }

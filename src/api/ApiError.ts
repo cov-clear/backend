@@ -4,6 +4,6 @@ export class ApiError extends Error {
     public code: string,
     public message: string = code
   ) {
-    super(message);
+    super(`${status} - ${code} - ${message}`);
   }
 }

@@ -26,3 +26,12 @@ export interface User {
   profile?: Profile;
   address?: Address;
 }
+
+export interface Role {
+  name: string;
+  permissions: string[];
+}
+
+export interface Permission {
+  name: string;
+}
