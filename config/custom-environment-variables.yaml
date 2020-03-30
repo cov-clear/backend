@@ -1,0 +1,10 @@
+db:
+  connectionUrl: DATABASE_URL
+
+emailNotifier:
+  emailGunConfig:
+    apiKey: MAILGUN_API_KEY
+    domain: MAILGUN_DOMAIN
+
+jwt:
+  secret: JWT_SECRET
