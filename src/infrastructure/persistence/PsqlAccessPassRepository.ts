@@ -9,16 +9,17 @@ export class PsqlAccessPassRepository implements AccessPassRepository {
   constructor(private db: knex) {}
 
   async findByUserIds(actorUserId: UserId, subjectUserId: UserId) {
-    if (!actorUserId.value || !subjectUserId.value) {
-      throw new Error('undefined params');
-    }
-
     const linkRow: any = await this.db(ACCESS_PASS_TABLE_NAME)
+      .select([
+        'id',
+        'actor_user_id as actorUserId',
+        'subject_user_id as subjectUserId',
+        'creation_time as creationTime',
+      ])
       .where({
         actor_user_id: actorUserId.value,
         subject_user_id: subjectUserId.value,
       })
-      .select(['id', 'actor_user_id', 'subject_user_id', 'creation_time'])
       .orderBy('creation_time', 'desc')
       .first();
 
@@ -27,10 +28,10 @@ export class PsqlAccessPassRepository implements AccessPassRepository {
     }
 
     return new AccessPass(
-      new UserId(linkRow.actor_user_id),
-      new UserId(linkRow.subject_user_id),
+      new UserId(linkRow.actorUserId),
+      new UserId(linkRow.subjectUserId),
       linkRow.id,
-      linkRow.creation_time
+      linkRow.creationTime
     );
   }
 
