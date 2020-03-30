@@ -1,0 +1,2 @@
+db:
+  connectionUrl: postgresql://dev_user:dev_password@localhost:5433/dev_db

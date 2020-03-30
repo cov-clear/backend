@@ -1,8 +1,0 @@
-{
-  "frontend": {
-    "baseUrl": "https://cov-clear.netlify.com"
-  },
-  "emailNotifier": {
-    "type": "mailgun"
-  }
-}
