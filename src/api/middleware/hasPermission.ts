@@ -3,7 +3,7 @@ import {
   AuthenticatedRequest,
   getAuthenticationOrFail,
 } from '../AuthenticatedRequest';
-import { ApiError } from '../ApiError';
+import { ApiError, apiErrorCodes } from '../ApiError';
 
 export function hasPermission(neededPermissionName: string) {
   return async (req: AuthenticatedRequest, res: Response, next: () => any) => {
@@ -12,7 +12,7 @@ export function hasPermission(neededPermissionName: string) {
       (permissionName) => permissionName === neededPermissionName
     );
     if (!hasPermission) {
-      throw new ApiError(403, 'access.denied');
+      throw new ApiError(403, apiErrorCodes.ACCESS_DENIED);
     }
     return next();
   };

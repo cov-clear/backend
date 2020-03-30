@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { ApiError } from '../ApiError';
+import { ApiError, apiErrorCodes } from '../ApiError';
 import { AuthenticatedRequest } from '../AuthenticatedRequest';
 
 export async function isAuthenticated(
@@ -8,7 +8,7 @@ export async function isAuthenticated(
   next: () => any
 ) {
   if (!req.authentication) {
-    throw new ApiError(401, 'authentication.missing');
+    throw new ApiError(401, apiErrorCodes.UNAUTHORIZED_ACCESS);
   }
   return next();
 }

@@ -2,7 +2,7 @@ import AsyncRouter from '../AsyncRouter';
 import { Request, Response } from 'express';
 import { getTestTypes, getUser } from '../../application/service';
 import { TestType } from '../../domain/model/testType/TestType';
-import { ApiError } from '../ApiError';
+import { ApiError, apiErrorCodes } from '../ApiError';
 
 export default () => {
   const route = new AsyncRouter();
@@ -13,7 +13,7 @@ export default () => {
     const user = await getUser.byId(id);
 
     if (!user) {
-      throw new ApiError(404, 'user.not-found');
+      throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
     }
 
     //const trusted = user.permissions && user.permissions.contains("trusted"); // Not sure how permissions will work
