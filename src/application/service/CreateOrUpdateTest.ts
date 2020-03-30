@@ -13,10 +13,6 @@ export class CreateOrUpdateTest {
     const { testTypeId, results } = payload;
     const checkTestType = await getTestTypes.byId(testTypeId);
 
-    console.log(
-      'in createOrUpdateTest - checkTestType' + JSON.stringify(checkTestType)
-    );
-
     if (!checkTestType) {
       throw new TestTypeNotFoundError(testTypeId);
     }

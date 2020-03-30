@@ -77,7 +77,7 @@ describe('PsqlTestTypeRepository', () => {
 
   it('inserts new and retrieves a test type by id', async () => {
     const testType = await psqlTestTypeRepository.save(
-      new TestType(new TestTypeId(), 'PCR', {}, true)
+      new TestType(new TestTypeId(), 'PCR', {}, 'PCR_PERMISSION')
     );
 
     const persistedTestType = await psqlTestTypeRepository.findById(

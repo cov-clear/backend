@@ -58,18 +58,20 @@ export class PsqlTestTypeRepository implements TestTypeRepository {
   async findById(testTypeId: TestTypeId) {
     const linkRow: any = await this.db(TEST_TYPE_TABLE_NAME)
       .where('id', '=', testTypeId.value)
-      .select(TEST_TYPE_TABLE_COLUMNS)
+      .select(TEST_TYPE_COLUMNS)
       .first();
 
     if (!linkRow) {
       return null;
     }
 
+    //    return linkRow.map(mapTestTypeRowToTestType);
+
     return new TestType(
       new TestTypeId(linkRow.id),
       linkRow.name,
       linkRow.resultsSchema,
-      linkRow.requireTrusted
+      linkRow.neededPermissionToAddResults
     );
   }
 }

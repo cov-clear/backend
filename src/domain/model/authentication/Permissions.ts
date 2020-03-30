@@ -6,3 +6,4 @@ export const LIST_ROLES = 'LIST_ROLES';
 export const LIST_PERMISSIONS = 'LIST_PERMISSIONS';
 
 export const CREATE_TEST_TYPE = 'CREATE_TEST_TYPE';
+export const CREATE_TEST = 'CREATE_TEST';

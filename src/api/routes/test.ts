@@ -4,15 +4,15 @@ import {
   createOrUpdateTest,
   getUser,
   getTests,
+  accessManagerFactory,
 } from '../../application/service';
-import { ApiError } from '../ApiError';
-import { User } from '../../domain/model/user/User';
-//import {Test as ApiTest} from '../interface/index';
+import { ApiError, apiErrorCodes } from '../ApiError';
+import {
+  AuthenticatedRequest,
+  getAuthenticationOrFail,
+} from '../AuthenticatedRequest';
 import { Test } from '../../domain/model/test/Test';
-
-import logger from '../../logger';
 import { isAuthenticated } from '../middleware/isAuthenticated';
-import { AuthenticatedRequest } from '../AuthenticatedRequest';
 
 export default () => {
   const route = new AsyncRouter();
@@ -26,6 +26,14 @@ export default () => {
 
       if (!user) {
         throw new ApiError(404, 'user.not-found');
+      }
+
+      const canAccessUser = await accessManagerFactory
+        .forAuthentication(getAuthenticationOrFail(req))
+        .canAccessUser(user.id);
+
+      if (!canAccessUser) {
+        throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
       }
 
       const tests = await getTests.byUserId(id);

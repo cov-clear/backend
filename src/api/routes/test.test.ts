@@ -3,7 +3,7 @@ import expressApp from '../../loaders/express';
 import database from '../../database';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 
-import { testTypeRepository } from '../../infrastructure/persistence';
+import { getTokenForUser } from '../../test/authentication';
 import { TestTypeId } from '../../domain/model/testType/TestTypeId';
 
 import { testRepository } from '../../infrastructure/persistence';
@@ -23,9 +23,9 @@ describe('test endpoints', () => {
   });
 
   describe('GET /users/:id/tests', () => {
-    it('returns 404 if user is not found', async () => {
+    it('returns 401 if user is authenticated', async () => {
       const id = new UserId();
-      await request(app).get(`/api/v1/users/${id.value}/tests`).expect(404);
+      await request(app).get(`/api/v1/users/${id.value}/tests`).expect(401);
     });
 
     it('returns 200 with the existing test if user is found', async () => {
@@ -39,6 +39,9 @@ describe('test endpoints', () => {
 
       await request(app)
         .get(`/api/v1/users/${user.id.value}/tests`)
+        .set({
+          Authorization: `Bearer ${await getTokenForUser(user)}`,
+        })
         .expect(200)
         .expect((response) => {
           expect(response.body[0].id).toEqual(test_saved.id.value);
