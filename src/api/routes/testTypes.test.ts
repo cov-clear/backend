@@ -28,7 +28,7 @@ describe('test type endpoints', () => {
 
     it('returns 200 with the existing test type if user is found', async () => {
       const id = new UserId();
-      await userRepository.save(new User(id, new Email('kostas@tw.ee')));
+      await userRepository.save(new User(id, new Email('kostas@example.com')));
 
       await request(app)
         .get(`/api/v1/users/${id.value}/test-types`)

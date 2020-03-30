@@ -11,6 +11,7 @@ async function main() {
       process.exit(1);
       return;
     }
+
     logger.info(`App listening on ${config.get('port')}`);
   });
 }

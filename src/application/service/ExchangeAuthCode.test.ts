@@ -40,7 +40,7 @@ describe('ExchangeAuthCode', () => {
   });
 
   it('throws error when the magic link is expired', async () => {
-    const email = new Email('kostas@tw.ee');
+    const email = new Email('kostas@example.com');
     const link = await magicLinkRepository.save(
       new MagicLink(new MagicLinkCode(), email)
     );
@@ -53,7 +53,7 @@ describe('ExchangeAuthCode', () => {
   });
 
   it('throws error when the magic link has already been used', async () => {
-    const email = new Email('kostas@tw.ee');
+    const email = new Email('kostas@example.com');
     const link = await magicLinkRepository.save(
       new MagicLink(new MagicLinkCode(), email, false)
     );
@@ -66,7 +66,7 @@ describe('ExchangeAuthCode', () => {
   });
 
   it('creates a new token for a valid link', async () => {
-    const email = new Email('kostas@tw.ee');
+    const email = new Email('kostas@example.com');
     const link = await magicLinkRepository.save(
       new MagicLink(new MagicLinkCode(), email)
     );

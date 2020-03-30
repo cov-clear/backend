@@ -1,0 +1,22 @@
+db:
+  connectionUrl: postgresql://dev_user:dev_password@localhost/dev_db
+
+frontend:
+  baseUrl: http://localhost:3000
+
+emailNotifier:
+  type: logging
+  fromEmailHeader: cov-clear@example.com
+  mailGunConfig:
+    apiKey: dummy
+    domain: dummy
+
+logLevels:
+  messages: info
+  requests: warn
+
+jwt:
+  timeToLiveInHours: 336
+  secret: 1-9182fj1wofj1-08fj182fj1-90fj21-0r89j12-8rh
+
+port: 1337

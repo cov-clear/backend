@@ -35,6 +35,7 @@ export class AssignPermissionToRole {
 
     role.assignPermission(permission, authenticatedUser.id);
     await this.roleRepository.save(role);
+    return permission;
   }
 
   private hasPermissionToAssignPermission(authenticatedUser: User) {

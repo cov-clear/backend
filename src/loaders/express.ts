@@ -1,9 +1,10 @@
+import bodyParser from 'body-parser';
 import express, { Request, Response } from 'express';
 import securityHeaders from 'helmet';
+
 import * as config from '../config';
-import routes from '../api';
 import logger from '../logger';
-import bodyParser from 'body-parser';
+import routes from '../api';
 import { ApiError } from '../api/ApiError';
 import { attachAuthenticationToRequest } from '../api/middleware/attachAuthenticationToRequest';
 import { wrapAsyncFunction } from '../api/AsyncRouter';
@@ -12,6 +13,7 @@ export default () => {
   return express()
     .use(securityHeaders())
     .use(bodyParser.json())
+    .use(logger.expressPlugin())
     .use('/api', wrapAsyncFunction(attachAuthenticationToRequest))
     .use('/api', routes())
     .use(notFoundHandling())
@@ -38,11 +40,7 @@ function errorHandling() {
     const code = ((err as any).code as string) || 'unexpected.error';
 
     if (status >= 500) {
-      if (err.stack) {
-        logger.error(err.stack);
-      } else {
-        logger.error(err);
-      }
+      logger.error('Internal Error', err);
     }
 
     const body: any = { code };

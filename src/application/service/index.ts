@@ -28,6 +28,8 @@ import { AccessManagerFactory } from '../../domain/model/authentication/AccessMa
 import { CreateRole } from './CreateRole';
 import { CreatePermission } from './CreatePermission';
 import { AssignPermissionToRole } from './AssignPermissionToRole';
+import { GetRoles } from './GetRoles';
+import { GetPermissions } from './GetPermissions';
 
 let emailNotifier = new LoggingEmailNotifier();
 
@@ -57,6 +59,10 @@ export const generateAuthToken = new GenerateAuthToken(
   config.get('jwt.secret'),
   config.get('jwt.timeToLiveInHours')
 );
+
+export const getRoles = new GetRoles(roleRepository);
+
+export const getPermissions = new GetPermissions(permissionRepository);
 
 export const createRole = new CreateRole(roleRepository);
 

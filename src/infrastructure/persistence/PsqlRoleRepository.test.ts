@@ -4,7 +4,8 @@ import { PsqlRoleRepository } from './PsqlRoleRepository';
 import { Role } from '../../domain/model/authentication/Role';
 import { Permission } from '../../domain/model/authentication/Permission';
 import { UserId } from '../../domain/model/user/UserId';
-import { permissionRepository } from './index';
+import { permissionRepository, roleRepository } from './index';
+import { aRoleWithPermissions } from '../../test/domainFactories';
 
 describe('PsqlRoleRepository', () => {
   const psqlRoleRepository = new PsqlRoleRepository(database);
@@ -66,6 +67,26 @@ describe('PsqlRoleRepository', () => {
 
     const persistedRole = await psqlRoleRepository.findByName(role.name);
     expect(persistedRole?.permissions()).toEqual([permission1, permission2]);
+  });
+
+  it('finds all inserted roles with their assigned permissions', async () => {
+    const permission1 = new Permission('PERMISSION_ONE');
+    const permission2 = new Permission('PERMISSION_TWO');
+    const role1 = aRoleWithPermissions('ROLE_ONE', [permission1]);
+    const role2 = aRoleWithPermissions('ROLE_TWO', [permission2]);
+
+    await permissionRepository.save(permission1);
+    await permissionRepository.save(permission2);
+    await roleRepository.save(role1);
+    await roleRepository.save(role2);
+
+    const persistedRoles = await roleRepository.findAll();
+    expect(
+      persistedRoles.find(({ name }) => name === 'ROLE_ONE')
+    ).toBeDefined();
+    expect(
+      persistedRoles.find(({ name }) => name === 'ROLE_TWO')
+    ).toBeDefined();
   });
 });
 

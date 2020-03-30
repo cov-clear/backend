@@ -9,7 +9,6 @@ import { Email } from '../../domain/model/user/Email';
 import {
   anAddress,
   aNewUser,
-  aProfile,
   aUserWithAllInformation,
 } from '../../test/domainFactories';
 import { getTokenForUser } from '../../test/authentication';
@@ -47,7 +46,7 @@ describe('user endpoints', () => {
       const id = new UserId();
 
       const user = await userRepository.save(
-        new User(id, new Email('kostas@tw.ee'))
+        new User(id, new Email('kostas@example.com'))
       );
 
       await request(app)

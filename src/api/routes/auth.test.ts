@@ -35,9 +35,7 @@ describe('auth endpoints', () => {
     });
 
     it('exchanges an auth code for a signed JWT', async () => {
-      const magicLink = await createMagicLink.execute(
-        'kostas@transferwise.com'
-      );
+      const magicLink = await createMagicLink.execute('kostas@example.com');
 
       await request(app)
         .post('/api/v1/auth/login')

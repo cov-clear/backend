@@ -24,7 +24,7 @@ describe('PsqlUserRepository', () => {
 
   it('inserts new and retrieves a user by id', async () => {
     const user = await psqlUserRepository.save(
-      new User(new UserId(), new Email('kostas1@transferwise.com'))
+      new User(new UserId(), new Email('kostas1@example.com'))
     );
 
     const persistedUser = await psqlUserRepository.findByUserId(user.id);
@@ -39,7 +39,7 @@ describe('PsqlUserRepository', () => {
 
   it('inserts new and retrieves a user by email', async () => {
     const user = await psqlUserRepository.save(
-      new User(new UserId(), new Email('kostas2@transferwise.com'))
+      new User(new UserId(), new Email('kostas2@example.com'))
     );
 
     const persistedUser = await psqlUserRepository.findByEmail(user.email);
@@ -49,7 +49,7 @@ describe('PsqlUserRepository', () => {
 
   it('updates profile if user already exists', async () => {
     const user = await psqlUserRepository.save(
-      new User(new UserId(), new Email('kostas3@transferwise.com'))
+      new User(new UserId(), new Email('kostas3@example.com'))
     );
 
     user.profile = aProfile();
@@ -61,7 +61,7 @@ describe('PsqlUserRepository', () => {
 
   it('updates address if user already exists', async () => {
     const user = await psqlUserRepository.save(
-      new User(new UserId(), new Email('kostas3@transferwise.com'))
+      new User(new UserId(), new Email('kostas3@example.com'))
     );
 
     user.address = anAddress();
