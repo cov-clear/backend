@@ -1,4 +1,8 @@
-import { Address as ApiAddress, Profile as ApiProfile } from '../api/interface';
+import {
+  Address as ApiAddress,
+  CreateTestTypeCommand,
+  Profile as ApiProfile,
+} from '../api/interface';
 
 export function anApiAddress(): ApiAddress {
   return {
@@ -17,5 +21,17 @@ export function anApiProfile(): ApiProfile {
     lastName: 'Lennon',
     dateOfBirth: '1940-10-09',
     sex: 'MALE',
+  };
+}
+
+export function aCreateTestTypeCommand(
+  name = 'TestTypeName',
+  permission = 'PERMISSION',
+  schema = {}
+): CreateTestTypeCommand {
+  return {
+    name,
+    resultsSchema: schema,
+    neededPermissionToAddResults: permission,
   };
 }

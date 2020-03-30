@@ -3,6 +3,8 @@ import { PsqlTestTypeRepository } from './PsqlTestTypeRepository';
 import { TestTypeId } from '../../domain/model/testType/TestTypeId';
 import { TestType } from '../../domain/model/testType/TestType';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
+import { aTestType } from '../../test/domainFactories';
+import { TestTypeNameAlreadyExists } from '../../domain/model/testType/TestTypeRepository';
 
 describe('PsqlTestTypeRepository', () => {
   const psqlTestTypeRepository = new PsqlTestTypeRepository(database);
@@ -36,6 +38,15 @@ describe('PsqlTestTypeRepository', () => {
       takeHomePermission,
     ]);
     expect(allPermissions.length).toEqual(2);
+  });
+
+  it('throws error if name already exists', async () => {
+    const testName = 'TAKE_HOME';
+    await psqlTestTypeRepository.save(aTestType(testName));
+
+    await expect(
+      psqlTestTypeRepository.save(aTestType(testName))
+    ).rejects.toEqual(new TestTypeNameAlreadyExists(testName));
   });
 
   it('returns no testType if passed permission list is empty', async () => {
