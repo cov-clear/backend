@@ -4,7 +4,6 @@ import { GetTestTypes } from './GetTestTypes';
 import { TestType } from '../../domain/model/testType/TestType';
 import { TestTypeId } from '../../domain/model/testType/TestTypeId';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
-import { getTestTypes } from './index';
 
 describe('GetTestTypes', () => {
   const getTestTypes = new GetTestTypes(testTypeRepository);
@@ -16,29 +15,18 @@ describe('GetTestTypes', () => {
     const id2 = new TestTypeId();
 
     await testTypeRepository.save(
-      new TestType(id1, 'trusted', { type: 'boolean' }, true)
+      new TestType(id1, 'trusted', { type: 'boolean' }, 'PERMISSION')
     );
     await testTypeRepository.save(
-      new TestType(id2, 'untrusted', { type: 'boolean' }, false)
+      new TestType(id2, 'untrusted', { type: 'boolean' }, 'PERMISSION')
     );
   });
 
-  describe('byTrusted true', () => {
-    it('returns all test types', async () => {
-      const testTypes = await getTestTypes.byTrusted(true);
+  describe('forPermissions', () => {
+    it('returns all test types for that permission', async () => {
+      const testTypes = await getTestTypes.forPermissions(['PERMISSION']);
       expect(testTypes.length).toBe(2);
     });
-  });
-
-  describe('byTrusted false', () => {
-    it('returns only test types available to untrusted users', async () => {
-      const testTypes = await getTestTypes.byTrusted(false);
-      expect(testTypes.length).toBe(1);
-    });
-  });
-
-  it('expects true to be true', () => {
-    expect(true).toBe(true);
   });
 });
 

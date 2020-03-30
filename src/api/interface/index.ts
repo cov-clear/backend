@@ -27,6 +27,12 @@ export interface User {
   address?: Address;
 }
 
+export interface TestType {
+  id: string;
+  name: string;
+  resultsSchema: object;
+}
+
 export interface Role {
   name: string;
   permissions: string[];
