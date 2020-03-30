@@ -6,7 +6,6 @@ import {
   createPermission,
   createRole,
 } from '../../application/service';
-import { isAuthenticated } from '../middleware/isAuthenticated';
 import {
   AuthenticatedRequest,
   getAuthenticationOrFail,
@@ -20,14 +19,18 @@ import { Role } from '../../domain/model/authentication/Role';
 import { Permission as ApiPermission, Role as ApiRole } from '../interface';
 import { Permission } from '../../domain/model/authentication/Permission';
 import { hasPermission } from '../middleware/hasPermission';
-import { ASSIGN_ROLE_TO_USER } from '../../domain/model/authentication/Permissions';
+import {
+  ASSIGN_PERMISSION_TO_ROLE,
+  ASSIGN_ROLE_TO_USER,
+  CREATE_NEW_PERMISSION,
+  CREATE_NEW_ROLE,
+} from '../../domain/model/authentication/Permissions';
 
 export default () => {
   const route = new AsyncRouter();
 
   route.post(
     '/users/:id/roles',
-    isAuthenticated,
     hasPermission(ASSIGN_ROLE_TO_USER),
     async (req: AuthenticatedRequest, res: Response) => {
       const { id } = req.params;
@@ -48,7 +51,7 @@ export default () => {
 
   route.post(
     '/roles',
-    isAuthenticated,
+    hasPermission(CREATE_NEW_ROLE),
     async (req: AuthenticatedRequest, res: Response) => {
       const { name } = req.body;
 
@@ -66,7 +69,7 @@ export default () => {
 
   route.post(
     '/permissions',
-    isAuthenticated,
+    hasPermission(CREATE_NEW_PERMISSION),
     async (req: AuthenticatedRequest, res: Response) => {
       const { name } = req.body;
 
@@ -84,7 +87,7 @@ export default () => {
 
   route.post(
     '/roles/:roleName/permissions',
-    isAuthenticated,
+    hasPermission(ASSIGN_PERMISSION_TO_ROLE),
     async (req: AuthenticatedRequest, res: Response) => {
       const { roleName } = req.params;
       const { name: permissionName } = req.body;
