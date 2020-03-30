@@ -10,7 +10,7 @@ import {
   getAuthenticationOrFail,
 } from '../AuthenticatedRequest';
 import { AccessDeniedError } from '../../domain/model/AccessDeniedError';
-import { ApiError } from '../ApiError';
+import { ApiError, apiErrorCodes } from '../ApiError';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
 import { UserNotFoundError } from '../../domain/model/user/UserNotFoundError';
 import { RoleNotFoundError } from '../../domain/model/authentication/RoleNotFoundError';
@@ -88,13 +88,13 @@ export function mapRoleToApiRole(role: Role): ApiRole {
 
 function handleError(error: Error) {
   if (error instanceof UserNotFoundError) {
-    throw new ApiError(404, 'user.not-found');
+    throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
   }
   if (error instanceof RoleNotFoundError) {
-    throw new ApiError(422, 'role.not-found');
+    throw new ApiError(422, apiErrorCodes.ROLE_NOT_FOUND);
   }
   if (error instanceof AccessDeniedError) {
-    throw new ApiError(403, 'access.denied');
+    throw new ApiError(403, apiErrorCodes.ACCESS_DENIED);
   }
   if (error instanceof DomainValidationError) {
     throw new ApiError(422, `role.invalid.${error.field}`);

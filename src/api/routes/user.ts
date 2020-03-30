@@ -5,7 +5,7 @@ import {
   getUser,
   updateUser,
 } from '../../application/service';
-import { ApiError } from '../ApiError';
+import { ApiError, apiErrorCodes } from '../ApiError';
 import {
   Address as ApiAddress,
   Profile as ApiProfile,
@@ -41,7 +41,7 @@ export default () => {
           .forAuthentication(getAuthenticationOrFail(req))
           .isLoggedInAsUser(user.id)
       ) {
-        throw new ApiError(404, 'user.not-found');
+        throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
       }
 
       res.json(mapUserToApiUser(user)).status(200);
@@ -60,7 +60,7 @@ export default () => {
           .forAuthentication(getAuthenticationOrFail(req))
           .isLoggedInAsUser(new UserId(id))
       ) {
-        throw new ApiError(404, 'user.not-found');
+        throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
       }
 
       try {
@@ -115,7 +115,7 @@ export function mapAddressToApiAddress(
 
 function handleUserUpdateError(error: Error) {
   if (error instanceof UserNotFoundError) {
-    throw new ApiError(422, 'user.not-found');
+    throw new ApiError(422, apiErrorCodes.USER_NOT_FOUND);
   }
   if (error instanceof ResourceNotFoundError) {
     throw new ApiError(422, `${error.resourceName}.not-found`);

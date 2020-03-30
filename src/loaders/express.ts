@@ -5,7 +5,7 @@ import securityHeaders from 'helmet';
 import * as config from '../config';
 import logger from '../logger';
 import routes from '../api';
-import { ApiError } from '../api/ApiError';
+import { ApiError, apiErrorCodes } from '../api/ApiError';
 import { attachAuthenticationToRequest } from '../api/middleware/attachAuthenticationToRequest';
 import { wrapAsyncFunction } from '../api/AsyncRouter';
 
@@ -22,7 +22,7 @@ export default () => {
 
 function notFoundHandling() {
   return (_: Request, __: Response, next: (...things: any[]) => any) => {
-    next(new ApiError(404, 'resource.not-found', 'Not Found'));
+    next(new ApiError(404, apiErrorCodes.RESOURCE_NOT_FOUND, 'Not Found'));
   };
 }
 

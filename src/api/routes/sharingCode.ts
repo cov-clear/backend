@@ -10,7 +10,7 @@ import {
   getAuthenticationOrFail,
 } from '../AuthenticatedRequest';
 import { UserId } from '../../domain/model/user/UserId';
-import { ApiError } from '../ApiError';
+import { ApiError, apiErrorCodes } from '../ApiError';
 
 export default () => {
   const route = new AsyncRouter();
@@ -26,7 +26,7 @@ export default () => {
           .forAuthentication(getAuthenticationOrFail(req))
           .isLoggedInAsUser(new UserId(id))
       ) {
-        throw new ApiError(404, 'user.not-found');
+        throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
       }
 
       const sharingCode = await createSharingCode.withUserId(id);
