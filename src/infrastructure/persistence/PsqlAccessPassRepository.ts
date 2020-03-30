@@ -40,9 +40,7 @@ export class PsqlAccessPassRepository implements AccessPassRepository {
         `
       insert into "${ACCESS_PASS_TABLE_NAME}" (id, actor_user_id, subject_user_id, creation_time)
       values (:id, :actor_user_id, :subject_user_id, :creation_time)
-      on conflict do nothing
     `,
-        // TODO something smarter on conflict?
         {
           id: accessPass.id,
           actor_user_id: accessPass.actorUserId.value,
