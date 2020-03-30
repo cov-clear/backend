@@ -40,11 +40,7 @@ function errorHandling() {
     const code = ((err as any).code as string) || 'unexpected.error';
 
     if (status >= 500) {
-      if (err.stack) {
-        logger.error(err.stack);
-      } else {
-        logger.error(err);
-      }
+      logger.error('Internal Error', err);
     }
 
     const body: any = { code };
