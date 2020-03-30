@@ -31,6 +31,7 @@
   },
   "homepage": "https://github.com/cov-clear/backend#readme",
   "devDependencies": {
+    "@types/ajv": "^1.0.0",
     "@types/config": "0.0.36",
     "@types/country-list": "^2.1.0",
     "@types/email-validator": "^1.0.6",
@@ -57,6 +58,7 @@
   "dependencies": {
     "@types/express-pino-logger": "^4.0.2",
     "@types/pino": "^5.17.0",
+    "ajv": "^6.12.0",
     "config": "^3.3.0",
     "country-list": "^2.2.0",
     "email-validator": "^2.0.4",

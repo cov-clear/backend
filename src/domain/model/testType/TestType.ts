@@ -1,5 +1,11 @@
 import { TestTypeId } from './TestTypeId';
 import { DomainValidationError } from '../DomainValidationError';
+import Ajv from 'ajv';
+
+const ajv = new Ajv({
+  strictDefaults: true,
+  strictKeywords: true,
+});
 
 export class TestType {
   constructor(
@@ -23,7 +29,8 @@ function validateNotEmptyString(fieldName: string, value: string) {
   }
 }
 
-//TODO: Add proper schema validation
 function validateResultsSchema(schema: object) {
-  return !!schema;
+  if (!schema || !ajv.validateSchema(schema)) {
+    throw new DomainValidationError('resultsSchema', 'Not a valid Json Schema');
+  }
 }
