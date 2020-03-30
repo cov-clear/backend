@@ -1,33 +1,26 @@
 import AsyncRouter from '../AsyncRouter';
 import { Request, Response } from 'express';
-import { getTestTypes, getUser } from '../../application/service';
+import { getTestTypes } from '../../application/service';
 import { TestType } from '../../domain/model/testType/TestType';
-import { ApiError, apiErrorCodes } from '../ApiError';
+import { TestType as ApiTestType } from '../interface';
+import { getAuthenticationOrFail } from '../AuthenticatedRequest';
 
 export default () => {
   const route = new AsyncRouter();
 
-  route.get('/users/:id/test-types', async (req: Request, res: Response) => {
-    const { id } = req.params;
+  route.get('/test-types', async (req: Request, res: Response) => {
+    const authentication = getAuthenticationOrFail(req);
 
-    const user = await getUser.byId(id);
-
-    if (!user) {
-      throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
-    }
-
-    //const trusted = user.permissions && user.permissions.contains("trusted"); // Not sure how permissions will work
-    const trusted = true;
-
-    const testTypes = await getTestTypes.byTrusted(trusted);
-
+    const testTypes = await getTestTypes.forPermissions(
+      authentication.permissions
+    );
     res.json(testTypes && testTypes.map(mapTestTypeToApiResponse)).status(200);
   });
 
   return route.middleware();
 };
 
-function mapTestTypeToApiResponse(testType: TestType) {
+function mapTestTypeToApiResponse(testType: TestType): ApiTestType {
   return {
     id: testType.id.value,
     name: testType.name,

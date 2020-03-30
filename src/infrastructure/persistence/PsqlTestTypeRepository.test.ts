@@ -12,15 +12,56 @@ describe('PsqlTestTypeRepository', () => {
   });
 
   it('inserts new and retrieves a test type by id', async () => {
-    const testType = await psqlTestTypeRepository.save(
-      new TestType(new TestTypeId(), 'PCR', {}, true)
+    const pcrPermission = 'PCR_PERMISSION';
+    const takeHomePermission = 'TAKE_HOME_PERMISSION';
+    const testType1 = await psqlTestTypeRepository.save(
+      new TestType(new TestTypeId(), 'PCR', {}, pcrPermission)
+    );
+    const testType2 = await psqlTestTypeRepository.save(
+      new TestType(new TestTypeId(), 'TAKE_HOME', {}, takeHomePermission)
     );
 
-    const [persistedTestType] = await psqlTestTypeRepository.findByTrusted(
-      true
+    const [
+      persistedTestType1,
+    ] = await psqlTestTypeRepository.findByPermissions([pcrPermission]);
+    expect(persistedTestType1).toEqual(testType1);
+
+    const [
+      persistedTestType2,
+    ] = await psqlTestTypeRepository.findByPermissions([takeHomePermission]);
+    expect(persistedTestType2).toEqual(testType2);
+
+    const allPermissions = await psqlTestTypeRepository.findByPermissions([
+      pcrPermission,
+      takeHomePermission,
+    ]);
+    expect(allPermissions.length).toEqual(2);
+  });
+
+  it('returns no testType if passed permission list is empty', async () => {
+    await psqlTestTypeRepository.save(
+      new TestType(new TestTypeId(), 'PCR', {}, 'PCR_PERMISSION')
+    );
+    await psqlTestTypeRepository.save(
+      new TestType(new TestTypeId(), 'TAKE_HOME', {}, 'TAKE_HOME_PERMISSION')
     );
 
-    expect(persistedTestType).toEqual(testType);
+    const persistedTypes = await psqlTestTypeRepository.findByPermissions([]);
+
+    expect(persistedTypes).toEqual([]);
+  });
+
+  it('returns no testType if passed permission does not match any test', async () => {
+    await psqlTestTypeRepository.save(
+      new TestType(new TestTypeId(), 'PCR', {}, 'PCR_PERMISSION')
+    );
+    await psqlTestTypeRepository.save(
+      new TestType(new TestTypeId(), 'TAKE_HOME', {}, 'TAKE_HOME_PERMISSION')
+    );
+
+    const persistedTypes = await psqlTestTypeRepository.findByPermissions([]);
+
+    expect(persistedTypes).toEqual([]);
   });
 });
 

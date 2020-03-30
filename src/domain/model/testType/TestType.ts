@@ -5,6 +5,6 @@ export class TestType {
     readonly id: TestTypeId,
     readonly name: string,
     readonly resultsSchema: object,
-    readonly requireTrusted: boolean
+    readonly neededPermissionToAddResults: string
   ) {}
 }
