@@ -11,6 +11,10 @@ emailNotifier:
     apiKey: dummy
     domain: dummy
 
+logLevels:
+  messages: info
+  requests: warn
+
 jwt:
   timeToLiveInHours: 336
   secret: 1-9182fj1wofj1-08fj182fj1-90fj21-0r89j12-8rh

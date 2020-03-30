@@ -1,19 +1,39 @@
-// TODO: this is temporary, to start logging using a centralized interface. Should be replace with a real logger.
+import { default as pino } from 'pino';
+import { default as expressPinoLogger } from 'express-pino-logger';
 
-export function info(message?: any, ...optionalParams: any[]): void {
-  console.info(`[INFO] ${message}`, ...optionalParams);
+import * as config from './config';
+
+const logger = pino({
+  level: config.get('logLevels.messages'),
+  prettyPrint: {
+    colorize: true,
+    ignore: 'pid,hostname',
+    translateTime: true,
+  },
+});
+
+function expressPlugin() {
+  return expressPinoLogger({
+    level: config.get('logLevels.requests'),
+    logger,
+  });
 }
 
-export function error(message?: any, ...optionalParams: any[]): void {
-  console.error(`[ERROR] ${message}`, ...optionalParams);
+function info(message?: any, ...optionalParams: any[]): void {
+  logger.info(message, ...optionalParams);
 }
 
-export function warn(message?: any, ...optionalParams: any[]): void {
-  console.warn(`[WARN] ${message}`, ...optionalParams);
+function error(message?: any, ...optionalParams: any[]): void {
+  logger.error(message, ...optionalParams);
+}
+
+function warn(message?: any, ...optionalParams: any[]): void {
+  logger.warn(message, ...optionalParams);
 }
 
 export default {
   info,
   error,
   warn,
+  expressPlugin,
 };
