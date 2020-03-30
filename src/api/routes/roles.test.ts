@@ -15,9 +15,12 @@ import {
   ASSIGN_ROLE_TO_USER,
   CREATE_NEW_PERMISSION,
   CREATE_NEW_ROLE,
+  LIST_PERMISSIONS,
+  LIST_ROLES,
 } from '../../domain/model/authentication/Permissions';
 import { persistedUserWithRoleAndPermissions } from '../../test/persistedEntities';
 import { Role } from '../../domain/model/authentication/Role';
+import { Role as ApiRole, Permission as ApiPermission } from '../interface';
 import { Permission } from '../../domain/model/authentication/Permission';
 
 describe('roles endpoints', () => {
@@ -110,6 +113,109 @@ describe('roles endpoints', () => {
         .expect(200)
         .expect((res) => {
           expect(res.body.name).toEqual(permission.name);
+        });
+    });
+  });
+
+  describe('GET /roles', () => {
+    it('returns 401 if the caller is unauthenticated', async () => {
+      await request(app)
+        .get(`/api/v1/roles`)
+        .expect(401)
+        .expect((res) => {
+          expect(res.body.code).toEqual('access.unauthorized');
+        });
+    });
+
+    it('returns 403 if authenticated user does not have the required permission', async () => {
+      const authenticatedUser = await persistedUserWithRoleAndPermissions(
+        USER,
+        []
+      );
+
+      await request(app)
+        .get(`/api/v1/roles`)
+        .set({
+          Authorization: `Bearer ${await getTokenForUser(authenticatedUser)}`,
+        })
+        .expect(403)
+        .expect((res) => {
+          expect(res.body.code).toEqual('access.denied');
+        });
+    });
+
+    it('gets all the existing roles', async () => {
+      const role = await roleRepository.save(new Role('SOME_ROLE'));
+      const authenticatedUser = await persistedUserWithRoleAndPermissions(
+        ADMIN,
+        [LIST_ROLES]
+      );
+
+      await request(app)
+        .get(`/api/v1/roles`)
+        .set({
+          Authorization: `Bearer ${await getTokenForUser(authenticatedUser)}`,
+        })
+        .expect(200)
+        .expect((res) => {
+          expect(Array.isArray(res.body)).toBe(true);
+          const roles = res.body as ApiRole[];
+          expect(roles.find(({ name }) => name === ADMIN)?.name).toEqual(ADMIN);
+          expect(
+            roles.find(({ name }) => name === ADMIN)?.permissions
+          ).toEqual([LIST_ROLES]);
+        });
+    });
+  });
+
+  describe('GET /permissions', () => {
+    it('returns 401 if the caller is unauthenticated', async () => {
+      await request(app)
+        .get(`/api/v1/permissions`)
+        .expect(401)
+        .expect((res) => {
+          expect(res.body.code).toEqual('access.unauthorized');
+        });
+    });
+
+    it('returns 403 if authenticated user does not have the required permission', async () => {
+      const authenticatedUser = await persistedUserWithRoleAndPermissions(
+        USER,
+        []
+      );
+
+      await request(app)
+        .get(`/api/v1/permissions`)
+        .set({
+          Authorization: `Bearer ${await getTokenForUser(authenticatedUser)}`,
+        })
+        .expect(403)
+        .expect((res) => {
+          expect(res.body.code).toEqual('access.denied');
+        });
+    });
+
+    it('gets all the existing permissions', async () => {
+      const permission = await permissionRepository.save(
+        new Permission('SOME_PERMISSION')
+      );
+      const authenticatedUser = await persistedUserWithRoleAndPermissions(
+        ADMIN,
+        [LIST_PERMISSIONS]
+      );
+
+      await request(app)
+        .get(`/api/v1/permissions`)
+        .set({
+          Authorization: `Bearer ${await getTokenForUser(authenticatedUser)}`,
+        })
+        .expect(200)
+        .expect((res) => {
+          expect(Array.isArray(res.body)).toBe(true);
+          const permissions = res.body as ApiPermission[];
+          expect(
+            permissions.find(({ name }) => name === permission.name)
+          ).toBeDefined();
         });
     });
   });

@@ -5,6 +5,8 @@ import {
   assignRoleToUser,
   createPermission,
   createRole,
+  getPermissions,
+  getRoles,
 } from '../../application/service';
 import {
   AuthenticatedRequest,
@@ -24,6 +26,8 @@ import {
   ASSIGN_ROLE_TO_USER,
   CREATE_NEW_PERMISSION,
   CREATE_NEW_ROLE,
+  LIST_PERMISSIONS,
+  LIST_ROLES,
 } from '../../domain/model/authentication/Permissions';
 
 export default () => {
@@ -61,6 +65,32 @@ export default () => {
           getAuthenticationOrFail(req).user
         );
         res.status(201).json(mapRoleToApiRole(role));
+      } catch (error) {
+        handleError(error);
+      }
+    }
+  );
+
+  route.get(
+    '/roles',
+    hasPermission(LIST_ROLES),
+    async (req: AuthenticatedRequest, res: Response) => {
+      try {
+        const roles = await getRoles.all();
+        res.status(200).json(roles.map(mapRoleToApiRole));
+      } catch (error) {
+        handleError(error);
+      }
+    }
+  );
+
+  route.get(
+    '/permissions',
+    hasPermission(LIST_PERMISSIONS),
+    async (req: AuthenticatedRequest, res: Response) => {
+      try {
+        const roles = await getPermissions.all();
+        res.status(200).json(roles.map(mapPermissionToApiPermission));
       } catch (error) {
         handleError(error);
       }
