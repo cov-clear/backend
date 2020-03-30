@@ -35,12 +35,15 @@ export default () => {
       const { id } = req.params;
       const user = await getUser.byId(id);
 
-      if (
-        !user ||
-        (await !accessManagerFactory
-          .forAuthentication(getAuthenticationOrFail(req))
-          .canAccessUser(user.id))
-      ) {
+      if (!user) {
+        throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
+      }
+
+      const canAccessUser = await accessManagerFactory
+        .forAuthentication(getAuthenticationOrFail(req))
+        .canAccessUser(user.id);
+
+      if (!canAccessUser) {
         throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
       }
 
@@ -55,11 +58,20 @@ export default () => {
       const { id } = req.params;
       const command = req.body as UpdateUserCommand;
 
-      if (
-        !accessManagerFactory
-          .forAuthentication(getAuthenticationOrFail(req))
-          .isLoggedInAsUser(new UserId(id))
-      ) {
+      const userId = new UserId(id);
+
+      const isLoggedInAsUser = accessManagerFactory
+        .forAuthentication(getAuthenticationOrFail(req))
+        .isLoggedInAsUser(userId);
+
+      const hasAccessPassForUser = await accessManagerFactory
+        .forAuthentication(getAuthenticationOrFail(req))
+        .hasAccessPassForUser(userId);
+
+      if (!isLoggedInAsUser) {
+        if (hasAccessPassForUser) {
+          throw new ApiError(405, apiErrorCodes.ACCESS_DENIED);
+        }
         throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
       }
 

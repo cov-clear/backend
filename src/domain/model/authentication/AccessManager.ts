@@ -38,12 +38,9 @@ export class AccessManager {
   }
 
   async hasAccessPassForUser(userId: UserId): Promise<boolean> {
-    console.log('actor ' + this.authentication.user.id.value);
-    console.log('subject ' + userId.value);
-
     const accessPass = await this.accessPassRepository.findByUserIds(
-      this.authentication.user.id.value,
-      userId.value
+      this.authentication.user.id,
+      userId
     );
 
     return !!accessPass && !accessPass.isExpired();
