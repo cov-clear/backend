@@ -13,6 +13,7 @@ import {
   sharingCodeRepository,
   testTypeRepository,
   userRepository,
+  testRepository,
 } from '../../infrastructure/persistence';
 import { GetUser } from './GetUser';
 import { UpdateUser } from './UpdateUser';
@@ -23,6 +24,8 @@ import { CreateAccessPass } from './CreateAccessPass';
 
 import { LoggingEmailNotifier } from '../../infrastructure/emails/LoggingEmailNotifier';
 import { MailGunEmailNotifier } from '../../infrastructure/emails/MailGunEmailNotifier';
+import { CreateOrUpdateTest } from './CreateOrUpdateTest';
+import { GetTests } from './GetTests';
 import { AssignRoleToUser } from './AssignRoleToUser';
 import { AccessManagerFactory } from '../../domain/model/authentication/AccessManager';
 import { CreateRole } from './CreateRole';
@@ -98,6 +101,10 @@ export const exchangeAuthCode = new ExchangeAuthCode(
 export const getTestTypes = new GetTestTypes(testTypeRepository);
 
 export const createSharingCode = new CreateSharingCode(sharingCodeRepository);
+
+export const createOrUpdateTest = new CreateOrUpdateTest(testRepository);
+
+export const getTests = new GetTests(testRepository);
 
 export const createAccessPass = new CreateAccessPass(
   accessPassRepository,
