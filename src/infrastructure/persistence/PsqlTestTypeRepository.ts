@@ -5,6 +5,13 @@ import { TestTypeId } from '../../domain/model/testType/TestTypeId';
 
 const TEST_TYPE_TABLE_NAME = 'test-type';
 
+const TEST_TYPE_TABLE_COLUMNS = [
+  'id',
+  'name',
+  'results_schema as resultsSchema',
+  'require_trusted as requireTrusted',
+];
+
 export class PsqlTestTypeRepository implements TestTypeRepository {
   constructor(private db: knex) {}
 
@@ -29,21 +36,16 @@ export class PsqlTestTypeRepository implements TestTypeRepository {
   async findByTrusted(trusted: boolean): Promise<Array<any>> {
     let testTypeRows: Array<any>;
 
-    const columns = [
-      'id',
-      'name',
-      'results_schema as resultsSchema',
-      'require_trusted as requireTrusted',
-    ];
-
     if (trusted) {
       // Return all
-      testTypeRows = await this.db(TEST_TYPE_TABLE_NAME).select(columns);
+      testTypeRows = await this.db(TEST_TYPE_TABLE_NAME).select(
+        TEST_TYPE_TABLE_COLUMNS
+      );
     } else {
       // Filter out test types that require trusted
       testTypeRows = await this.db(TEST_TYPE_TABLE_NAME)
         .where({ require_trusted: true })
-        .select(columns);
+        .select(TEST_TYPE_TABLE_COLUMNS);
     }
 
     if (!testTypeRows) {
@@ -58,6 +60,24 @@ export class PsqlTestTypeRepository implements TestTypeRepository {
           testTypeRow.resultsSchema,
           testTypeRow.requireTrusted
         )
+    );
+  }
+
+  async findById(testTypeId: TestTypeId) {
+    const linkRow: any = await this.db(TEST_TYPE_TABLE_NAME)
+      .where('id', '=', testTypeId.value)
+      .select(TEST_TYPE_TABLE_COLUMNS)
+      .first();
+
+    if (!linkRow) {
+      return null;
+    }
+
+    return new TestType(
+      new TestTypeId(linkRow.id),
+      linkRow.name,
+      linkRow.resultsSchema,
+      linkRow.requireTrusted
     );
   }
 }

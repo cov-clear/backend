@@ -26,3 +26,8 @@ export interface User {
   profile?: Profile;
   address?: Address;
 }
+
+export interface Test {
+  testTypeId: string;
+  results: object;
+}

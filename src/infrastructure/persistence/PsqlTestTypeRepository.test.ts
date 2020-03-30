@@ -11,13 +11,25 @@ describe('PsqlTestTypeRepository', () => {
     await cleanupDatabase();
   });
 
-  it('inserts new and retrieves a test type by id', async () => {
+  it('inserts new and retrieves a test type by trusted', async () => {
     const testType = await psqlTestTypeRepository.save(
       new TestType(new TestTypeId(), 'PCR', {}, true)
     );
 
     const [persistedTestType] = await psqlTestTypeRepository.findByTrusted(
       true
+    );
+
+    expect(persistedTestType).toEqual(testType);
+  });
+
+  it('inserts new and retrieves a test type by id', async () => {
+    const testType = await psqlTestTypeRepository.save(
+      new TestType(new TestTypeId(), 'PCR', {}, true)
+    );
+
+    const persistedTestType = await psqlTestTypeRepository.findById(
+      testType.id
     );
 
     expect(persistedTestType).toEqual(testType);

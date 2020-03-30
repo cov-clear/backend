@@ -7,30 +7,15 @@ import { UserId } from '../../domain/model/user/UserId';
 
 const TEST_TABLE_NAME = 'test';
 
+const TEST_TABLE_COLUMNS = [
+  'id',
+  'user_id as userId',
+  'test_type_id as testTypeId',
+  'creation_time as creationTime',
+];
+// TODO: Add results handling
 export class PsqlTestRepository implements TestRepository {
   constructor(private db: knex) {}
-
-  async findById(testId: TestId) {
-    const linkRow: any = await this.db(TEST_TABLE_NAME)
-      .select([
-        'id',
-        'user_id as userId',
-        'test_type_id as testTypeId',
-        'creation_time as creationTime',
-      ])
-      .where('id', '=', testId.value)
-      .first();
-
-    if (!linkRow) {
-      return null;
-    }
-    return new Test(
-      new TestId(linkRow.id),
-      new UserId(linkRow.userId),
-      new TestTypeId(linkRow.testTypeId),
-      linkRow.creationTime
-    );
-  }
 
   async save(test: Test) {
     return await this.db
@@ -50,5 +35,44 @@ export class PsqlTestRepository implements TestRepository {
       .then(() => {
         return test;
       });
+  }
+
+  async findById(testId: TestId) {
+    const linkRow: any = await this.db(TEST_TABLE_NAME)
+      .where('id', '=', testId.value)
+      .select(TEST_TABLE_COLUMNS)
+      .first();
+
+    if (!linkRow) {
+      return null;
+    }
+    return new Test(
+      new TestId(linkRow.id),
+      new UserId(linkRow.userId),
+      new TestTypeId(linkRow.testTypeId),
+      linkRow.creationTime
+    );
+  }
+
+  async findByUserId(userId: UserId) {
+    let testRows: Array<any>;
+
+    testRows = await this.db(TEST_TABLE_NAME)
+      .where('user_id', '=', userId.value)
+      .select(TEST_TABLE_COLUMNS);
+
+    if (!testRows) {
+      return [];
+    }
+
+    return testRows.map(
+      (testRow: any) =>
+        new Test(
+          new TestId(testRow.id),
+          new UserId(testRow.userId),
+          new TestTypeId(testRow.testTypeId),
+          testRow.creationTime
+        )
+    );
   }
 }

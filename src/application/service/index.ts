@@ -10,6 +10,7 @@ import {
   sharingCodeRepository,
   testTypeRepository,
   userRepository,
+  testRepository,
 } from '../../infrastructure/persistence';
 import { GetUser } from './GetUser';
 import { UpdateUser } from './UpdateUser';
@@ -18,6 +19,8 @@ import { CreateSharingCode } from './CreateSharingCode';
 import { GetTestTypes } from './GetTestTypes';
 import { LoggingEmailNotifier } from '../../infrastructure/emails/LoggingEmailNotifier';
 import { MailGunEmailNotifier } from '../../infrastructure/emails/MailGunEmailNotifier';
+import { CreateOrUpdateTest } from './CreateOrUpdateTest';
+import { GetTests } from './GetTests';
 
 let emailNotifier = new LoggingEmailNotifier();
 
@@ -61,3 +64,7 @@ export const exchangeAuthCode = new ExchangeAuthCode(
 export const getTestTypes = new GetTestTypes(testTypeRepository);
 
 export const createSharingCode = new CreateSharingCode(sharingCodeRepository);
+
+export const createOrUpdateTest = new CreateOrUpdateTest(testRepository);
+
+export const getTests = new GetTests(testRepository);
