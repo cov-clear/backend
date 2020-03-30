@@ -12,4 +12,8 @@ export class GetTestTypes {
   async byId(testTypeId: string): Promise<TestType | null> {
     return this.testTypeRepository.findById(new TestTypeId(testTypeId));
   }
+
+  async byId(testTypeId: string): Promise<TestType | null> {
+    return this.testTypeRepository.findById(new TestTypeId(testTypeId));
+  }
 }
