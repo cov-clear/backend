@@ -33,6 +33,12 @@ export interface TestType {
   resultsSchema: object;
 }
 
+export interface CreateTestTypeCommand {
+  name: string;
+  resultsSchema: object;
+  neededPermissionToAddResults: string;
+}
+
 export interface Role {
   name: string;
   permissions: string[];

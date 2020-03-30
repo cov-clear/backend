@@ -30,6 +30,7 @@ import { CreatePermission } from './CreatePermission';
 import { AssignPermissionToRole } from './AssignPermissionToRole';
 import { GetRoles } from './GetRoles';
 import { GetPermissions } from './GetPermissions';
+import { CreateTestType } from './CreateTestType';
 
 let emailNotifier = new LoggingEmailNotifier();
 
@@ -63,6 +64,8 @@ export const generateAuthToken = new GenerateAuthToken(
 export const getRoles = new GetRoles(roleRepository);
 
 export const getPermissions = new GetPermissions(permissionRepository);
+
+export const createTestType = new CreateTestType(testTypeRepository);
 
 export const createRole = new CreateRole(roleRepository);
 

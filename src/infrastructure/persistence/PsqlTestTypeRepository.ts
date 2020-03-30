@@ -1,5 +1,8 @@
 import knex from 'knex';
-import { TestTypeRepository } from '../../domain/model/testType/TestTypeRepository';
+import {
+  TestTypeNameAlreadyExists,
+  TestTypeRepository,
+} from '../../domain/model/testType/TestTypeRepository';
 import { TestType } from '../../domain/model/testType/TestType';
 import { TestTypeId } from '../../domain/model/testType/TestTypeId';
 
@@ -15,22 +18,29 @@ export class PsqlTestTypeRepository implements TestTypeRepository {
   constructor(private db: knex) {}
 
   async save(testType: TestType): Promise<TestType> {
-    return await this.db
-      .raw(
-        `
-      insert into "${TEST_TYPE_TABLE_NAME}" (id, name, results_schema, needed_permission_to_add_results)
-      values (:id, :name, :results_schema, :needed_permission_to_add_results)
-      on conflict do nothing
-    `,
-        {
-          id: testType.id.value,
-          name: testType.name,
-          results_schema: JSON.stringify(testType.resultsSchema),
-          needed_permission_to_add_results:
-            testType.neededPermissionToAddResults,
-        }
-      )
-      .then(() => testType);
+    try {
+      return await this.db
+        .raw(
+          `
+        insert into "${TEST_TYPE_TABLE_NAME}" (id, name, results_schema, needed_permission_to_add_results)
+        values (:id, :name, :results_schema, :needed_permission_to_add_results)
+        on conflict (id) do nothing
+      `,
+          {
+            id: testType.id.value,
+            name: testType.name,
+            results_schema: JSON.stringify(testType.resultsSchema),
+            needed_permission_to_add_results:
+              testType.neededPermissionToAddResults,
+          }
+        )
+        .then(() => testType);
+    } catch (dbError) {
+      if (dbError.constraint === 'test_type_name_unique') {
+        throw new TestTypeNameAlreadyExists(testType.name);
+      }
+      throw dbError;
+    }
   }
 
   async findByPermissions(permissions: string[]): Promise<Array<TestType>> {
