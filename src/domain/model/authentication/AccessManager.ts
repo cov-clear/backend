@@ -1,8 +1,9 @@
 import { Authentication } from './Authentication';
 import { UserId } from '../user/UserId';
+import { AccessPassRepository } from '../accessPass/AccessPassRepository';
 
 export class AccessManagerFactory {
-  constructor(private accessPassRepository: any) {}
+  constructor(private accessPassRepository: AccessPassRepository) {}
 
   forAuthentication(authentication: Authentication) {
     return new AccessManager(this.accessPassRepository, authentication);
@@ -11,27 +12,40 @@ export class AccessManagerFactory {
 
 export class AccessManager {
   constructor(
-    private accessPassRepository: any,
+    private accessPassRepository: AccessPassRepository,
     private authentication: Authentication
   ) {}
 
-  //TODO: Add notion of access-passes here.
-  canAccessUser(userId: UserId) {
+  async canAccessUser(userId: UserId): Promise<boolean> {
     if (!this.authentication) {
       return false;
     }
 
-    if (this.isLoggedInAsUser(userId)) {
+    const hasAccessPass = await this.hasAccessPassForUser(userId);
+
+    if (this.isLoggedInAsUser(userId) || hasAccessPass) {
       return true;
     }
 
-    throw new Error('Not Implemented');
+    return false;
   }
 
-  isLoggedInAsUser(userId: UserId) {
+  isLoggedInAsUser(userId: UserId): boolean {
     return (
       !!this.authentication &&
       this.authentication.user.id.value === userId.value
     );
+  }
+
+  async hasAccessPassForUser(userId: UserId): Promise<boolean> {
+    console.log('actor ' + this.authentication.user.id.value);
+    console.log('subject ' + userId.value);
+
+    const accessPass = await this.accessPassRepository.findByUserIds(
+      this.authentication.user.id.value,
+      userId.value
+    );
+
+    return !!accessPass && !accessPass.isExpired();
   }
 }

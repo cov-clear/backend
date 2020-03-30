@@ -3,9 +3,13 @@ import expressApp from '../../loaders/express';
 import database from '../../database';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import { UserId } from '../../domain/model/user/UserId';
-import { userRepository } from '../../infrastructure/persistence';
+import {
+  userRepository,
+  accessPassRepository,
+} from '../../infrastructure/persistence';
 import { User } from '../../domain/model/user/User';
 import { Email } from '../../domain/model/user/Email';
+import { AccessPass } from '../../domain/model/accessPass/AccessPass';
 import {
   anAddress,
   aNewUser,
@@ -72,6 +76,22 @@ describe('user endpoints', () => {
           const user = res.body;
           expect(user.profile).toEqual(user.profile);
           expect(user.address).toEqual(user.address);
+        });
+    });
+
+    it('returns 200 if a user with an access pass requests another user', async () => {
+      const actorUser = await userRepository.save(aUserWithAllInformation());
+      const subjectUser = await userRepository.save(aUserWithAllInformation());
+
+      accessPassRepository.save(new AccessPass(actorUser.id, subjectUser.id));
+
+      await request(app)
+        .get(`/api/v1/users/${subjectUser.id.value}`)
+        .set({ Authorization: `Bearer ${await getTokenForUser(actorUser)}` })
+        .expect(200)
+        .expect((res) => {
+          const user = res.body;
+          expect(user.id).toEqual(subjectUser.id.value);
         });
     });
   });

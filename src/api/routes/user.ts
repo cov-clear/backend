@@ -37,9 +37,9 @@ export default () => {
 
       if (
         !user ||
-        !accessManagerFactory
+        (await !accessManagerFactory
           .forAuthentication(getAuthenticationOrFail(req))
-          .isLoggedInAsUser(user.id)
+          .canAccessUser(user.id))
       ) {
         throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
       }
