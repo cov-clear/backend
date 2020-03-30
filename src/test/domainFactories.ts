@@ -9,6 +9,8 @@ import { DateOfBirth } from '../domain/model/user/DateOfBirth';
 import { Role } from '../domain/model/authentication/Role';
 import { Permission } from '../domain/model/authentication/Permission';
 import { v4 } from 'uuid';
+import { TestType } from '../domain/model/testType/TestType';
+import { TestTypeId } from '../domain/model/testType/TestTypeId';
 
 export function aNewUser() {
   return new User(new UserId(), anEmail());
@@ -62,4 +64,12 @@ export function aRoleWithPermissions(
 
 export function aPermission(permissionName = 'ADD_PCR_TEST') {
   return new Permission(permissionName);
+}
+
+export function aTestType(
+  name = 'PCR',
+  permission = 'PCR_PERMISSION',
+  resultsSchema = {}
+) {
+  return new TestType(new TestTypeId(), name, resultsSchema, permission);
 }

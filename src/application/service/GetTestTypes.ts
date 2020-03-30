@@ -4,7 +4,7 @@ import { TestType } from '../../domain/model/testType/TestType';
 export class GetTestTypes {
   constructor(private testTypeRepository: TestTypeRepository) {}
 
-  async byTrusted(trusted: boolean): Promise<Array<TestType>> {
-    return this.testTypeRepository.findByTrusted(trusted);
+  async forPermissions(permissions: string[]): Promise<Array<TestType>> {
+    return this.testTypeRepository.findByPermissions(permissions);
   }
 }

@@ -5,7 +5,7 @@ export async function up(db: knex) {
     table.uuid('id').primary();
     table.string('name').unique().notNullable();
     table.jsonb('results_schema').notNullable();
-    table.boolean('require_trusted').notNullable();
+    table.string('needed_permission_to_add_results').notNullable().index();
   });
 }
 

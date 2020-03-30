@@ -27,6 +27,18 @@ export interface User {
   address?: Address;
 }
 
+export interface TestType {
+  id: string;
+  name: string;
+  resultsSchema: object;
+}
+
+export interface CreateTestTypeCommand {
+  name: string;
+  resultsSchema: object;
+  neededPermissionToAddResults: string;
+}
+
 export interface Role {
   name: string;
   permissions: string[];

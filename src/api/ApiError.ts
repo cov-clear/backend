@@ -16,4 +16,6 @@ export const apiErrorCodes = {
   ROLE_NOT_FOUND: 'role.not-found',
   PERMISSION_NOT_FOUND: 'permission.not-found',
   RESOURCE_NOT_FOUND: 'resource.not-found',
+
+  TEST_TYPE_NAME_CONFLICT: 'test-type.name-already-exists',
 };
