@@ -11,6 +11,8 @@ import {
   ASSIGN_ROLE_TO_USER,
   CREATE_NEW_PERMISSION,
   CREATE_NEW_ROLE,
+  LIST_PERMISSIONS,
+  LIST_ROLES,
 } from '../domain/model/authentication/Permissions';
 import { ADMIN, DOCTOR } from '../domain/model/authentication/Roles';
 import { User } from '../domain/model/user/User';
@@ -88,10 +90,14 @@ async function createAdminRole(admin: User) {
   role.assignPermission(new Permission(ASSIGN_PERMISSION_TO_ROLE), admin.id);
   role.assignPermission(new Permission(CREATE_NEW_ROLE), admin.id);
   role.assignPermission(new Permission(CREATE_NEW_PERMISSION), admin.id);
+  role.assignPermission(new Permission(LIST_ROLES), admin.id);
+  role.assignPermission(new Permission(LIST_PERMISSIONS), admin.id);
   return await roleRepository.save(role);
 }
 
 async function createPermissions() {
+  await permissionRepository.save(new Permission(LIST_ROLES));
+  await permissionRepository.save(new Permission(LIST_PERMISSIONS));
   await permissionRepository.save(new Permission(ASSIGN_ROLE_TO_USER));
   await permissionRepository.save(new Permission(ASSIGN_PERMISSION_TO_ROLE));
   await permissionRepository.save(new Permission(CREATE_NEW_ROLE));
