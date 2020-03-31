@@ -110,7 +110,7 @@ describe('test endpoints', () => {
         .expect(422);
     });
 
-    it('returns 200 with the existing test if user is found', async () => {
+    it('returns 201 with the new test if user is found', async () => {
       const user = await userRepository.save(aNewUser());
       const testType = await testTypeRepository.save(aTestType());
 
@@ -128,7 +128,7 @@ describe('test endpoints', () => {
           Authorization: `Bearer ${await getTokenForUser(user)}`,
         })
         .send(validTest)
-        .expect(200)
+        .expect(201)
         .expect((response) => {
           expect(response.body.testTypeId).toEqual(validTest.testTypeId);
           expect(response.body.id).toBeDefined();

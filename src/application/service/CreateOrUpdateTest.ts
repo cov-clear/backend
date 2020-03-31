@@ -6,7 +6,12 @@ import { TestRepository } from '../../domain/model/test/TestRepository';
 import { getTestTypes } from './index';
 import { TestTypeId } from '../../domain/model/testType/TestTypeId';
 import { TestCommand } from '../../api/interface/index';
-import jsonschema from 'jsonschema';
+import Ajv from 'ajv';
+
+const jsonSchema = new Ajv({
+  strictDefaults: true,
+  strictKeywords: true,
+});
 
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
 import { ResourceNotFoundError } from '../../domain/model/ResourceNotFoundError';
@@ -23,10 +28,10 @@ export class CreateOrUpdateTest {
     }
 
     if (results) {
-      const validator = new jsonschema.Validator();
-      const isValid =
-        validator.validate(results.details, testType.resultsSchema).errors
-          .length === 0;
+      const isValid = jsonSchema.validate(
+        testType.resultsSchema,
+        results.details
+      );
 
       if (!isValid) {
         throw new DomainValidationError(
