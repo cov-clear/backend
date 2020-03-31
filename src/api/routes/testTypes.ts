@@ -53,5 +53,6 @@ function mapTestTypeToApiResponse(testType: TestType): ApiTestType {
     id: testType.id.value,
     name: testType.name,
     resultsSchema: testType.resultsSchema,
+    neededPermissionToAddResults: testType.neededPermissionToAddResults,
   };
 }
