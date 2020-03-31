@@ -13,7 +13,7 @@ describe('PsqlTestTypeRepository', () => {
     await cleanupDatabase();
   });
 
-  it('inserts new and retrieves a test type by id', async () => {
+  it('inserts new and retrieves a test type by trusted', async () => {
     const pcrPermission = 'PCR_PERMISSION';
     const takeHomePermission = 'TAKE_HOME_PERMISSION';
     const testType1 = await psqlTestTypeRepository.save(
@@ -73,6 +73,18 @@ describe('PsqlTestTypeRepository', () => {
     const persistedTypes = await psqlTestTypeRepository.findByPermissions([]);
 
     expect(persistedTypes).toEqual([]);
+  });
+
+  it('inserts new and retrieves a test type by id', async () => {
+    const testType = await psqlTestTypeRepository.save(
+      new TestType(new TestTypeId(), 'PCR', {}, 'PCR_PERMISSION')
+    );
+
+    const persistedTestType = await psqlTestTypeRepository.findById(
+      testType.id
+    );
+
+    expect(persistedTestType).toEqual(testType);
   });
 });
 

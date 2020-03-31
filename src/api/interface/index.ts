@@ -47,3 +47,8 @@ export interface Role {
 export interface Permission {
   name: string;
 }
+
+export interface Test {
+  testTypeId: string;
+  results: object;
+}
