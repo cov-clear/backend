@@ -1,12 +1,12 @@
 import AsyncRouter from '../AsyncRouter';
 import { Response } from 'express';
+
 import {
   createOrUpdateTest,
   getTests,
   accessManagerFactory,
 } from '../../application/service';
 
-import { ApiError, apiErrorCodes } from '../ApiError';
 import {
   AuthenticatedRequest,
   getAuthenticationOrFail,
@@ -16,7 +16,7 @@ import { Test } from '../../domain/model/test/Test';
 import { UserId } from '../../domain/model/user/UserId';
 
 import { isAuthenticated } from '../middleware/isAuthenticated';
-
+import { ApiError, apiErrorCodes } from '../ApiError';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
 import { ResourceNotFoundError } from '../../domain/model/ResourceNotFoundError';
 
@@ -77,8 +77,19 @@ export default () => {
         throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
       }
 
+      const authentication = getAuthenticationOrFail(req);
+
+      const canAccessUser = await accessManagerFactory
+        .forAuthentication(authentication)
+        .canAccessUser(userId);
+
       try {
-        const test = await createOrUpdateTest.execute(id, payload);
+        const test = await createOrUpdateTest.execute(
+          authentication.user.id.value,
+          id,
+          payload
+        );
+
         return res.status(201).json(mapTestToApiTest(test));
       } catch (error) {
         if (error instanceof ResourceNotFoundError) {

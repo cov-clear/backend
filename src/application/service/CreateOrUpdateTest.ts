@@ -1,56 +1,62 @@
 import { UserId } from '../../domain/model/user/UserId';
 import { Test } from '../../domain/model/test/Test';
 import { TestId } from '../../domain/model/test/TestId';
-import { Results } from '../../domain/model/test/Results';
-import { TestRepository } from '../../domain/model/test/TestRepository';
-import { getTestTypes } from './index';
 import { TestTypeId } from '../../domain/model/testType/TestTypeId';
-import { TestCommand } from '../../api/interface/index';
-import Ajv from 'ajv';
+import { Results } from '../../domain/model/test/Results';
 
-const jsonSchema = new Ajv({
-  strictDefaults: true,
-  strictKeywords: true,
-});
+import { TestRepository } from '../../domain/model/test/TestRepository';
+import { TestTypeRepository } from '../../domain/model/testType/TestTypeRepository';
+
+import { getTestTypes } from './index';
+import { TestCommand } from '../../api/interface/index';
+
+import { testResultsFactory } from './index';
 
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
 import { ResourceNotFoundError } from '../../domain/model/ResourceNotFoundError';
 
 export class CreateOrUpdateTest {
-  constructor(private testRepository: TestRepository) {}
+  constructor(
+    private testRepository: TestRepository,
+    private testTypeRepository: TestTypeRepository
+  ) {}
 
-  public async execute(userId: string, payload: TestCommand): Promise<Test> {
-    const { testTypeId, results } = payload;
-    const testType = await getTestTypes.byId(testTypeId);
+  public async execute(
+    actorUserId: string,
+    subjectUserId: string,
+    testCommand: TestCommand
+  ): Promise<Test> {
+    const { testTypeId } = testCommand;
+
+    if (!testTypeId) {
+      throw new DomainValidationError(
+        'test.testTypeId',
+        'Tests require a test type'
+      );
+    }
+
+    const testType = await this.testTypeRepository.findById(
+      new TestTypeId(testTypeId)
+    );
 
     if (!testType) {
       throw new ResourceNotFoundError('testTypeId', testTypeId);
     }
 
-    if (results) {
-      const isValid = jsonSchema.validate(
-        testType.resultsSchema,
-        results.details
-      );
-
-      if (!isValid) {
-        throw new DomainValidationError(
-          'results.details',
-          'Invalid results format'
-        );
-      }
-    }
-
-    const resultsObject =
-      results && results.details
-        ? new Results(new UserId(userId), results.details)
+    const results =
+      testCommand.results && testCommand.results.details
+        ? testResultsFactory.create(
+            new UserId(actorUserId),
+            testType,
+            testCommand.results.details
+          )
         : undefined;
 
     const test = new Test(
       new TestId(),
-      new UserId(userId),
+      new UserId(subjectUserId),
       new TestTypeId(testTypeId),
-      resultsObject
+      results
     );
 
     return this.testRepository.save(test);
