@@ -135,7 +135,7 @@ describe('test endpoints', () => {
     //     .expect(403);
     // });
 
-    it('returns 200 if a user with an access pass and permission tries to create a test for another user', async () => {
+    it('returns 201 if a user with an access pass and permission tries to create a test for another user', async () => {
       const actorUser = await userRepository.save(aNewUser());
       // TODO give the actor the necessary permission
       const subjectUser = await userRepository.save(aNewUser());
@@ -154,7 +154,7 @@ describe('test endpoints', () => {
           Authorization: `Bearer ${await getTokenForUser(actorUser)}`,
         })
         .send(validTest)
-        .expect(200);
+        .expect(201);
     });
 
     it('returns 422 if the test type does not exist', async () => {
