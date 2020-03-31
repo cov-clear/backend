@@ -1,4 +1,6 @@
+import fs from 'fs';
 import mailgun from 'mailgun-js';
+
 import { Email } from '../../domain/model/user/Email';
 import { GenerateAuthToken } from './GenerateAuthToken';
 import { ExchangeAuthCode } from './ExchangeAuthCode';
@@ -77,7 +79,10 @@ export const createMagicLink = new CreateNewMagicLink(
   magicLinkRepository,
   emailNotifier,
   new Email(config.get('emailNotifier.fromEmailHeader')),
-  new URL(config.get('frontend.baseUrl'))
+  new URL(config.get('frontend.baseUrl')),
+  fs
+    .readFileSync(__dirname + '/../../../assets/emails/magic-link.html')
+    .toString()
 );
 
 export const getUser = new GetUser(userRepository);
