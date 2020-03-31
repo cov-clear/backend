@@ -73,7 +73,7 @@ export default () => {
 
       try {
         const test = await createOrUpdateTest.execute(id, payload);
-        return res.status(200).json(mapTestToApiTest(test));
+        return res.status(201).json(mapTestToApiTest(test));
       } catch (error) {
         if (error instanceof ResourceNotFoundError) {
           throw new ApiError(422, `${error.resourceName}.not-found`);
