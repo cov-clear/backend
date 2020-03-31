@@ -47,9 +47,9 @@ export function mapApiAddressToAddress(
   return address
     ? {
         address1: address.address1,
-        address2: address.address2,
+        address2: address.address2 || undefined,
         country: new Country(address.countryCode),
-        region: address.region,
+        region: address.region || undefined,
         city: address.city,
         postcode: address.postcode,
       }
