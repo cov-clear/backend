@@ -17,6 +17,7 @@ import {
 } from '../../infrastructure/persistence';
 
 import { aNewUser, aTestType, aTest } from '../../test/domainFactories';
+import { persistedUserWithRoleAndPermissions } from '../../test/persistedEntities';
 
 describe('test endpoints', () => {
   const app = expressApp();
@@ -110,34 +111,33 @@ describe('test endpoints', () => {
         .expect(404);
     });
 
-    // it("returns 403 if a user with an access pass but wrong permission tries to create a test for another user", async () => {
-    //   const actorUser = await userRepository.save(aNewUser());
-    //   const subjectUser = await userRepository.save(aNewUser());
-    //
-    //   const testType = await testTypeRepository.save(aTestType());
-    //   const test = await testRepository.save(aTest(subjectUser.id));
-    //
-    //   const accessPass = new AccessPass(actorUser.id, subjectUser.id);
-    //   await accessPassRepository.save(accessPass);
-    //
-    //   const validTest = getValidTestCommand(testType.id, actorUser.id);
-    //
-    //   await request(app)
-    //     .post(`/api/v1/users/${subjectUser.id.value}/tests`)
-    //     .set({
-    //       Authorization: `Bearer ${await getTokenForUser(actorUser)}`,
-    //     })
-    //     .send(validTest)
-    //     .expect(403);
-    // });
-
-    it('returns 201 if a user with an access pass and permission tries to create a test for another user', async () => {
+    it('returns 403 if a user with an access pass but wrong permission tries to create a test for another user', async () => {
       const actorUser = await userRepository.save(aNewUser());
-      // TODO give the actor the necessary permission
       const subjectUser = await userRepository.save(aNewUser());
 
       const testType = await testTypeRepository.save(aTestType());
       const test = await testRepository.save(aTest(subjectUser.id));
+
+      const accessPass = new AccessPass(actorUser.id, subjectUser.id);
+      await accessPassRepository.save(accessPass);
+
+      const validTest = getValidTestCommand(testType.id, actorUser.id);
+
+      await request(app)
+        .post(`/api/v1/users/${subjectUser.id.value}/tests`)
+        .set({
+          Authorization: `Bearer ${await getTokenForUser(actorUser)}`,
+        })
+        .send(validTest)
+        .expect(403);
+    });
+
+    it('returns 201 if a user with an access pass and permission tries to create a test for another user', async () => {
+      const testType = await testTypeRepository.save(aTestType());
+      const actorUser = await persistedUserWithRoleAndPermissions('TESTER', [
+        testType.neededPermissionToAddResults,
+      ]);
+      const subjectUser = await userRepository.save(aNewUser());
 
       const accessPass = new AccessPass(actorUser.id, subjectUser.id);
       await accessPassRepository.save(accessPass);
@@ -182,8 +182,10 @@ describe('test endpoints', () => {
     });
 
     it('returns 201 with the new test if user is found', async () => {
-      const user = await userRepository.save(aNewUser());
       const testType = await testTypeRepository.save(aTestType());
+      const user = await persistedUserWithRoleAndPermissions('TESTER', [
+        testType.neededPermissionToAddResults,
+      ]);
 
       const validTest = getValidTestCommand(testType.id, user.id);
 

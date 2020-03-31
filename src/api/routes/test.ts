@@ -2,9 +2,9 @@ import AsyncRouter from '../AsyncRouter';
 import { Response } from 'express';
 
 import {
+  accessManagerFactory,
   createOrUpdateTest,
   getTests,
-  accessManagerFactory,
 } from '../../application/service';
 
 import {
@@ -19,6 +19,7 @@ import { isAuthenticated } from '../middleware/isAuthenticated';
 import { ApiError, apiErrorCodes } from '../ApiError';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
 import { ResourceNotFoundError } from '../../domain/model/ResourceNotFoundError';
+import { AccessDeniedError } from '../../domain/model/AccessDeniedError';
 
 export default () => {
   const route = new AsyncRouter();
@@ -64,41 +65,30 @@ export default () => {
       const { id } = req.params;
       const payload = req.body;
       const userId = new UserId(id);
+      const authentication = getAuthenticationOrFail(req);
+      const accessManager = accessManagerFactory.forAuthentication(
+        authentication
+      );
 
-      const isLoggedInAsUser = accessManagerFactory
-        .forAuthentication(getAuthenticationOrFail(req))
-        .isLoggedInAsUser(userId);
-
-      const hasAccessPassForUser = await accessManagerFactory
-        .forAuthentication(getAuthenticationOrFail(req))
-        .hasAccessPassForUser(userId);
+      const isLoggedInAsUser = accessManager.isLoggedInAsUser(userId);
+      const hasAccessPassForUser = await accessManager.hasAccessPassForUser(
+        userId
+      );
 
       if (!isLoggedInAsUser && !hasAccessPassForUser) {
         throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
       }
 
-      const authentication = getAuthenticationOrFail(req);
-
-      const canAccessUser = await accessManagerFactory
-        .forAuthentication(authentication)
-        .canAccessUser(userId);
-
       try {
         const test = await createOrUpdateTest.execute(
-          authentication.user.id.value,
+          authentication.user,
           id,
           payload
         );
 
         return res.status(201).json(mapTestToApiTest(test));
       } catch (error) {
-        if (error instanceof ResourceNotFoundError) {
-          throw new ApiError(422, `${error.resourceName}.not-found`);
-        }
-        if (error instanceof DomainValidationError) {
-          throw new ApiError(422, `test.invalid.${error.field}`, error.reason);
-        }
-        throw error;
+        handleCreationError(error);
       }
     }
   );
@@ -138,4 +128,17 @@ export function mapTestToApiTest(test: Test | null) {
   };
 
   return apiTest;
+}
+
+function handleCreationError(error: Error) {
+  if (error instanceof AccessDeniedError) {
+    throw new ApiError(403, apiErrorCodes.ACCESS_DENIED);
+  }
+  if (error instanceof ResourceNotFoundError) {
+    throw new ApiError(422, `${error.resourceName}.not-found`);
+  }
+  if (error instanceof DomainValidationError) {
+    throw new ApiError(422, `test.invalid.${error.field}`, error.reason);
+  }
+  throw error;
 }

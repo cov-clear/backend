@@ -26,7 +26,7 @@ import { CreateAccessPass } from './CreateAccessPass';
 
 import { LoggingEmailNotifier } from '../../infrastructure/emails/LoggingEmailNotifier';
 import { MailGunEmailNotifier } from '../../infrastructure/emails/MailGunEmailNotifier';
-import { CreateOrUpdateTest } from './CreateOrUpdateTest';
+import { CreateTest } from './CreateTest';
 import { GetTests } from './GetTests';
 import { AssignRoleToUser } from './AssignRoleToUser';
 
@@ -110,7 +110,7 @@ export const getTestTypes = new GetTestTypes(testTypeRepository);
 
 export const createSharingCode = new CreateSharingCode(sharingCodeRepository);
 
-export const createOrUpdateTest = new CreateOrUpdateTest(
+export const createOrUpdateTest = new CreateTest(
   testRepository,
   testTypeRepository
 );
