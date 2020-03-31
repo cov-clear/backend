@@ -10,13 +10,16 @@ function pinoConfig(config: any): pino.LoggerOptions {
     level: config.get('logLevels.messages'),
   };
 
-  if (config.isDevelopment) {
+  try {
+    // Enable pretty printing only if the module is installed
+    require.resolve('pino-pretty');
+
     cfg.prettyPrint = {
       colorize: true,
       ignore: 'pid,hostname',
       translateTime: true,
     };
-  }
+  } catch (e) {}
 
   return cfg;
 }
