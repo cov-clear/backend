@@ -2,6 +2,7 @@ import { getExistingOrCreateNewUser } from '../application/service';
 import {
   permissionRepository,
   roleRepository,
+  testTypeRepository,
   userRepository,
 } from '../infrastructure/persistence';
 import { Permission } from '../domain/model/authentication/Permission';
@@ -20,6 +21,8 @@ import { Profile } from '../domain/model/user/Profile';
 import { Sex } from '../domain/model/user/Sex';
 import { DateOfBirth } from '../domain/model/user/DateOfBirth';
 import { anAddress } from '../test/domainFactories';
+import { TestType } from '../domain/model/testType/TestType';
+import { TestTypeId } from '../domain/model/testType/TestTypeId';
 
 export async function createSeedDataForTestingPeriod() {
   const admin = await createAdminAccount();
@@ -29,6 +32,7 @@ export async function createSeedDataForTestingPeriod() {
   await createPermissions();
   const doctorRole = await createDoctorRole(admin);
   const adminRole = await createAdminRole(admin);
+  await createDefaultTestType();
 
   admin.assignRole(adminRole, admin.id);
   doctor.assignRole(doctorRole, admin.id);
@@ -102,4 +106,40 @@ async function createPermissions() {
   await permissionRepository.save(new Permission(ASSIGN_PERMISSION_TO_ROLE));
   await permissionRepository.save(new Permission(CREATE_NEW_ROLE));
   await permissionRepository.save(new Permission(CREATE_NEW_PERMISSION));
+}
+
+async function createDefaultTestType() {
+  const takeHomePermission = 'TAKE_HOME_PERMISSION';
+
+  const resultsSchema = {
+    $id: 'https://example.com/test.schema.json',
+    $schema: 'http://json-schema.org/draft-07/schema#',
+    title: 'COVID-19 Take Home Test',
+    type: 'object',
+    properties: {
+      c: {
+        title: 'Control',
+        type: 'boolean',
+        description: "Indicator if sample doesn't show COVID-19",
+      },
+      IgG: {
+        title: 'IgG',
+        type: 'boolean',
+        description: 'Indicator if sample shows IgG positive',
+      },
+      IgM: {
+        title: 'Control',
+        type: 'boolean',
+        description: 'Indicator if sample shows IgM positive',
+      },
+    },
+  };
+
+  const testType = new TestType(
+    new TestTypeId(),
+    'COVID19 Take Home Test',
+    resultsSchema,
+    takeHomePermission
+  );
+  await testTypeRepository.save(testType);
 }
