@@ -35,11 +35,11 @@
     <mj-section>
       <mj-column vertical-align="middle" width="100%">
         <mj-text>Hello,</mj-text>
-        <mj-text>Here’s your secure sign in link for Cov-Clear</mj-text>
-        <mj-button href="{{LINK}}">Sign in to CovClear</mj-button>
+        <mj-text>Here’s your secure sign in link for COV-Clear</mj-text>
+        <mj-button href="{{LINK}}">Sign in to COV-Clear</mj-button>
         <mj-text mj-class="secondary-text">Or copy/paste this link into your browser: {{LINK}}</mj-text>
         <mj-text>This link expires in 1 hour, and can only be used once.</mj-text>
-				<mj-text>Thanks,<br/>The CovClear team</mj-text>
+				<mj-text>Thanks,<br/>The COV-Clear team</mj-text>
       </mj-column>
     </mj-section>
   </mj-body>
