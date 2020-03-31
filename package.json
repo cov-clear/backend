@@ -47,6 +47,7 @@
     "express-pino-logger": "^4.0.0",
     "husky": "^4.2.3",
     "jest": "^25.1.0",
+    "jsonschema": "^1.2.5",
     "lint-staged": "^10.0.8",
     "mockdate": "^2.0.5",
     "nodemon": "^2.0.2",
