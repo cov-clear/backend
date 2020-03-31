@@ -11,7 +11,8 @@ export class CreateNewMagicLink {
     private magicLinkRepository: MagicLinkRepository,
     private emailNotifier: EmailNotifier,
     private fromEmailHeader: Email,
-    private frontendBaseUrl: URL
+    private frontendBaseUrl: URL,
+    private emailTemplate: string
   ) {}
 
   public async execute(emailValue: string) {
@@ -19,12 +20,14 @@ export class CreateNewMagicLink {
       new MagicLink(new MagicLinkCode(), new Email(emailValue))
     );
 
-    // TODO: Create the final copies and template of the email
-    await this.emailNotifier.send(
+    this.emailNotifier.send(
       this.fromEmailHeader,
       magicLink.email,
-      'Create a new account with COV-Clear',
-      `Here is your link: ${this.frontendBaseUrl}link/${magicLink.code.value}`
+      'Sign in to COV-Clear',
+      this.emailTemplate.replace(
+        /{{LINK}}/g,
+        `${this.frontendBaseUrl}link/${magicLink.code.value}`
+      )
     );
 
     return magicLink;
