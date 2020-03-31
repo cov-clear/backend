@@ -5,12 +5,8 @@ import { cleanupDatabase } from '../../test/cleanupDatabase';
 import { getTokenForUser } from '../../test/authentication';
 
 import { v4 as uuidv4 } from 'uuid';
-import { Test } from '../../domain/model/test/Test';
-import { TestId } from '../../domain/model/test/TestId';
 import { TestTypeId } from '../../domain/model/testType/TestTypeId';
 import { UserId } from '../../domain/model/user/UserId';
-import { User } from '../../domain/model/user/User';
-import { Email } from '../../domain/model/user/Email';
 import { AccessPass } from '../../domain/model/accessPass/AccessPass';
 
 import {
