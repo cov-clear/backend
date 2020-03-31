@@ -31,6 +31,7 @@ export interface TestType {
   id: string;
   name: string;
   resultsSchema: object;
+  neededPermissionToAddResults: string;
 }
 
 export interface CreateTestTypeCommand {
