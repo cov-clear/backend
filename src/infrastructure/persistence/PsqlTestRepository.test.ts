@@ -18,12 +18,8 @@ describe('PsqlTestRepository', () => {
   });
 
   it('inserts new and retrieves a test by id', async () => {
-    const testTypeId = new TestTypeId();
-
-    const user = new User(new UserId(), new Email('harsh@example.com'));
-
     const test = await psqlTestRepository.save(
-      new Test(new TestId(), user.id, testTypeId, new Date())
+      new Test(new TestId(), new UserId(), new TestTypeId())
     );
 
     const persistedTest = await psqlTestRepository.findById(test.id);
@@ -32,20 +28,19 @@ describe('PsqlTestRepository', () => {
   });
 
   it('inserts two new tests and retrieves them by User Id', async () => {
-    const user = new User(new UserId(), new Email('harsh@example.com'));
-
+    const userId = new UserId();
     const testTypeId = new TestTypeId();
 
-    let tests = Array<Test>();
-    tests.push(new Test(new TestId(), user.id, testTypeId, new Date()));
-    tests.push(new Test(new TestId(), user.id, testTypeId, new Date()));
+    const test1 = new Test(new TestId(), userId, testTypeId);
+    const test2 = new Test(new TestId(), userId, testTypeId);
 
-    for (let test of tests) {
-      await psqlTestRepository.save(test);
-    }
+    await psqlTestRepository.save(test1);
+    await psqlTestRepository.save(test2);
 
-    const persistedTest = await psqlTestRepository.findByUserId(user.id);
-    expect(persistedTest).toEqual(tests);
+    const persistedTests = await psqlTestRepository.findByUserId(userId);
+
+    expect(persistedTests[0]).toEqual(test1);
+    expect(persistedTests[1]).toEqual(test2);
   });
 });
 

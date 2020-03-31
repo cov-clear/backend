@@ -14,6 +14,9 @@ import {
 import { Test } from '../../domain/model/test/Test';
 import { isAuthenticated } from '../middleware/isAuthenticated';
 
+import { DomainValidationError } from '../../domain/model/DomainValidationError';
+import { ResourceNotFoundError } from '../../domain/model/ResourceNotFoundError';
+
 export default () => {
   const route = new AsyncRouter();
 
@@ -68,8 +71,18 @@ export default () => {
         throw new ApiError(404, 'user-not-found - userId - ' + id);
       }
 
-      const test = await createOrUpdateTest.execute(id, payload);
-      return res.status(200).json(mapTestToApiTest(test));
+      try {
+        const test = await createOrUpdateTest.execute(id, payload);
+        return res.status(200).json(mapTestToApiTest(test));
+      } catch (error) {
+        if (error instanceof ResourceNotFoundError) {
+          throw new ApiError(422, `${error.resourceName}.not-found`);
+        }
+        if (error instanceof DomainValidationError) {
+          throw new ApiError(422, `test.invalid.${error.field}`, error.reason);
+        }
+        throw error;
+      }
     }
   );
 
