@@ -84,7 +84,9 @@ describe('user endpoints', () => {
       const actorUser = await userRepository.save(aNewUser());
       const subjectUser = await userRepository.save(aNewUser());
 
-      accessPassRepository.save(new AccessPass(actorUser.id, subjectUser.id));
+      await accessPassRepository.save(
+        new AccessPass(actorUser.id, subjectUser.id)
+      );
 
       await request(app)
         .get(`/api/v1/users/${subjectUser.id.value}`)
@@ -107,7 +109,7 @@ describe('user endpoints', () => {
         new Date('1970-01-01')
       );
 
-      accessPassRepository.save(accessPass);
+      await accessPassRepository.save(accessPass);
 
       await request(app)
         .get(`/api/v1/users/${subjectUser.id.value}`)
@@ -143,7 +145,9 @@ describe('user endpoints', () => {
       const subjectUser = await userRepository.save(aNewUser());
       const address = anApiAddress();
 
-      accessPassRepository.save(new AccessPass(actorUser.id, subjectUser.id));
+      await accessPassRepository.save(
+        new AccessPass(actorUser.id, subjectUser.id)
+      );
 
       await request(app)
         .patch(`/api/v1/users/${subjectUser.id.value}`)
