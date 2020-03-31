@@ -48,7 +48,11 @@ export interface Permission {
   name: string;
 }
 
-export interface Test {
+export interface TestCommand {
   testTypeId: string;
-  results: object;
+  results?: TestResultsCommand;
+}
+
+export interface TestResultsCommand {
+  details: object;
 }

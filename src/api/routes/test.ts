@@ -1,18 +1,24 @@
 import AsyncRouter from '../AsyncRouter';
 import { Response } from 'express';
+
 import {
   createOrUpdateTest,
   getUser,
   getTests,
   accessManagerFactory,
 } from '../../application/service';
-import { ApiError, apiErrorCodes } from '../ApiError';
+
 import {
   AuthenticatedRequest,
   getAuthenticationOrFail,
 } from '../AuthenticatedRequest';
+
 import { Test } from '../../domain/model/test/Test';
+
 import { isAuthenticated } from '../middleware/isAuthenticated';
+import { ApiError, apiErrorCodes } from '../ApiError';
+import { DomainValidationError } from '../../domain/model/DomainValidationError';
+import { ResourceNotFoundError } from '../../domain/model/ResourceNotFoundError';
 
 export default () => {
   const route = new AsyncRouter();
@@ -68,8 +74,29 @@ export default () => {
         throw new ApiError(404, 'user-not-found - userId - ' + id);
       }
 
-      const test = await createOrUpdateTest.execute(id, payload);
-      return res.status(200).json(mapTestToApiTest(test));
+      const authentication = getAuthenticationOrFail(req);
+
+      const canAccessUser = await accessManagerFactory
+        .forAuthentication(authentication)
+        .canAccessUser(user.id);
+
+      try {
+        const test = await createOrUpdateTest.execute(
+          authentication.user.id.value,
+          id,
+          payload
+        );
+
+        return res.status(201).json(mapTestToApiTest(test));
+      } catch (error) {
+        if (error instanceof ResourceNotFoundError) {
+          throw new ApiError(422, `${error.resourceName}.not-found`);
+        }
+        if (error instanceof DomainValidationError) {
+          throw new ApiError(422, `test.invalid.${error.field}`, error.reason);
+        }
+        throw error;
+      }
     }
   );
 

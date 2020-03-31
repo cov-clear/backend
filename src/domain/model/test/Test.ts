@@ -8,7 +8,7 @@ export class Test {
     public id: TestId,
     public userId: UserId,
     public testTypeId: TestTypeId,
-    readonly creationTime: Date = new Date(),
-    public results?: Results
+    public results?: Results,
+    readonly creationTime: Date = new Date()
   ) {}
 }

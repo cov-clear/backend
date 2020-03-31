@@ -50,6 +50,7 @@ export class PsqlTestRepository implements TestRepository {
       new TestId(linkRow.id),
       new UserId(linkRow.userId),
       new TestTypeId(linkRow.testTypeId),
+      undefined,
       linkRow.creationTime
     );
   }
@@ -59,7 +60,8 @@ export class PsqlTestRepository implements TestRepository {
 
     testRows = await this.db(TEST_TABLE_NAME)
       .where('user_id', '=', userId.value)
-      .select(TEST_TABLE_COLUMNS);
+      .select(TEST_TABLE_COLUMNS)
+      .orderBy('creation_time', 'asc');
 
     if (!testRows) {
       return [];
@@ -71,6 +73,7 @@ export class PsqlTestRepository implements TestRepository {
           new TestId(testRow.id),
           new UserId(testRow.userId),
           new TestTypeId(testRow.testTypeId),
+          undefined,
           testRow.creationTime
         )
     );
