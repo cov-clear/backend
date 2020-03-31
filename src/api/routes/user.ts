@@ -1,27 +1,32 @@
 import AsyncRouter from '../AsyncRouter';
 import { Response } from 'express';
+
 import {
   accessManagerFactory,
   getUser,
   updateUser,
 } from '../../application/service';
-import { ApiError, apiErrorCodes } from '../ApiError';
+
 import {
   Address as ApiAddress,
   Profile as ApiProfile,
   UpdateUserCommand,
   User as ApiUser,
 } from '../interface';
-import { DomainValidationError } from '../../domain/model/DomainValidationError';
+
 import { User } from '../../domain/model/user/User';
 import { Address } from '../../domain/model/user/Address';
+import { Profile } from '../../domain/model/user/Profile';
+import { UserId } from '../../domain/model/user/UserId';
+
 import { isAuthenticated } from '../middleware/isAuthenticated';
 import {
   AuthenticatedRequest,
   getAuthenticationOrFail,
 } from '../AuthenticatedRequest';
-import { Profile } from '../../domain/model/user/Profile';
-import { UserId } from '../../domain/model/user/UserId';
+
+import { ApiError, apiErrorCodes } from '../ApiError';
+import { DomainValidationError } from '../../domain/model/DomainValidationError';
 import { ResourceNotFoundError } from '../../domain/model/ResourceNotFoundError';
 import { UserNotFoundError } from '../../domain/model/user/UserNotFoundError';
 

@@ -3,6 +3,7 @@ import { PsqlTestRepository } from './PsqlTestRepository';
 import { TestTypeId } from '../../domain/model/testType/TestTypeId';
 import { Test } from '../../domain/model/test/Test';
 import { TestId } from '../../domain/model/test/TestId';
+import { Results } from '../../domain/model/test/Results';
 import { User } from '../../domain/model/user/User';
 import { UserId } from '../../domain/model/user/UserId';
 import { Email } from '../../domain/model/user/Email';
@@ -17,13 +18,9 @@ describe('PsqlTestRepository', () => {
     await cleanupDatabase();
   });
 
-  it('inserts new and retrieves a test by id', async () => {
-    const testTypeId = new TestTypeId();
-
-    const user = new User(new UserId(), new Email('harsh@example.com'));
-
+  it('inserts a test without results and retrieves it by id', async () => {
     const test = await psqlTestRepository.save(
-      new Test(new TestId(), user.id, testTypeId, new Date())
+      new Test(new TestId(), new UserId(), new TestTypeId())
     );
 
     const persistedTest = await psqlTestRepository.findById(test.id);
@@ -31,21 +28,42 @@ describe('PsqlTestRepository', () => {
     expect(persistedTest).toEqual(test);
   });
 
-  it('inserts two new tests and retrieves them by User Id', async () => {
-    const user = new User(new UserId(), new Email('harsh@example.com'));
+  it('inserts a test with results and retrieves it by id', async () => {
+    const userId = new UserId();
+    const details = { a: 1 };
+    const results = new Results(userId, details);
 
+    const test = await psqlTestRepository.save(
+      new Test(new TestId(), userId, new TestTypeId(), results)
+    );
+
+    const persistedTest = await psqlTestRepository.findById(test.id)!;
+
+    if (persistedTest && persistedTest.results) {
+      expect(persistedTest).toBeDefined();
+      expect(persistedTest).toEqual(test);
+      expect(persistedTest.results).not.toBeNull();
+      expect(persistedTest.results).toBeDefined();
+      expect(persistedTest.results.details).toEqual(details);
+    } else {
+      expect(true).toBe(false);
+    }
+  });
+
+  it('inserts two new tests and retrieves them by User Id', async () => {
+    const userId = new UserId();
     const testTypeId = new TestTypeId();
 
-    let tests = Array<Test>();
-    tests.push(new Test(new TestId(), user.id, testTypeId, new Date()));
-    tests.push(new Test(new TestId(), user.id, testTypeId, new Date()));
+    const test1 = new Test(new TestId(), userId, testTypeId);
+    const test2 = new Test(new TestId(), userId, testTypeId);
 
-    for (let test of tests) {
-      await psqlTestRepository.save(test);
-    }
+    await psqlTestRepository.save(test1);
+    await psqlTestRepository.save(test2);
 
-    const persistedTest = await psqlTestRepository.findByUserId(user.id);
-    expect(persistedTest).toEqual(tests);
+    const persistedTests = await psqlTestRepository.findByUserId(userId);
+
+    expect(persistedTests[0]).toEqual(test1);
+    expect(persistedTests[1]).toEqual(test2);
   });
 });
 

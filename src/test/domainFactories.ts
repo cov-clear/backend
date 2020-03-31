@@ -11,6 +11,9 @@ import { Permission } from '../domain/model/authentication/Permission';
 import { v4 } from 'uuid';
 import { TestType } from '../domain/model/testType/TestType';
 import { TestTypeId } from '../domain/model/testType/TestTypeId';
+import { Test } from '../domain/model/test/Test';
+import { TestId } from '../domain/model/test/TestId';
+import { Results } from '../domain/model/test/Results';
 
 export function aNewUser() {
   return new User(new UserId(), anEmail());
@@ -69,7 +72,31 @@ export function aPermission(permissionName = 'ADD_PCR_TEST') {
 export function aTestType(
   name = 'PCR',
   permission = 'PCR_PERMISSION',
-  resultsSchema = {}
+  resultsSchema = {
+    type: 'object',
+    properties: {
+      c: { type: 'boolean', title: 'C' },
+      igg: { type: 'boolean', title: 'IgG' },
+      igm: { type: 'boolean', title: 'IgM' },
+    },
+  }
 ) {
   return new TestType(new TestTypeId(), name, resultsSchema, permission);
+}
+
+export function aTest(
+  userId = new UserId(),
+  testTypeId = new TestTypeId(),
+  results = aResult(userId),
+  testId = new TestId(),
+  creationTime = new Date()
+) {
+  return new Test(testId, userId, testTypeId, results, creationTime);
+}
+
+export function aResult(
+  userId = new UserId(),
+  details = { c: true, igg: true, igm: true }
+) {
+  return new Results(userId, details);
 }

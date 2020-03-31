@@ -1,18 +1,24 @@
 import AsyncRouter from '../AsyncRouter';
 import { Response } from 'express';
+
 import {
   createOrUpdateTest,
-  getUser,
   getTests,
   accessManagerFactory,
 } from '../../application/service';
-import { ApiError, apiErrorCodes } from '../ApiError';
+
 import {
   AuthenticatedRequest,
   getAuthenticationOrFail,
 } from '../AuthenticatedRequest';
+
 import { Test } from '../../domain/model/test/Test';
+import { UserId } from '../../domain/model/user/UserId';
+
 import { isAuthenticated } from '../middleware/isAuthenticated';
+import { ApiError, apiErrorCodes } from '../ApiError';
+import { DomainValidationError } from '../../domain/model/DomainValidationError';
+import { ResourceNotFoundError } from '../../domain/model/ResourceNotFoundError';
 
 export default () => {
   const route = new AsyncRouter();
@@ -22,15 +28,11 @@ export default () => {
     isAuthenticated,
     async (req: AuthenticatedRequest, res: Response) => {
       const { id } = req.params;
-      const user = await getUser.byId(id);
-
-      if (!user) {
-        throw new ApiError(404, 'user.not-found');
-      }
+      const userId = new UserId(id);
 
       const canAccessUser = await accessManagerFactory
         .forAuthentication(getAuthenticationOrFail(req))
-        .canAccessUser(user.id);
+        .canAccessUser(userId);
 
       if (!canAccessUser) {
         throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
@@ -61,15 +63,43 @@ export default () => {
     async (req: AuthenticatedRequest, res: Response) => {
       const { id } = req.params;
       const payload = req.body;
+      const userId = new UserId(id);
 
-      const user = await getUser.byId(id);
+      const isLoggedInAsUser = accessManagerFactory
+        .forAuthentication(getAuthenticationOrFail(req))
+        .isLoggedInAsUser(userId);
 
-      if (!user) {
-        throw new ApiError(404, 'user-not-found - userId - ' + id);
+      const hasAccessPassForUser = await accessManagerFactory
+        .forAuthentication(getAuthenticationOrFail(req))
+        .hasAccessPassForUser(userId);
+
+      if (!isLoggedInAsUser && !hasAccessPassForUser) {
+        throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
       }
 
-      const test = await createOrUpdateTest.execute(id, payload);
-      return res.status(200).json(mapTestToApiTest(test));
+      const authentication = getAuthenticationOrFail(req);
+
+      const canAccessUser = await accessManagerFactory
+        .forAuthentication(authentication)
+        .canAccessUser(userId);
+
+      try {
+        const test = await createOrUpdateTest.execute(
+          authentication.user.id.value,
+          id,
+          payload
+        );
+
+        return res.status(201).json(mapTestToApiTest(test));
+      } catch (error) {
+        if (error instanceof ResourceNotFoundError) {
+          throw new ApiError(422, `${error.resourceName}.not-found`);
+        }
+        if (error instanceof DomainValidationError) {
+          throw new ApiError(422, `test.invalid.${error.field}`, error.reason);
+        }
+        throw error;
+      }
     }
   );
 
@@ -91,10 +121,21 @@ export function mapTestToApiTest(test: Test | null) {
     return null;
   }
 
-  return {
+  const results = test.results
+    ? {
+        details: test.results.details,
+        testerUserId: test.results.createdBy,
+        creationTime: test.results.creationTime,
+      }
+    : null;
+
+  let apiTest = {
     id: test.id.value,
     userId: test.userId.value,
     testTypeId: test.testTypeId.value,
     creationTime: test.creationTime,
+    results,
   };
+
+  return apiTest;
 }

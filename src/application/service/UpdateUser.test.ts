@@ -57,6 +57,22 @@ describe('UpdateUser', () => {
     );
     expect(updatedUser?.address?.region).toEqual(updateCommand.address?.region);
   });
+
+  it('handles empty strings for optional fields correctly', async () => {
+    const address = anApiAddress();
+    address.region = '';
+    address.address2 = '';
+
+    const user = await userRepository.save(aNewUser());
+    const updateCommand = { address } as UpdateUserCommand;
+
+    await updateUser.execute(user.id.value, updateCommand);
+
+    const persistedUser = await userRepository.findByUserId(user.id);
+
+    expect(persistedUser?.address?.address2).toBeUndefined();
+    expect(persistedUser?.address?.region).toBeUndefined();
+  });
 });
 
 afterAll(() => {

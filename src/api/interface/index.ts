@@ -9,7 +9,7 @@ export interface Address {
   address1: string;
   address2?: string;
   city: string;
-  region: string;
+  region?: string;
   postcode: string;
   countryCode: string;
 }
@@ -49,7 +49,11 @@ export interface Permission {
   name: string;
 }
 
-export interface Test {
+export interface TestCommand {
   testTypeId: string;
-  results: object;
+  results?: TestResultsCommand;
+}
+
+export interface TestResultsCommand {
+  details: object;
 }
