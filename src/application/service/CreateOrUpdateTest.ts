@@ -46,7 +46,7 @@ export class CreateOrUpdateTest {
     const results =
       testCommand.results && testCommand.results.details
         ? testResultsFactory.create(
-            actorUserId,
+            new UserId(actorUserId),
             testType,
             testCommand.results.details
           )
