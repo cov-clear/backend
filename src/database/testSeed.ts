@@ -8,6 +8,7 @@ import {
 import { Permission } from '../domain/model/authentication/Permission';
 import { Role } from '../domain/model/authentication/Role';
 import {
+  ADD_TAKE_HOME_TEST_RESULT,
   ASSIGN_PERMISSION_TO_ROLE,
   ASSIGN_ROLE_TO_USER,
   CREATE_NEW_PERMISSION,
@@ -15,7 +16,7 @@ import {
   LIST_PERMISSIONS,
   LIST_ROLES,
 } from '../domain/model/authentication/Permissions';
-import { ADMIN, DOCTOR } from '../domain/model/authentication/Roles';
+import { ADMIN, DOCTOR, USER } from '../domain/model/authentication/Roles';
 import { User } from '../domain/model/user/User';
 import { Profile } from '../domain/model/user/Profile';
 import { Sex } from '../domain/model/user/Sex';
@@ -30,10 +31,13 @@ export async function createSeedDataForTestingPeriod() {
   const doctor = await createDoctorAccount();
 
   await createPermissions();
+
+  const userRole = await createUserRole(admin);
   const doctorRole = await createDoctorRole(admin);
   const adminRole = await createAdminRole(admin);
   await createDefaultTestType();
 
+  patient.assignRole(userRole, admin.id);
   admin.assignRole(adminRole, admin.id);
   doctor.assignRole(doctorRole, admin.id);
 
@@ -84,8 +88,25 @@ async function createAdminAccount() {
   return userRepository.save(admin);
 }
 
+async function createUserRole(admin: User) {
+  let userRole = await roleRepository.findByName(USER);
+  if (!userRole) {
+    userRole = await roleRepository.save(new Role(USER));
+  }
+  userRole.assignPermission(
+    new Permission(ADD_TAKE_HOME_TEST_RESULT),
+    admin.id
+  );
+  return roleRepository.save(userRole);
+}
+
 async function createDoctorRole(admin: User) {
-  return await roleRepository.save(new Role(DOCTOR));
+  const doctorRole = await roleRepository.save(new Role(DOCTOR));
+  doctorRole.assignPermission(
+    new Permission(ADD_TAKE_HOME_TEST_RESULT),
+    admin.id
+  );
+  return roleRepository.save(doctorRole);
 }
 
 async function createAdminRole(admin: User) {
@@ -106,11 +127,10 @@ async function createPermissions() {
   await permissionRepository.save(new Permission(ASSIGN_PERMISSION_TO_ROLE));
   await permissionRepository.save(new Permission(CREATE_NEW_ROLE));
   await permissionRepository.save(new Permission(CREATE_NEW_PERMISSION));
+  await permissionRepository.save(new Permission(ADD_TAKE_HOME_TEST_RESULT));
 }
 
 async function createDefaultTestType() {
-  const takeHomePermission = 'TAKE_HOME_PERMISSION';
-
   const resultsSchema = {
     $id: 'https://example.com/test.schema.json',
     $schema: 'http://json-schema.org/draft-07/schema#',
@@ -139,7 +159,7 @@ async function createDefaultTestType() {
     new TestTypeId(),
     'COVID19 Take Home Test',
     resultsSchema,
-    takeHomePermission
+    ADD_TAKE_HOME_TEST_RESULT
   );
   await testTypeRepository.save(testType);
 }
