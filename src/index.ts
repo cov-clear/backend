@@ -1,6 +1,6 @@
 import * as config from './config';
-import logger from './logger';
 import appLoader from './loaders';
+import logger from './logger';
 
 async function main() {
   const app = await appLoader();
