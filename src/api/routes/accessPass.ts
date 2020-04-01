@@ -4,7 +4,7 @@ import AsyncRouter from '../AsyncRouter';
 import { createAccessPass, getUser, accessManagerFactory } from '../../application/service';
 import { ApiError } from '../ApiError';
 import { UserId } from '../../domain/model/user/UserId';
-import { AccessPassFailedError } from '../../application/service/CreateAccessPass';
+import { AccessPassFailedError } from '../../application/service/access-sharing/CreateAccessPass';
 
 export default () => {
   const route = new AsyncRouter();

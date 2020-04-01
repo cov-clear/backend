@@ -4,7 +4,7 @@ import { v4 } from 'uuid';
 import { createMagicLink } from '../../application/service';
 import database from '../../database';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
-import { AuthorisationFailureReason } from '../../application/service/ExchangeAuthCode';
+import { AuthorisationFailureReason } from '../../application/service/authentication/ExchangeAuthCode';
 
 describe('auth endpoints', () => {
   const app = expressApp();

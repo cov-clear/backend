@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import AsyncRouter from '../AsyncRouter';
 import { createMagicLink, exchangeAuthCode } from '../../application/service';
-import { AuthorisationFailedError } from '../../application/service/ExchangeAuthCode';
+import { AuthorisationFailedError } from '../../application/service/authentication/ExchangeAuthCode';
 import { ApiError } from '../ApiError';
 
 export default () => {
