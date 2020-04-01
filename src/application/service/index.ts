@@ -2,11 +2,11 @@ import fs from 'fs';
 import mailgun from 'mailgun-js';
 
 import { Email } from '../../domain/model/user/Email';
-import { GenerateAuthToken } from './GenerateAuthToken';
-import { ExchangeAuthCode } from './ExchangeAuthCode';
-import { CreateNewMagicLink } from './CreateNewMagicLink';
+import { GenerateAuthToken } from './authentication/GenerateAuthToken';
+import { ExchangeAuthCode } from './authentication/ExchangeAuthCode';
+import { CreateNewMagicLink } from './authentication/CreateNewMagicLink';
 import * as config from '../../config';
-import { GetExistingOrCreateNewUser } from './GetExistingOrCreateNewUser';
+import { GetExistingOrCreateNewUser } from './users/GetExistingOrCreateNewUser';
 import {
   accessPassRepository,
   magicLinkRepository,
@@ -17,29 +17,29 @@ import {
   userRepository,
   testRepository,
 } from '../../infrastructure/persistence';
-import { GetUser } from './GetUser';
-import { UpdateUser } from './UpdateUser';
-import { GetCountries } from './GetCountries';
-import { GetTestTypes } from './GetTestTypes';
-import { CreateSharingCode } from './CreateSharingCode';
-import { CreateAccessPass } from './CreateAccessPass';
+import { GetUser } from './users/GetUser';
+import { UpdateUser } from './users/UpdateUser';
+import { GetCountries } from './users/GetCountries';
+import { GetTestTypes } from './tests/GetTestTypes';
+import { CreateSharingCode } from './access-sharing/CreateSharingCode';
+import { CreateAccessPass } from './access-sharing/CreateAccessPass';
 
 import { LoggingEmailNotifier } from '../../infrastructure/notifications/LoggingEmailNotifier';
 import { MailGunEmailNotifier } from '../../infrastructure/notifications/MailGunEmailNotifier';
-import { CreateTest } from './CreateTest';
-import { GetTests } from './GetTests';
-import { AssignRoleToUser } from './AssignRoleToUser';
+import { CreateTest } from './tests/CreateTest';
+import { GetTests } from './tests/GetTests';
+import { AssignRoleToUser } from './authorization/AssignRoleToUser';
 
 import { AccessManagerFactory } from '../../domain/model/authentication/AccessManager';
 import { ResultsFactory } from '../../domain/model/test/Results';
 
-import { CreateRole } from './CreateRole';
-import { CreatePermission } from './CreatePermission';
-import { AssignPermissionToRole } from './AssignPermissionToRole';
-import { GetRoles } from './GetRoles';
-import { GetPermissions } from './GetPermissions';
-import { CreateTestType } from './CreateTestType';
-import { AddResultsToTest } from './AddResultsToTest';
+import { CreateRole } from './authorization/CreateRole';
+import { CreatePermission } from './authorization/CreatePermission';
+import { AssignPermissionToRole } from './authorization/AssignPermissionToRole';
+import { GetRoles } from './authorization/GetRoles';
+import { GetPermissions } from './authorization/GetPermissions';
+import { CreateTestType } from './tests/CreateTestType';
+import { AddResultsToTest } from './tests/AddResultsToTest';
 
 let emailNotifier = new LoggingEmailNotifier();
 
