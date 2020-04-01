@@ -12,20 +12,15 @@ import { User } from '../../domain/model/user/User';
 import { AccessDeniedError } from '../../domain/model/AccessDeniedError';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
 import { TestNotFoundError } from '../../domain/model/test/TestNotFoundError';
-import { AccessManagerFactory } from '../../domain/model/authentication/AccessManager';
 
 export class AddResultsToTest {
-  constructor(
-    private testRepository: TestRepository,
-    private testTypeRepository: TestTypeRepository,
-    private accessManagerFactory: AccessManagerFactory
-  ) {}
+  constructor(private testRepository: TestRepository, private testTypeRepository: TestTypeRepository) {}
 
   public async execute(actor: User, testId: string, resultsCommand: TestResultsCommand): Promise<Test> {
     const test = await this.getTestOrFail(testId);
     const testType = await this.getTestTypeOrFail(test.testTypeId);
 
-    await this.validateAccessAndPermissionToAddResults(actor, test, testType);
+    await this.validateAccessAndPermissionToAddResults(actor, testType);
 
     test.results = this.getResults(actor.id, testType, resultsCommand);
     return this.testRepository.save(test);
@@ -47,11 +42,7 @@ export class AddResultsToTest {
     return testType;
   }
 
-  private async validateAccessAndPermissionToAddResults(actor: User, test: Test, testType: TestType) {
-    const hasAccess = await this.accessManagerFactory.forAuthenticatedUser(actor).canAccessUser(test.userId);
-    if (!hasAccess) {
-      throw new AccessDeniedError('ACCESS_PASS');
-    }
+  private async validateAccessAndPermissionToAddResults(actor: User, testType: TestType) {
     if (actor.permissions.indexOf(testType.neededPermissionToAddResults) === -1) {
       throw new AccessDeniedError(testType.neededPermissionToAddResults);
     }
