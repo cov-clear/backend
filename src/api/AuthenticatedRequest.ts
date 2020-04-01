@@ -3,9 +3,7 @@ import * as core from 'express-serve-static-core';
 import { Authentication } from '../domain/model/authentication/Authentication';
 import { ApiError, apiErrorCodes } from './ApiError';
 
-export interface AuthenticatedRequest<
-  P extends core.Params = core.ParamsDictionary
-> extends Request<P> {
+export interface AuthenticatedRequest<P extends core.Params = core.ParamsDictionary> extends Request<P> {
   authentication?: Authentication;
 }
 

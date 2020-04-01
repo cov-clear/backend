@@ -28,23 +28,11 @@ export function aUserWithAllInformation() {
 }
 
 export function aProfile() {
-  return new Profile(
-    'John',
-    'Lennon',
-    DateOfBirth.fromString('1940-10-09'),
-    Sex.MALE
-  );
+  return new Profile('John', 'Lennon', DateOfBirth.fromString('1940-10-09'), Sex.MALE);
 }
 
 export function anAddress() {
-  return new Address(
-    '41 Some building',
-    'Some street',
-    'London',
-    'Region',
-    'E8132',
-    new Country('GR')
-  );
+  return new Address('41 Some building', 'Some street', 'London', 'Region', 'E8132', new Country('GR'));
 }
 
 export function aRoleWithoutPermissions(roleName = 'USER_ROLE') {
@@ -53,15 +41,10 @@ export function aRoleWithoutPermissions(roleName = 'USER_ROLE') {
 
 export function aRoleWithPermissions(
   roleName = 'USER',
-  permissions = [
-    aPermission('ADD_TAKE_HOME_REST_RESULT'),
-    aPermission('ADD_PCR_TEST_RESULT'),
-  ]
+  permissions = [aPermission('ADD_TAKE_HOME_REST_RESULT'), aPermission('ADD_PCR_TEST_RESULT')]
 ): Role {
   const role = aRoleWithoutPermissions(roleName);
-  permissions.forEach((permission) =>
-    role.assignPermission(permission, new UserId())
-  );
+  permissions.forEach((permission) => role.assignPermission(permission, new UserId()));
   return role;
 }
 
@@ -94,9 +77,6 @@ export function aTest(
   return new Test(testId, userId, testTypeId, results, creationTime);
 }
 
-export function aResult(
-  userId = new UserId(),
-  details = { c: true, igg: true, igm: true }
-) {
+export function aResult(userId = new UserId(), details = { c: true, igg: true, igm: true }) {
   return new Results(userId, details);
 }

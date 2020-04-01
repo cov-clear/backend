@@ -7,24 +7,15 @@ import { PermissionRepository } from '../../domain/model/authentication/Permissi
 import { PermissionNotFoundError } from '../../domain/model/authentication/PermissionNotFoundError';
 
 export class AssignPermissionToRole {
-  constructor(
-    private roleRepository: RoleRepository,
-    private permissionRepository: PermissionRepository
-  ) {}
+  constructor(private roleRepository: RoleRepository, private permissionRepository: PermissionRepository) {}
 
-  async execute(
-    permissionName: string,
-    roleName: string,
-    authenticatedUser: User
-  ) {
+  async execute(permissionName: string, roleName: string, authenticatedUser: User) {
     const role = await this.roleRepository.findByName(roleName);
     if (!role) {
       throw new RoleNotFoundError(roleName);
     }
 
-    const permission = await this.permissionRepository.findByName(
-      permissionName
-    );
+    const permission = await this.permissionRepository.findByName(permissionName);
     if (!permission) {
       throw new PermissionNotFoundError(permissionName);
     }
@@ -39,8 +30,6 @@ export class AssignPermissionToRole {
   }
 
   private hasPermissionToAssignPermission(authenticatedUser: User) {
-    return !!authenticatedUser.permissions.find(
-      (name) => name === ASSIGN_PERMISSION_TO_ROLE
-    );
+    return !!authenticatedUser.permissions.find((name) => name === ASSIGN_PERMISSION_TO_ROLE);
   }
 }

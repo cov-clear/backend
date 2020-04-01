@@ -16,9 +16,7 @@ describe('PsqlTestRepository', () => {
   });
 
   it('inserts a test without results and retrieves it by id', async () => {
-    const test = await psqlTestRepository.save(
-      new Test(new TestId(), new UserId(), new TestTypeId())
-    );
+    const test = await psqlTestRepository.save(new Test(new TestId(), new UserId(), new TestTypeId()));
 
     const persistedTest = await psqlTestRepository.findById(test.id);
 
@@ -30,9 +28,7 @@ describe('PsqlTestRepository', () => {
     const details = { a: 1 };
     const results = new Results(userId, details);
 
-    const test = await psqlTestRepository.save(
-      new Test(new TestId(), userId, new TestTypeId(), results)
-    );
+    const test = await psqlTestRepository.save(new Test(new TestId(), userId, new TestTypeId(), results));
 
     const persistedTest = await psqlTestRepository.findById(test.id)!;
 
@@ -46,20 +42,8 @@ describe('PsqlTestRepository', () => {
     const userId = new UserId();
     const testTypeId = new TestTypeId();
 
-    const test1 = new Test(
-      new TestId(),
-      userId,
-      testTypeId,
-      undefined,
-      new Date(Date.now() - 10000)
-    );
-    const test2 = new Test(
-      new TestId(),
-      userId,
-      testTypeId,
-      undefined,
-      new Date(Date.now())
-    );
+    const test1 = new Test(new TestId(), userId, testTypeId, undefined, new Date(Date.now() - 10000));
+    const test2 = new Test(new TestId(), userId, testTypeId, undefined, new Date(Date.now()));
 
     await psqlTestRepository.save(test1);
     await psqlTestRepository.save(test2);
@@ -73,9 +57,7 @@ describe('PsqlTestRepository', () => {
   it('updates a test with results', async () => {
     const userId = new UserId();
     const details = { a: 1 };
-    const test = await psqlTestRepository.save(
-      new Test(new TestId(), userId, new TestTypeId())
-    );
+    const test = await psqlTestRepository.save(new Test(new TestId(), userId, new TestTypeId()));
 
     test.results = new Results(userId, details);
     await psqlTestRepository.save(test);

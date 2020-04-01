@@ -1,8 +1,5 @@
 import knex from 'knex';
-import {
-  TestTypeNameAlreadyExists,
-  TestTypeRepository,
-} from '../../domain/model/testType/TestTypeRepository';
+import { TestTypeNameAlreadyExists, TestTypeRepository } from '../../domain/model/testType/TestTypeRepository';
 import { TestType } from '../../domain/model/testType/TestType';
 import { TestTypeId } from '../../domain/model/testType/TestTypeId';
 
@@ -30,8 +27,7 @@ export class PsqlTestTypeRepository implements TestTypeRepository {
             id: testType.id.value,
             name: testType.name,
             results_schema: JSON.stringify(testType.resultsSchema),
-            needed_permission_to_add_results:
-              testType.neededPermissionToAddResults,
+            needed_permission_to_add_results: testType.neededPermissionToAddResults,
           }
         )
         .then(() => testType);
@@ -77,12 +73,7 @@ export class PsqlTestTypeRepository implements TestTypeRepository {
 }
 
 function mapTestTypeRowToTestType(row: TestTypeRow): TestType {
-  return new TestType(
-    new TestTypeId(row.id),
-    row.name,
-    row.resultsSchema,
-    row.neededPermissionToAddResults
-  );
+  return new TestType(new TestTypeId(row.id), row.name, row.resultsSchema, row.neededPermissionToAddResults);
 }
 
 interface TestTypeRow {

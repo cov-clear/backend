@@ -3,10 +3,7 @@ import expressApp from '../../loaders/express';
 import database from '../../database';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 
-import {
-  userRepository,
-  sharingCodeRepository,
-} from '../../infrastructure/persistence';
+import { userRepository, sharingCodeRepository } from '../../infrastructure/persistence';
 
 import { UserId } from '../../domain/model/user/UserId';
 import { User } from '../../domain/model/user/User';
@@ -57,11 +54,7 @@ describe('sharing code endpoints', () => {
       await userRepository.save(user1);
       await userRepository.save(user2);
 
-      const sharingCode = new SharingCode(
-        user2.id,
-        uuidv4(),
-        new Date('1970-01-01')
-      );
+      const sharingCode = new SharingCode(user2.id, uuidv4(), new Date('1970-01-01'));
       sharingCodeRepository.save(sharingCode);
 
       await request(app)

@@ -1,8 +1,4 @@
-import {
-  aNewUser,
-  aPermission,
-  aRoleWithoutPermissions,
-} from '../../../test/domainFactories';
+import { aNewUser, aPermission, aRoleWithoutPermissions } from '../../../test/domainFactories';
 import { Role } from './Role';
 import { ADD_TAKE_HOME_TEST_RESULT } from './Permissions';
 

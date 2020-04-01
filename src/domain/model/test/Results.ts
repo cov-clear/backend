@@ -10,11 +10,7 @@ const jsonSchema = new Ajv({
 });
 
 export class Results {
-  constructor(
-    public createdBy: UserId,
-    public details: object,
-    readonly creationTime: Date = new Date()
-  ) {}
+  constructor(public createdBy: UserId, public details: object, readonly creationTime: Date = new Date()) {}
 }
 
 export class ResultsFactory {
@@ -22,19 +18,13 @@ export class ResultsFactory {
 
   create(userId: UserId, testType: TestType, details: object): Results {
     if (!details) {
-      throw new DomainValidationError(
-        'results.details',
-        'Details are required'
-      );
+      throw new DomainValidationError('results.details', 'Details are required');
     }
 
     const isValid = jsonSchema.validate(testType.resultsSchema, details);
 
     if (!isValid) {
-      throw new DomainValidationError(
-        'results.details',
-        'Invalid results format'
-      );
+      throw new DomainValidationError('results.details', 'Invalid results format');
     }
 
     return new Results(userId, details);

@@ -77,12 +77,7 @@ describe('test endpoints', () => {
       const subjectUser = await userRepository.save(aNewUser());
       const test = await testRepository.save(aTest(subjectUser.id));
 
-      const accessPass = new AccessPass(
-        actorUser.id,
-        subjectUser.id,
-        uuidv4(),
-        new Date('1970-01-01')
-      );
+      const accessPass = new AccessPass(actorUser.id, subjectUser.id, uuidv4(), new Date('1970-01-01'));
 
       await accessPassRepository.save(accessPass);
 
@@ -96,9 +91,7 @@ describe('test endpoints', () => {
   describe('POST /users/:id/tests', () => {
     it('returns 401 if user is not authenticated', async () => {
       const userId = new UserId();
-      await request(app)
-        .post(`/api/v1/users/${userId.value}/tests`)
-        .expect(401);
+      await request(app).post(`/api/v1/users/${userId.value}/tests`).expect(401);
     });
 
     it('returns 404 if user is not found', async () => {
@@ -134,9 +127,7 @@ describe('test endpoints', () => {
 
     it('returns 201 if a user with an access pass and permission tries to create a test for another user', async () => {
       const testType = await testTypeRepository.save(aTestType());
-      const actorUser = await persistedUserWithRoleAndPermissions('TESTER', [
-        testType.neededPermissionToAddResults,
-      ]);
+      const actorUser = await persistedUserWithRoleAndPermissions('TESTER', [testType.neededPermissionToAddResults]);
       const subjectUser = await userRepository.save(aNewUser());
 
       const accessPass = new AccessPass(actorUser.id, subjectUser.id);
@@ -183,9 +174,7 @@ describe('test endpoints', () => {
 
     it('returns 201 with the new test if user is found', async () => {
       const testType = await testTypeRepository.save(aTestType());
-      const user = await persistedUserWithRoleAndPermissions('TESTER', [
-        testType.neededPermissionToAddResults,
-      ]);
+      const user = await persistedUserWithRoleAndPermissions('TESTER', [testType.neededPermissionToAddResults]);
 
       const validTest = getValidTestCommand(testType.id, user.id);
 

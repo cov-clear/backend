@@ -6,12 +6,7 @@ import { Mailgun } from 'mailgun-js';
 export class MailGunEmailNotifier implements EmailNotifier {
   constructor(private mailGunClient: Mailgun) {}
 
-  async send(
-    from: Email,
-    to: Email,
-    subject: string,
-    body: string
-  ): Promise<boolean> {
+  async send(from: Email, to: Email, subject: string, body: string): Promise<boolean> {
     const data = {
       from: from.value,
       to: to.value,

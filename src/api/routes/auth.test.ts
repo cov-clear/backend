@@ -34,9 +34,7 @@ describe('auth endpoints', () => {
         .send({ method: 'magic-link', email: 'some@email.com', authCode: v4() })
         .expect(403)
         .expect((res) => {
-          expect(res.body.code).toEqual(
-            AuthorisationFailureReason.AUTH_CODE_NOT_FOUND
-          );
+          expect(res.body.code).toEqual(AuthorisationFailureReason.AUTH_CODE_NOT_FOUND);
         });
     });
 

@@ -3,9 +3,7 @@ import { AssignmentActionType } from './AssignmentActionType';
 import { UserId } from '../user/UserId';
 
 export class AssignmentActions<AssignedTo, Resource> {
-  readonly newAssignmentActions: Array<
-    AssignmentAction<AssignedTo, Resource>
-  > = [];
+  readonly newAssignmentActions: Array<AssignmentAction<AssignedTo, Resource>> = [];
 
   constructor(
     private assignmentActions: AssignmentAction<AssignedTo, Resource>[],
@@ -43,17 +41,12 @@ export class AssignmentActions<AssignedTo, Resource> {
     );
   }
 
-  private groupAssignmentActionsByResourceId(): Map<
-    string | number,
-    Array<AssignmentAction<AssignedTo, Resource>>
-  > {
+  private groupAssignmentActionsByResourceId(): Map<string | number, Array<AssignmentAction<AssignedTo, Resource>>> {
     const groupedAssignmentActions = new Map();
 
     this.assignmentActions.forEach((assignment) => {
       const assignedResourceKey = this.getKey(assignment.assignedResource);
-      const assignmentsForPermissionId = groupedAssignmentActions.get(
-        assignedResourceKey
-      );
+      const assignmentsForPermissionId = groupedAssignmentActions.get(assignedResourceKey);
       assignmentsForPermissionId
         ? assignmentsForPermissionId.push(assignment)
         : groupedAssignmentActions.set(assignedResourceKey, [assignment]);
@@ -62,16 +55,11 @@ export class AssignmentActions<AssignedTo, Resource> {
   }
 
   private getActiveAssignedResources(
-    groupedAssignmentActions: Map<
-      string | number,
-      Array<AssignmentAction<AssignedTo, Resource>>
-    >
+    groupedAssignmentActions: Map<string | number, Array<AssignmentAction<AssignedTo, Resource>>>
   ): Resource[] {
     const activeAssignments: Resource[] = [];
     groupedAssignmentActions.forEach((assignments, key) => {
-      const latestAssignmentAction = assignments.reduce((p1, p2) =>
-        p1.order < p2.order ? p2 : p1
-      );
+      const latestAssignmentAction = assignments.reduce((p1, p2) => (p1.order < p2.order ? p2 : p1));
       if (latestAssignmentAction.actionType === AssignmentActionType.ADD) {
         activeAssignments.push(latestAssignmentAction.assignedResource);
       }
@@ -83,9 +71,7 @@ export class AssignmentActions<AssignedTo, Resource> {
     const isCurrentlyAssigned = this.activeAssignments().find(
       (t) => this.getKey(t) === this.getKey(action.assignedResource)
     );
-    const acceptableActionType = isCurrentlyAssigned
-      ? AssignmentActionType.REMOVE
-      : AssignmentActionType.ADD;
+    const acceptableActionType = isCurrentlyAssigned ? AssignmentActionType.REMOVE : AssignmentActionType.ADD;
     if (action.actionType !== acceptableActionType) {
       return;
     }

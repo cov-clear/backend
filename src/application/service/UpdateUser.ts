@@ -1,10 +1,6 @@
 import { UserId } from '../../domain/model/user/UserId';
 import { UserRepository } from '../../domain/model/user/UserRepository';
-import {
-  Address as ApiAddress,
-  Profile as ApiProfile,
-  UpdateUserCommand,
-} from '../../api/interface';
+import { Address as ApiAddress, Profile as ApiProfile, UpdateUserCommand } from '../../api/interface';
 import { Profile } from '../../domain/model/user/Profile';
 import { Address } from '../../domain/model/user/Address';
 import { Sex } from '../../domain/model/user/Sex';
@@ -41,9 +37,7 @@ function mapApiProfileToProfile(profile: ApiProfile): Profile {
   );
 }
 
-export function mapApiAddressToAddress(
-  address?: ApiAddress
-): Address | undefined {
+export function mapApiAddressToAddress(address?: ApiAddress): Address | undefined {
   return address
     ? {
         address1: address.address1,

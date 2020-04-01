@@ -1,9 +1,5 @@
 import { GenerateAuthToken } from './GenerateAuthToken';
-import {
-  aNewUser,
-  aPermission,
-  aRoleWithPermissions,
-} from '../../test/domainFactories';
+import { aNewUser, aPermission, aRoleWithPermissions } from '../../test/domainFactories';
 import jwt from 'jsonwebtoken';
 
 describe('GenerateAuthToken', () => {

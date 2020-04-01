@@ -27,12 +27,7 @@ function notFoundHandling() {
 }
 
 function errorHandling() {
-  return (
-    err: Error,
-    _: Request,
-    res: Response,
-    next: (...things: any[]) => any
-  ) => {
+  return (err: Error, _: Request, res: Response, next: (...things: any[]) => any) => {
     if (res.headersSent) {
       return next(err);
     }

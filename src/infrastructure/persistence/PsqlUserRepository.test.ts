@@ -4,13 +4,7 @@ import { UserId } from '../../domain/model/user/UserId';
 import { User } from '../../domain/model/user/User';
 import { Email } from '../../domain/model/user/Email';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
-import {
-  anAddress,
-  aNewUser,
-  aPermission,
-  aProfile,
-  aRoleWithPermissions,
-} from '../../test/domainFactories';
+import { anAddress, aNewUser, aPermission, aProfile, aRoleWithPermissions } from '../../test/domainFactories';
 import { Role } from '../../domain/model/authentication/Role';
 import { permissionRepository, roleRepository } from './index';
 import { Permission } from '../../domain/model/authentication/Permission';
@@ -23,9 +17,7 @@ describe('PsqlUserRepository', () => {
   });
 
   it('inserts new and retrieves a user by id', async () => {
-    const user = await psqlUserRepository.save(
-      new User(new UserId(), new Email('kostas1@example.com'))
-    );
+    const user = await psqlUserRepository.save(new User(new UserId(), new Email('kostas1@example.com')));
 
     const persistedUser = await psqlUserRepository.findByUserId(user.id);
 
@@ -38,9 +30,7 @@ describe('PsqlUserRepository', () => {
   });
 
   it('inserts new and retrieves a user by email', async () => {
-    const user = await psqlUserRepository.save(
-      new User(new UserId(), new Email('kostas2@example.com'))
-    );
+    const user = await psqlUserRepository.save(new User(new UserId(), new Email('kostas2@example.com')));
 
     const persistedUser = await psqlUserRepository.findByEmail(user.email);
 
@@ -48,9 +38,7 @@ describe('PsqlUserRepository', () => {
   });
 
   it('updates profile if user already exists', async () => {
-    const user = await psqlUserRepository.save(
-      new User(new UserId(), new Email('kostas3@example.com'))
-    );
+    const user = await psqlUserRepository.save(new User(new UserId(), new Email('kostas3@example.com')));
 
     user.profile = aProfile();
     await psqlUserRepository.save(user);
@@ -60,9 +48,7 @@ describe('PsqlUserRepository', () => {
   });
 
   it('updates address if user already exists', async () => {
-    const user = await psqlUserRepository.save(
-      new User(new UserId(), new Email('kostas3@example.com'))
-    );
+    const user = await psqlUserRepository.save(new User(new UserId(), new Email('kostas3@example.com')));
 
     user.address = anAddress();
     await psqlUserRepository.save(user);
@@ -72,12 +58,8 @@ describe('PsqlUserRepository', () => {
   });
 
   it('persists all the role assignments', async () => {
-    const permission = await permissionRepository.save(
-      aPermission('ADD_PCR_RESULT')
-    );
-    const role = await roleRepository.save(
-      aRoleWithPermissions('DOCTOR', [permission])
-    );
+    const permission = await permissionRepository.save(aPermission('ADD_PCR_RESULT'));
+    const role = await roleRepository.save(aRoleWithPermissions('DOCTOR', [permission]));
 
     const user = await psqlUserRepository.save(aNewUser());
     user.assignRole(role, user.id);
@@ -91,15 +73,9 @@ describe('PsqlUserRepository', () => {
   it('correctly handles many consecutive role assignments', async () => {
     const user = await psqlUserRepository.save(aNewUser());
 
-    const permission1 = await permissionRepository.save(
-      new Permission('PERMISSION_ONE')
-    );
-    const permission2 = await permissionRepository.save(
-      new Permission('PERMISSION_TWO')
-    );
-    const permission3 = await permissionRepository.save(
-      new Permission('PERMISSION_THREE')
-    );
+    const permission1 = await permissionRepository.save(new Permission('PERMISSION_ONE'));
+    const permission2 = await permissionRepository.save(new Permission('PERMISSION_TWO'));
+    const permission3 = await permissionRepository.save(new Permission('PERMISSION_THREE'));
 
     const role1 = new Role('USER');
     const role2 = new Role('DOCTOR');

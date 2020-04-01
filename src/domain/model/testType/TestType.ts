@@ -15,10 +15,7 @@ export class TestType {
     readonly neededPermissionToAddResults: string
   ) {
     validateNotEmptyString('name', name);
-    validateNotEmptyString(
-      'neededPermissionToAddResults',
-      neededPermissionToAddResults
-    );
+    validateNotEmptyString('neededPermissionToAddResults', neededPermissionToAddResults);
     validateResultsSchema(resultsSchema);
   }
 }

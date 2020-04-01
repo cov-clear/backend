@@ -13,15 +13,11 @@ describe('PsqlPermissionRepository', () => {
   it('inserts new and retrieves a permission', async () => {
     const permission = new Permission('ADD_PCR_TEST');
 
-    await expect(
-      psqlPermissionRepository.findByName(permission.name)
-    ).resolves.toBeNull();
+    await expect(psqlPermissionRepository.findByName(permission.name)).resolves.toBeNull();
 
     await psqlPermissionRepository.save(permission);
 
-    await expect(
-      psqlPermissionRepository.findByName(permission.name)
-    ).resolves.toEqual(permission);
+    await expect(psqlPermissionRepository.findByName(permission.name)).resolves.toEqual(permission);
   });
 
   it('finds all the registered permissions', async () => {

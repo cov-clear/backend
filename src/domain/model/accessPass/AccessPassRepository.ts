@@ -3,8 +3,5 @@ import { UserId } from '../user/UserId';
 
 export interface AccessPassRepository {
   save(accessPass: AccessPass): Promise<AccessPass>;
-  findByUserIds(
-    actorUserId: UserId,
-    subjectUserId: UserId
-  ): Promise<AccessPass | null>;
+  findByUserIds(actorUserId: UserId, subjectUserId: UserId): Promise<AccessPass | null>;
 }

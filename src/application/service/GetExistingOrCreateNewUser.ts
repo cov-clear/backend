@@ -7,15 +7,10 @@ import { RoleNotFoundError } from '../../domain/model/authentication/RoleNotFoun
 import { USER } from '../../domain/model/authentication/Roles';
 
 export class GetExistingOrCreateNewUser {
-  constructor(
-    private userRepository: UserRepository,
-    private roleRepository: RoleRepository
-  ) {}
+  constructor(private userRepository: UserRepository, private roleRepository: RoleRepository) {}
 
   public async execute(email: string) {
-    const existingUser = await this.userRepository.findByEmail(
-      new Email(email)
-    );
+    const existingUser = await this.userRepository.findByEmail(new Email(email));
     if (existingUser) {
       return existingUser;
     }

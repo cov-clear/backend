@@ -4,18 +4,11 @@ import database from '../../database';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import { UserId } from '../../domain/model/user/UserId';
 import { v4 as uuidv4 } from 'uuid';
-import {
-  userRepository,
-  accessPassRepository,
-} from '../../infrastructure/persistence';
+import { userRepository, accessPassRepository } from '../../infrastructure/persistence';
 import { User } from '../../domain/model/user/User';
 import { Email } from '../../domain/model/user/Email';
 import { AccessPass } from '../../domain/model/accessPass/AccessPass';
-import {
-  anAddress,
-  aNewUser,
-  aUserWithAllInformation,
-} from '../../test/domainFactories';
+import { anAddress, aNewUser, aUserWithAllInformation } from '../../test/domainFactories';
 import { getTokenForUser } from '../../test/authentication';
 import { anApiAddress, anApiProfile } from '../../test/apiFactories';
 
@@ -50,9 +43,7 @@ describe('user endpoints', () => {
     it('returns 200 with the existing if user is found', async () => {
       const id = new UserId();
 
-      const user = await userRepository.save(
-        new User(id, new Email('kostas@example.com'))
-      );
+      const user = await userRepository.save(new User(id, new Email('kostas@example.com')));
 
       await request(app)
         .get(`/api/v1/users/${id.value}`)
@@ -84,9 +75,7 @@ describe('user endpoints', () => {
       const actorUser = await userRepository.save(aNewUser());
       const subjectUser = await userRepository.save(aNewUser());
 
-      await accessPassRepository.save(
-        new AccessPass(actorUser.id, subjectUser.id)
-      );
+      await accessPassRepository.save(new AccessPass(actorUser.id, subjectUser.id));
 
       await request(app)
         .get(`/api/v1/users/${subjectUser.id.value}`)
@@ -102,12 +91,7 @@ describe('user endpoints', () => {
       const actorUser = await userRepository.save(aNewUser());
       const subjectUser = await userRepository.save(aNewUser());
 
-      const accessPass = new AccessPass(
-        actorUser.id,
-        subjectUser.id,
-        uuidv4(),
-        new Date('1970-01-01')
-      );
+      const accessPass = new AccessPass(actorUser.id, subjectUser.id, uuidv4(), new Date('1970-01-01'));
 
       await accessPassRepository.save(accessPass);
 
@@ -145,9 +129,7 @@ describe('user endpoints', () => {
       const subjectUser = await userRepository.save(aNewUser());
       const address = anApiAddress();
 
-      await accessPassRepository.save(
-        new AccessPass(actorUser.id, subjectUser.id)
-      );
+      await accessPassRepository.save(new AccessPass(actorUser.id, subjectUser.id));
 
       await request(app)
         .patch(`/api/v1/users/${subjectUser.id.value}`)

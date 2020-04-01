@@ -1,18 +1,9 @@
 import AsyncRouter from '../AsyncRouter';
 import { Response } from 'express';
 
-import {
-  accessManagerFactory,
-  getUser,
-  updateUser,
-} from '../../application/service';
+import { accessManagerFactory, getUser, updateUser } from '../../application/service';
 
-import {
-  Address as ApiAddress,
-  Profile as ApiProfile,
-  UpdateUserCommand,
-  User as ApiUser,
-} from '../interface';
+import { Address as ApiAddress, Profile as ApiProfile, UpdateUserCommand, User as ApiUser } from '../interface';
 
 import { User } from '../../domain/model/user/User';
 import { Address } from '../../domain/model/user/Address';
@@ -20,10 +11,7 @@ import { Profile } from '../../domain/model/user/Profile';
 import { UserId } from '../../domain/model/user/UserId';
 
 import { isAuthenticated } from '../middleware/isAuthenticated';
-import {
-  AuthenticatedRequest,
-  getAuthenticationOrFail,
-} from '../AuthenticatedRequest';
+import { AuthenticatedRequest, getAuthenticationOrFail } from '../AuthenticatedRequest';
 
 import { ApiError, apiErrorCodes } from '../ApiError';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
@@ -33,61 +21,53 @@ import { UserNotFoundError } from '../../domain/model/user/UserNotFoundError';
 export default () => {
   const route = new AsyncRouter();
 
-  route.get(
-    '/users/:id',
-    isAuthenticated,
-    async (req: AuthenticatedRequest, res: Response) => {
-      const { id } = req.params;
-      const user = await getUser.byId(id);
+  route.get('/users/:id', isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+    const { id } = req.params;
+    const user = await getUser.byId(id);
 
-      if (!user) {
-        throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
-      }
-
-      const canAccessUser = await accessManagerFactory
-        .forAuthentication(getAuthenticationOrFail(req))
-        .canAccessUser(user.id);
-
-      if (!canAccessUser) {
-        throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
-      }
-
-      res.json(mapUserToApiUser(user)).status(200);
+    if (!user) {
+      throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
     }
-  );
 
-  route.patch(
-    '/users/:id',
-    isAuthenticated,
-    async (req: AuthenticatedRequest, res: Response) => {
-      const { id } = req.params;
-      const command = req.body as UpdateUserCommand;
+    const canAccessUser = await accessManagerFactory
+      .forAuthentication(getAuthenticationOrFail(req))
+      .canAccessUser(user.id);
 
-      const userId = new UserId(id);
-
-      const isLoggedInAsUser = accessManagerFactory
-        .forAuthentication(getAuthenticationOrFail(req))
-        .isLoggedInAsUser(userId);
-
-      const hasAccessPassForUser = await accessManagerFactory
-        .forAuthentication(getAuthenticationOrFail(req))
-        .hasAccessPassForUser(userId);
-
-      if (!isLoggedInAsUser) {
-        if (hasAccessPassForUser) {
-          throw new ApiError(403, apiErrorCodes.ACCESS_DENIED);
-        }
-        throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
-      }
-
-      try {
-        const user = await updateUser.execute(id, command);
-        res.status(200).json(mapUserToApiUser(user));
-      } catch (error) {
-        handleUserUpdateError(error);
-      }
+    if (!canAccessUser) {
+      throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
     }
-  );
+
+    res.json(mapUserToApiUser(user)).status(200);
+  });
+
+  route.patch('/users/:id', isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+    const { id } = req.params;
+    const command = req.body as UpdateUserCommand;
+
+    const userId = new UserId(id);
+
+    const isLoggedInAsUser = accessManagerFactory
+      .forAuthentication(getAuthenticationOrFail(req))
+      .isLoggedInAsUser(userId);
+
+    const hasAccessPassForUser = await accessManagerFactory
+      .forAuthentication(getAuthenticationOrFail(req))
+      .hasAccessPassForUser(userId);
+
+    if (!isLoggedInAsUser) {
+      if (hasAccessPassForUser) {
+        throw new ApiError(403, apiErrorCodes.ACCESS_DENIED);
+      }
+      throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
+    }
+
+    try {
+      const user = await updateUser.execute(id, command);
+      res.status(200).json(mapUserToApiUser(user));
+    } catch (error) {
+      handleUserUpdateError(error);
+    }
+  });
 
   return route.middleware();
 };
@@ -102,9 +82,7 @@ export function mapUserToApiUser(user: User): ApiUser {
   };
 }
 
-export function mapProfileToApiProfile(
-  profile?: Profile
-): ApiProfile | undefined {
+export function mapProfileToApiProfile(profile?: Profile): ApiProfile | undefined {
   return profile
     ? {
         firstName: profile.firstName,
@@ -115,9 +93,7 @@ export function mapProfileToApiProfile(
     : profile;
 }
 
-export function mapAddressToApiAddress(
-  address?: Address
-): ApiAddress | undefined {
+export function mapAddressToApiAddress(address?: Address): ApiAddress | undefined {
   return address
     ? {
         address1: address.address1,

@@ -1,14 +1,7 @@
 import { Response } from 'express';
 import AsyncRouter from '../AsyncRouter';
-import {
-  assignRoleToUser,
-  createRole,
-  getRoles,
-} from '../../application/service';
-import {
-  AuthenticatedRequest,
-  getAuthenticationOrFail,
-} from '../AuthenticatedRequest';
+import { assignRoleToUser, createRole, getRoles } from '../../application/service';
+import { AuthenticatedRequest, getAuthenticationOrFail } from '../AuthenticatedRequest';
 import { AccessDeniedError } from '../../domain/model/AccessDeniedError';
 import { ApiError, apiErrorCodes } from '../ApiError';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
@@ -17,11 +10,7 @@ import { RoleNotFoundError } from '../../domain/model/authentication/RoleNotFoun
 import { Role } from '../../domain/model/authentication/Role';
 import { Role as ApiRole } from '../interface';
 import { hasPermission } from '../middleware/hasPermission';
-import {
-  ASSIGN_ROLE_TO_USER,
-  CREATE_NEW_ROLE,
-  LIST_ROLES,
-} from '../../domain/model/authentication/Permissions';
+import { ASSIGN_ROLE_TO_USER, CREATE_NEW_ROLE, LIST_ROLES } from '../../domain/model/authentication/Permissions';
 
 export default () => {
   const route = new AsyncRouter();
@@ -34,11 +23,7 @@ export default () => {
       const { name } = req.body;
 
       try {
-        const role = await assignRoleToUser.execute(
-          name,
-          id,
-          getAuthenticationOrFail(req).user
-        );
+        const role = await assignRoleToUser.execute(name, id, getAuthenticationOrFail(req).user);
         res.status(200).json(mapRoleToApiRole(role));
       } catch (error) {
         handleError(error);
@@ -46,36 +31,25 @@ export default () => {
     }
   );
 
-  route.post(
-    '/roles',
-    hasPermission(CREATE_NEW_ROLE),
-    async (req: AuthenticatedRequest, res: Response) => {
-      const { name } = req.body;
+  route.post('/roles', hasPermission(CREATE_NEW_ROLE), async (req: AuthenticatedRequest, res: Response) => {
+    const { name } = req.body;
 
-      try {
-        const role = await createRole.execute(
-          name,
-          getAuthenticationOrFail(req).user
-        );
-        res.status(201).json(mapRoleToApiRole(role));
-      } catch (error) {
-        handleError(error);
-      }
+    try {
+      const role = await createRole.execute(name, getAuthenticationOrFail(req).user);
+      res.status(201).json(mapRoleToApiRole(role));
+    } catch (error) {
+      handleError(error);
     }
-  );
+  });
 
-  route.get(
-    '/roles',
-    hasPermission(LIST_ROLES),
-    async (req: AuthenticatedRequest, res: Response) => {
-      try {
-        const roles = await getRoles.all();
-        res.status(200).json(roles.map(mapRoleToApiRole));
-      } catch (error) {
-        handleError(error);
-      }
+  route.get('/roles', hasPermission(LIST_ROLES), async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const roles = await getRoles.all();
+      res.status(200).json(roles.map(mapRoleToApiRole));
+    } catch (error) {
+      handleError(error);
     }
-  );
+  });
   return route.middleware();
 };
 

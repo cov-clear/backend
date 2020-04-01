@@ -34,9 +34,7 @@ export class PsqlTestRepository implements TestRepository {
   }
 
   async findById(testId: TestId) {
-    const testRow: any = await this.getAllTestsQueryBuilder()
-      .where(`${TEST_TABLE_NAME}.id`, '=', testId.value)
-      .first();
+    const testRow: any = await this.getAllTestsQueryBuilder().where(`${TEST_TABLE_NAME}.id`, '=', testId.value).first();
 
     if (!testRow) {
       return null;
@@ -128,21 +126,13 @@ export class PsqlTestRepository implements TestRepository {
   private getAllTestsQueryBuilder() {
     return this.db(TEST_TABLE_NAME)
       .select(TEST_TABLE_COLUMNS)
-      .leftJoin(
-        TEST_RESULTS_TABLE_NAME,
-        `${TEST_TABLE_NAME}.id`,
-        `${TEST_RESULTS_TABLE_NAME}.test_id`
-      );
+      .leftJoin(TEST_RESULTS_TABLE_NAME, `${TEST_TABLE_NAME}.id`, `${TEST_RESULTS_TABLE_NAME}.test_id`);
   }
 }
 
 function createResultsFromRow(testRow: any): Test {
   const results = testRow.details
-    ? new Results(
-        new UserId(testRow.resultsCreatorId),
-        testRow.details,
-        testRow.resultsCreationTime
-      )
+    ? new Results(new UserId(testRow.resultsCreatorId), testRow.details, testRow.resultsCreationTime)
     : undefined;
 
   return new Test(
