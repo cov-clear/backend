@@ -24,11 +24,7 @@ export class PsqlRoleRepository implements RoleRepository {
   }
 
   async findByName(name: string): Promise<Role | null> {
-    const roleRows: any[] = await this.selectRolesWithPermissionAssignmentsQuery().where(
-      'role.name',
-      '=',
-      name
-    );
+    const roleRows: any[] = await this.selectRolesWithPermissionAssignmentsQuery().where('role.name', '=', name);
 
     if (roleRows.length === 0) {
       return null;
@@ -53,18 +49,12 @@ export class PsqlRoleRepository implements RoleRepository {
       .then(() => {
         return role;
       });
-    await Promise.all(
-      role.permissionAssignments.newAssignmentActions.map(
-        this.savePermissionAssignment.bind(this)
-      )
-    );
+    await Promise.all(role.permissionAssignments.newAssignmentActions.map(this.savePermissionAssignment.bind(this)));
     Reflect.set(role.permissionAssignments, 'newAssignmentActions', []);
     return role;
   }
 
-  private async savePermissionAssignment(
-    permissionAssignmentAction: PermissionAssignmentAction
-  ) {
+  private async savePermissionAssignment(permissionAssignmentAction: PermissionAssignmentAction) {
     await this.db('permission_to_role_assignment').insert({
       id: permissionAssignmentAction.id.value,
       role_name: permissionAssignmentAction.assignedTo.name,
@@ -89,11 +79,7 @@ export class PsqlRoleRepository implements RoleRepository {
         'p.name as permissionName',
         'p.creation_time as permissionCreationTime',
       ])
-      .leftJoin(
-        'permission_to_role_assignment as pra',
-        'role.name',
-        'pra.role_name'
-      )
+      .leftJoin('permission_to_role_assignment as pra', 'role.name', 'pra.role_name')
       .leftJoin('permission as p', 'pra.permission_name', 'p.name');
   }
 
@@ -101,9 +87,7 @@ export class PsqlRoleRepository implements RoleRepository {
     const groupedByRole = new Map<string, any[]>();
     roleRows.forEach((roleRow) => {
       const rowsForRole = groupedByRole.get(roleRow.roleName);
-      rowsForRole
-        ? rowsForRole.push(roleRow)
-        : groupedByRole.set(roleRow.roleName, [roleRow]);
+      rowsForRole ? rowsForRole.push(roleRow) : groupedByRole.set(roleRow.roleName, [roleRow]);
     });
     return groupedByRole;
   }
@@ -112,33 +96,20 @@ export class PsqlRoleRepository implements RoleRepository {
 export function createRoleWithAssignedPermissions(roleRows: any[]): Role {
   const role = new Role(roleRows[0].roleName, roleRows[0].roleCreationTime);
   const permissionAssignmentActions = roleRows
-    .filter(
-      (assignmentAction) =>
-        assignmentAction.permissionName &&
-        assignmentAction.permissionCreationTime
-    )
+    .filter((assignmentAction) => assignmentAction.permissionName && assignmentAction.permissionCreationTime)
     .map((assignmentAction) => {
-      const permission = new Permission(
-        assignmentAction.permissionName,
-        assignmentAction.permissionCreationTime
-      );
+      const permission = new Permission(assignmentAction.permissionName, assignmentAction.permissionCreationTime);
       return new PermissionAssignmentAction(
         new AssignmentId(assignmentAction.praId),
         role,
         permission,
-        assignmentAction.praActionType === 'ADD'
-          ? AssignmentActionType.ADD
-          : AssignmentActionType.REMOVE,
+        assignmentAction.praActionType === 'ADD' ? AssignmentActionType.ADD : AssignmentActionType.REMOVE,
         new UserId(assignmentAction.praActor),
         assignmentAction.praOrder,
         assignmentAction.praCreationTime
       );
     });
-  Reflect.set(
-    role.permissionAssignments,
-    'assignmentActions',
-    permissionAssignmentActions
-  );
+  Reflect.set(role.permissionAssignments, 'assignmentActions', permissionAssignmentActions);
   Reflect.set(role.permissionAssignments, 'newAssignmentActions', []);
   return role;
 }

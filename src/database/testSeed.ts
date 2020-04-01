@@ -41,49 +41,26 @@ export async function createSeedDataForTestingPeriod() {
   admin.assignRole(adminRole, admin.id);
   doctor.assignRole(doctorRole, admin.id);
 
-  return Promise.all([
-    userRepository.save(admin),
-    userRepository.save(doctor),
-    userRepository.save(patient),
-  ]);
+  return Promise.all([userRepository.save(admin), userRepository.save(doctor), userRepository.save(patient)]);
 }
 
 async function createDoctorAccount() {
-  const doctor = await getExistingOrCreateNewUser.execute(
-    'doctor@covclear.com'
-  );
-  doctor.profile = new Profile(
-    'John',
-    'Lennon',
-    DateOfBirth.fromString('1940-10-09'),
-    Sex.MALE
-  );
+  const doctor = await getExistingOrCreateNewUser.execute('doctor@covclear.com');
+  doctor.profile = new Profile('John', 'Lennon', DateOfBirth.fromString('1940-10-09'), Sex.MALE);
   doctor.address = anAddress();
   return userRepository.save(doctor);
 }
 
 async function createPatientAccount() {
-  const patient = await getExistingOrCreateNewUser.execute(
-    'patient@covclear.com'
-  );
-  patient.profile = new Profile(
-    'Captain',
-    'Kirk',
-    DateOfBirth.fromString('1940-10-09'),
-    Sex.MALE
-  );
+  const patient = await getExistingOrCreateNewUser.execute('patient@covclear.com');
+  patient.profile = new Profile('Captain', 'Kirk', DateOfBirth.fromString('1940-10-09'), Sex.MALE);
   patient.address = anAddress();
   return userRepository.save(patient);
 }
 
 async function createAdminAccount() {
   const admin = await getExistingOrCreateNewUser.execute('admin@covclear.com');
-  admin.profile = new Profile(
-    'Major',
-    'Tom',
-    DateOfBirth.fromString('1940-10-09'),
-    Sex.MALE
-  );
+  admin.profile = new Profile('Major', 'Tom', DateOfBirth.fromString('1940-10-09'), Sex.MALE);
   admin.address = anAddress();
   return userRepository.save(admin);
 }
@@ -93,19 +70,13 @@ async function createUserRole(admin: User) {
   if (!userRole) {
     userRole = await roleRepository.save(new Role(USER));
   }
-  userRole.assignPermission(
-    new Permission(ADD_TAKE_HOME_TEST_RESULT),
-    admin.id
-  );
+  userRole.assignPermission(new Permission(ADD_TAKE_HOME_TEST_RESULT), admin.id);
   return roleRepository.save(userRole);
 }
 
 async function createDoctorRole(admin: User) {
   const doctorRole = await roleRepository.save(new Role(DOCTOR));
-  doctorRole.assignPermission(
-    new Permission(ADD_TAKE_HOME_TEST_RESULT),
-    admin.id
-  );
+  doctorRole.assignPermission(new Permission(ADD_TAKE_HOME_TEST_RESULT), admin.id);
   return roleRepository.save(doctorRole);
 }
 
@@ -155,11 +126,6 @@ async function createDefaultTestType() {
     },
   };
 
-  const testType = new TestType(
-    new TestTypeId(),
-    'COVID19 Take Home Test',
-    resultsSchema,
-    ADD_TAKE_HOME_TEST_RESULT
-  );
+  const testType = new TestType(new TestTypeId(), 'COVID19 Take Home Test', resultsSchema, ADD_TAKE_HOME_TEST_RESULT);
   await testTypeRepository.save(testType);
 }

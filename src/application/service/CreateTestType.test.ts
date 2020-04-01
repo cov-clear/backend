@@ -14,13 +14,9 @@ describe('CreateTestType', () => {
   it('creates a new test type', async () => {
     const name = 'Name';
     const permission = 'PERMISSION';
-    const newTestType = await createTestType.execute(
-      aCreateTestTypeCommand(name, permission)
-    );
+    const newTestType = await createTestType.execute(aCreateTestTypeCommand(name, permission));
 
-    const persistedTestTypes = await testTypeRepository.findByPermissions([
-      permission,
-    ]);
+    const persistedTestTypes = await testTypeRepository.findByPermissions([permission]);
 
     expect(persistedTestTypes).toEqual([newTestType]);
   });

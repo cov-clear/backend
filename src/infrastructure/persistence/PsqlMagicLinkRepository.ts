@@ -1,9 +1,6 @@
 import knex from 'knex';
 import { MagicLinkRepository } from '../../domain/model/magiclink/MagicLinkRepository';
-import {
-  MagicLink,
-  MagicLinkCode,
-} from '../../domain/model/magiclink/MagicLink';
+import { MagicLink, MagicLinkCode } from '../../domain/model/magiclink/MagicLink';
 import { Email } from '../../domain/model/user/Email';
 
 export class PsqlMagicLinkRepository implements MagicLinkRepository {

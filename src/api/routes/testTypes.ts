@@ -16,24 +16,18 @@ export default () => {
   route.get('/test-types', async (req: Request, res: Response) => {
     const authentication = getAuthenticationOrFail(req);
 
-    const testTypes = await getTestTypes.forPermissions(
-      authentication.permissions
-    );
+    const testTypes = await getTestTypes.forPermissions(authentication.permissions);
     res.json(testTypes && testTypes.map(mapTestTypeToApiResponse)).status(200);
   });
 
-  route.post(
-    '/test-types',
-    hasPermission(CREATE_TEST_TYPE),
-    async (req: Request, res: Response) => {
-      try {
-        const testType = await createTestType.execute(req.body);
-        res.status(201).json(mapTestTypeToApiResponse(testType));
-      } catch (error) {
-        handleError(error);
-      }
+  route.post('/test-types', hasPermission(CREATE_TEST_TYPE), async (req: Request, res: Response) => {
+    try {
+      const testType = await createTestType.execute(req.body);
+      res.status(201).json(mapTestTypeToApiResponse(testType));
+    } catch (error) {
+      handleError(error);
     }
-  );
+  });
 
   return route.middleware();
 };

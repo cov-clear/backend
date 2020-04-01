@@ -29,9 +29,7 @@ describe('PsqlRoleRepository', () => {
 
   it('persists all the permission assignments', async () => {
     const role = new Role('DOCTOR');
-    const permission = await permissionRepository.save(
-      new Permission('ADD_PCR_TEST')
-    );
+    const permission = await permissionRepository.save(new Permission('ADD_PCR_TEST'));
 
     await expect(psqlRoleRepository.findByName(role.name)).resolves.toBeNull();
     await psqlRoleRepository.save(role);
@@ -45,12 +43,8 @@ describe('PsqlRoleRepository', () => {
 
   it('correctly handles many consecutive permission assignments', async () => {
     const role = new Role('DOCTOR');
-    const permission1 = await permissionRepository.save(
-      new Permission('ADD_PCR_TEST')
-    );
-    const permission2 = await permissionRepository.save(
-      new Permission('ADD_TAKE_HOME_TEST')
-    );
+    const permission1 = await permissionRepository.save(new Permission('ADD_PCR_TEST'));
+    const permission2 = await permissionRepository.save(new Permission('ADD_TAKE_HOME_TEST'));
     role.assignPermission(permission1, new UserId());
     role.assignPermission(permission2, new UserId());
     role.removePermission(permission1, new UserId());
@@ -81,12 +75,8 @@ describe('PsqlRoleRepository', () => {
     await roleRepository.save(role2);
 
     const persistedRoles = await roleRepository.findAll();
-    expect(
-      persistedRoles.find(({ name }) => name === 'ROLE_ONE')
-    ).toBeDefined();
-    expect(
-      persistedRoles.find(({ name }) => name === 'ROLE_TWO')
-    ).toBeDefined();
+    expect(persistedRoles.find(({ name }) => name === 'ROLE_ONE')).toBeDefined();
+    expect(persistedRoles.find(({ name }) => name === 'ROLE_TWO')).toBeDefined();
   });
 });
 

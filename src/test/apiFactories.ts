@@ -1,8 +1,4 @@
-import {
-  Address as ApiAddress,
-  CreateTestTypeCommand,
-  Profile as ApiProfile,
-} from '../api/interface';
+import { Address as ApiAddress, CreateTestTypeCommand, Profile as ApiProfile } from '../api/interface';
 
 export function anApiAddress(): ApiAddress {
   return {

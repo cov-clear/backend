@@ -13,9 +13,7 @@ describe('CreateMagicLink', () => {
     const emailNotifierSpy = jest.spyOn(LoggingEmailNotifier.prototype, 'send');
     const createdMagicLink = await createMagicLink.execute('some@email.com');
 
-    const persistedMagicLink = await magicLinkRepository.findByCode(
-      createdMagicLink.code
-    );
+    const persistedMagicLink = await magicLinkRepository.findByCode(createdMagicLink.code);
 
     expect(persistedMagicLink).toEqual(createdMagicLink);
     expect(emailNotifierSpy).toBeCalledTimes(1);

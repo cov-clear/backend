@@ -16,8 +16,6 @@ export class CreateRole {
   }
 
   private hasPermissionToCreateNewRole(authenticatedUser: User) {
-    return !!authenticatedUser.permissions.find(
-      (name) => name === CREATE_NEW_ROLE
-    );
+    return !!authenticatedUser.permissions.find((name) => name === CREATE_NEW_ROLE);
   }
 }

@@ -50,26 +50,15 @@ if (config.get('emailNotifier.type') === 'mailgun') {
     })
   );
 }
-export const accessManagerFactory = new AccessManagerFactory(
-  accessPassRepository
-);
+export const accessManagerFactory = new AccessManagerFactory(accessPassRepository);
 
-export const assignPermissionToRole = new AssignPermissionToRole(
-  roleRepository,
-  permissionRepository
-);
+export const assignPermissionToRole = new AssignPermissionToRole(roleRepository, permissionRepository);
 
-export const assignRoleToUser = new AssignRoleToUser(
-  userRepository,
-  roleRepository
-);
+export const assignRoleToUser = new AssignRoleToUser(userRepository, roleRepository);
 
 export const getCountries = new GetCountries();
 
-export const generateAuthToken = new GenerateAuthToken(
-  config.get('jwt.secret'),
-  config.get('jwt.timeToLiveInHours')
-);
+export const generateAuthToken = new GenerateAuthToken(config.get('jwt.secret'), config.get('jwt.timeToLiveInHours'));
 
 export const getRoles = new GetRoles(roleRepository);
 
@@ -86,19 +75,14 @@ export const createMagicLink = new CreateNewMagicLink(
   emailNotifier,
   new Email(config.get('emailNotifier.fromEmailHeader')),
   new URL(config.get('frontend.baseUrl')),
-  fs
-    .readFileSync(__dirname + '/../../../assets/emails/magic-link.html')
-    .toString()
+  fs.readFileSync(__dirname + '/../../../assets/emails/magic-link.html').toString()
 );
 
 export const getUser = new GetUser(userRepository);
 
 export const updateUser = new UpdateUser(userRepository);
 
-export const getExistingOrCreateNewUser = new GetExistingOrCreateNewUser(
-  userRepository,
-  roleRepository
-);
+export const getExistingOrCreateNewUser = new GetExistingOrCreateNewUser(userRepository, roleRepository);
 
 export const exchangeAuthCode = new ExchangeAuthCode(
   magicLinkRepository,
@@ -115,7 +99,4 @@ export const createTest = new CreateTest(testRepository, testTypeRepository);
 export const getTests = new GetTests(testRepository);
 export const testResultsFactory = new ResultsFactory();
 
-export const createAccessPass = new CreateAccessPass(
-  accessPassRepository,
-  sharingCodeRepository
-);
+export const createAccessPass = new CreateAccessPass(accessPassRepository, sharingCodeRepository);

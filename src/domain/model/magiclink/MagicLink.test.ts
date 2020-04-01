@@ -8,12 +8,7 @@ describe('Magic Link', () => {
   });
 
   it('creates a new magic link', () => {
-    const magicLink = new MagicLink(
-      new MagicLinkCode(),
-      new Email('kostas@gmail.com'),
-      true,
-      new Date()
-    );
+    const magicLink = new MagicLink(new MagicLinkCode(), new Email('kostas@gmail.com'), true, new Date());
     expect(magicLink.email).toBeDefined();
     expect(magicLink.code).toBeDefined();
     expect(magicLink.creationTime).toBeDefined();
@@ -22,12 +17,7 @@ describe('Magic Link', () => {
 
   it('isExpired() works', () => {
     MockDate.set('2020-11-03 00:00:00');
-    const magicLink = new MagicLink(
-      new MagicLinkCode(),
-      new Email('kostas@gmail.com'),
-      true,
-      new Date()
-    );
+    const magicLink = new MagicLink(new MagicLinkCode(), new Email('kostas@gmail.com'), true, new Date());
 
     MockDate.set('2020-11-03 02:06:00');
     expect(magicLink.isExpired()).toBe(true);

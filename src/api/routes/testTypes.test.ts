@@ -27,12 +27,8 @@ describe('test type endpoints', () => {
     });
 
     it('returns 200 with the existing test type if user is found', async () => {
-      const testType = await testTypeRepository.save(
-        aTestType('PCR', 'PCR_PERMISSION')
-      );
-      const user = await persistedUserWithRoleAndPermissions('USER', [
-        'PCR_PERMISSION',
-      ]);
+      const testType = await testTypeRepository.save(aTestType('PCR', 'PCR_PERMISSION'));
+      const user = await persistedUserWithRoleAndPermissions('USER', ['PCR_PERMISSION']);
 
       await request(app)
         .get(`/api/v1/test-types`)
@@ -45,9 +41,7 @@ describe('test type endpoints', () => {
           const [testTypeResponse] = response.body;
           expect(testTypeResponse.id).toEqual(testType.id.value);
           expect(testTypeResponse.name).toEqual(testType.name);
-          expect(testTypeResponse.resultsSchema).toEqual(
-            testType.resultsSchema
-          );
+          expect(testTypeResponse.resultsSchema).toEqual(testType.resultsSchema);
         });
     });
   });
@@ -69,12 +63,8 @@ describe('test type endpoints', () => {
     });
 
     it('returns 409 if a test type with that name already exists', async () => {
-      const user = await persistedUserWithRoleAndPermissions('USER', [
-        CREATE_TEST_TYPE,
-      ]);
-      const existingTestType = await testTypeRepository.save(
-        aTestType('TEST_TYPE_NAME')
-      );
+      const user = await persistedUserWithRoleAndPermissions('USER', [CREATE_TEST_TYPE]);
+      const existingTestType = await testTypeRepository.save(aTestType('TEST_TYPE_NAME'));
 
       await request(app)
         .post(`/api/v1/test-types`)
@@ -89,9 +79,7 @@ describe('test type endpoints', () => {
     });
 
     it('returns 201 on success', async () => {
-      const user = await persistedUserWithRoleAndPermissions('USER', [
-        CREATE_TEST_TYPE,
-      ]);
+      const user = await persistedUserWithRoleAndPermissions('USER', [CREATE_TEST_TYPE]);
       const command = aCreateTestTypeCommand();
 
       await request(app)
@@ -105,9 +93,7 @@ describe('test type endpoints', () => {
           expect(res.body.id).toBeDefined();
           expect(res.body.name).toEqual(command.name);
           expect(res.body.resultsSchema).toEqual(command.resultsSchema);
-          expect(res.body.neededPermissionToAddResults).toEqual(
-            command.neededPermissionToAddResults
-          );
+          expect(res.body.neededPermissionToAddResults).toEqual(command.neededPermissionToAddResults);
         });
     });
   });

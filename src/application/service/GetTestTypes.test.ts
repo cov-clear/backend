@@ -14,12 +14,8 @@ describe('GetTestTypes', () => {
     const id1 = new TestTypeId();
     const id2 = new TestTypeId();
 
-    await testTypeRepository.save(
-      new TestType(id1, 'trusted', { type: 'boolean' }, 'PERMISSION')
-    );
-    await testTypeRepository.save(
-      new TestType(id2, 'untrusted', { type: 'boolean' }, 'PERMISSION')
-    );
+    await testTypeRepository.save(new TestType(id1, 'trusted', { type: 'boolean' }, 'PERMISSION'));
+    await testTypeRepository.save(new TestType(id2, 'untrusted', { type: 'boolean' }, 'PERMISSION'));
   });
 
   describe('forPermissions', () => {

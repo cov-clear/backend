@@ -12,15 +12,9 @@ export class Country {
 
 function validateCode(code: string) {
   if (!code) {
-    throw new DomainValidationError(
-      'countryCode',
-      'Cannot be null or undefined'
-    );
+    throw new DomainValidationError('countryCode', 'Cannot be null or undefined');
   }
   if (!countries.getName(code)) {
-    throw new DomainValidationError(
-      'countryCode',
-      `${code} is not a valid country code`
-    );
+    throw new DomainValidationError('countryCode', `${code} is not a valid country code`);
   }
 }

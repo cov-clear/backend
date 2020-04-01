@@ -11,31 +11,21 @@ export class ExchangeAuthCode {
   ) {}
 
   public async execute(authCode: string) {
-    const magicLink = await this.magicLinkRepository.findByCode(
-      new MagicLinkCode(authCode)
-    );
+    const magicLink = await this.magicLinkRepository.findByCode(new MagicLinkCode(authCode));
 
     if (!magicLink) {
-      throw new AuthorisationFailedError(
-        AuthorisationFailureReason.AUTH_CODE_NOT_FOUND
-      );
+      throw new AuthorisationFailedError(AuthorisationFailureReason.AUTH_CODE_NOT_FOUND);
     }
 
     if (magicLink.isExpired()) {
-      throw new AuthorisationFailedError(
-        AuthorisationFailureReason.AUTH_CODE_EXPIRED
-      );
+      throw new AuthorisationFailedError(AuthorisationFailureReason.AUTH_CODE_EXPIRED);
     }
 
     if (!magicLink.active) {
-      throw new AuthorisationFailedError(
-        AuthorisationFailureReason.AUTH_CODE_ALREADY_USED
-      );
+      throw new AuthorisationFailedError(AuthorisationFailureReason.AUTH_CODE_ALREADY_USED);
     }
 
-    const user = await this.getExistingOrCreateNewUser.execute(
-      magicLink.email.value
-    );
+    const user = await this.getExistingOrCreateNewUser.execute(magicLink.email.value);
     const token = this.generateAuthToken.execute(user);
 
     magicLink.active = false;

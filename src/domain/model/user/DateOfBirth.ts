@@ -3,11 +3,7 @@ import { DomainValidationError } from '../DomainValidationError';
 const DATE_STRING_REG_EXP = /^\d{4}-\d{2}-\d{2}$/;
 
 export class DateOfBirth {
-  constructor(
-    readonly year: number,
-    readonly month: number,
-    readonly day: number
-  ) {
+  constructor(readonly year: number, readonly month: number, readonly day: number) {
     DateOfBirth.validate(year, month, day);
   }
 
@@ -22,9 +18,7 @@ export class DateOfBirth {
   }
 
   toString() {
-    return `${this.year}-${('0' + this.month).slice(-2)}-${(
-      '0' + this.day
-    ).slice(-2)}`;
+    return `${this.year}-${('0' + this.month).slice(-2)}-${('0' + this.day).slice(-2)}`;
   }
 
   private static validate(year: number, month: number, day: number) {
@@ -32,11 +26,7 @@ export class DateOfBirth {
     if (isNaN(new Date(year, month - 1, day).getTime())) {
       throw new DomainValidationError('dateOfBirth', 'Invalid date');
     }
-    if (
-      dateObj.getMonth() !== month - 1 ||
-      dateObj.getFullYear() !== year ||
-      dateObj.getDate() !== day
-    ) {
+    if (dateObj.getMonth() !== month - 1 || dateObj.getFullYear() !== year || dateObj.getDate() !== day) {
       throw new DomainValidationError('dateOfBirth', 'Invalid date');
     }
   }
@@ -53,10 +43,6 @@ export class DateOfBirth {
     if (isNaN(date.getTime())) {
       throw new DomainValidationError('dateOfBirth', 'Invalid date');
     }
-    return new DateOfBirth(
-      date.getFullYear(),
-      date.getMonth() + 1,
-      date.getDate()
-    );
+    return new DateOfBirth(date.getFullYear(), date.getMonth() + 1, date.getDate());
   }
 }

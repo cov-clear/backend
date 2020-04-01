@@ -1,7 +1,4 @@
-import {
-  roleRepository,
-  userRepository,
-} from '../../infrastructure/persistence';
+import { roleRepository, userRepository } from '../../infrastructure/persistence';
 import database from '../../database';
 import { GetExistingOrCreateNewUser } from './GetExistingOrCreateNewUser';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
@@ -9,10 +6,7 @@ import { anEmail, aNewUser } from '../../test/domainFactories';
 import { USER } from '../../domain/model/authentication/Roles';
 
 describe('GetExistingOrCreateNewUser', () => {
-  const getExistingOrCreateNewUser = new GetExistingOrCreateNewUser(
-    userRepository,
-    roleRepository
-  );
+  const getExistingOrCreateNewUser = new GetExistingOrCreateNewUser(userRepository, roleRepository);
 
   beforeEach(async () => {
     await cleanupDatabase();
@@ -21,9 +15,7 @@ describe('GetExistingOrCreateNewUser', () => {
   it('returns existing user if one already exists for email', async () => {
     const existingUser = await userRepository.save(aNewUser());
 
-    const resultUser = await getExistingOrCreateNewUser.execute(
-      existingUser.email.value
-    );
+    const resultUser = await getExistingOrCreateNewUser.execute(existingUser.email.value);
 
     expect(resultUser.id).toEqual(existingUser.id);
   });

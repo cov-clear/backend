@@ -10,20 +10,14 @@ import { Authentication } from '../../domain/model/authentication/Authentication
 const jwtSecret: string = config.get('jwt.secret');
 
 function getTokenFromHeader(req: Request) {
-  const tokenParts = req.headers.authorization
-    ?.split(' ')
-    .map((part) => part.trim());
+  const tokenParts = req.headers.authorization?.split(' ').map((part) => part.trim());
   if (tokenParts && tokenParts[0] === 'Bearer') {
     return tokenParts[1];
   }
   return null;
 }
 
-export async function attachAuthenticationToRequest(
-  req: AuthenticatedRequest,
-  res: Response,
-  next: () => any
-) {
+export async function attachAuthenticationToRequest(req: AuthenticatedRequest, res: Response, next: () => any) {
   try {
     const token = getTokenFromHeader(req);
     if (!token) {

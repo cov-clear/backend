@@ -9,22 +9,15 @@ export class CreateAccessPass {
     private sharingCodeRepository: SharingCodeRepository
   ) {}
 
-  public async withSharingCode(
-    code: string,
-    userId: string
-  ): Promise<AccessPass> {
+  public async withSharingCode(code: string, userId: string): Promise<AccessPass> {
     const sharingCode = await this.sharingCodeRepository.findByCode(code);
 
     if (!sharingCode) {
-      throw new AccessPassFailedError(
-        AccessPassFailureReason.INVALID_SHARING_CODE
-      );
+      throw new AccessPassFailedError(AccessPassFailureReason.INVALID_SHARING_CODE);
     }
 
     if (sharingCode.isExpired()) {
-      throw new AccessPassFailedError(
-        AccessPassFailureReason.SHARING_CODE_EXPIRED
-      );
+      throw new AccessPassFailedError(AccessPassFailureReason.SHARING_CODE_EXPIRED);
     }
 
     const accessPass = new AccessPass(new UserId(userId), sharingCode.userId);

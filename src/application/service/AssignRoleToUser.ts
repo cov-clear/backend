@@ -8,10 +8,7 @@ import { ASSIGN_ROLE_TO_USER } from '../../domain/model/authentication/Permissio
 import { AccessDeniedError } from '../../domain/model/AccessDeniedError';
 
 export class AssignRoleToUser {
-  constructor(
-    private userRepository: UserRepository,
-    private roleRepository: RoleRepository
-  ) {}
+  constructor(private userRepository: UserRepository, private roleRepository: RoleRepository) {}
 
   async execute(roleName: string, userId: string, authenticatedUser: User) {
     const role = await this.roleRepository.findByName(roleName);
@@ -34,8 +31,6 @@ export class AssignRoleToUser {
   }
 
   private hasPermissionToAssignRole(authenticatedUser: User) {
-    return !!authenticatedUser.permissions.find(
-      (name) => name === ASSIGN_ROLE_TO_USER
-    );
+    return !!authenticatedUser.permissions.find((name) => name === ASSIGN_ROLE_TO_USER);
   }
 }

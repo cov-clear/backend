@@ -11,9 +11,7 @@ describe('TestType', () => {
         },
       };
 
-      expect(
-        () => new TestType(new TestTypeId(), 'NAME', inputSchema, 'PERMISSION')
-      ).not.toThrow();
+      expect(() => new TestType(new TestTypeId(), 'NAME', inputSchema, 'PERMISSION')).not.toThrow();
     });
 
     it('should not allow a test type to be created with an invalid schema', () => {
@@ -21,9 +19,7 @@ describe('TestType', () => {
         type: 'WRONG_TYPE',
       };
 
-      expect(
-        () => new TestType(new TestTypeId(), 'NAME', inputSchema, 'PERMISSION')
-      ).toThrow();
+      expect(() => new TestType(new TestTypeId(), 'NAME', inputSchema, 'PERMISSION')).toThrow();
     });
   });
 });

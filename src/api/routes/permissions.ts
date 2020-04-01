@@ -1,14 +1,7 @@
 import { Response } from 'express';
 import AsyncRouter from '../AsyncRouter';
-import {
-  assignPermissionToRole,
-  createPermission,
-  getPermissions,
-} from '../../application/service';
-import {
-  AuthenticatedRequest,
-  getAuthenticationOrFail,
-} from '../AuthenticatedRequest';
+import { assignPermissionToRole, createPermission, getPermissions } from '../../application/service';
+import { AuthenticatedRequest, getAuthenticationOrFail } from '../AuthenticatedRequest';
 import { AccessDeniedError } from '../../domain/model/AccessDeniedError';
 import { ApiError, apiErrorCodes } from '../ApiError';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
@@ -26,36 +19,25 @@ import { PermissionNotFoundError } from '../../domain/model/authentication/Permi
 export default () => {
   const route = new AsyncRouter();
 
-  route.get(
-    '/permissions',
-    hasPermission(LIST_PERMISSIONS),
-    async (req: AuthenticatedRequest, res: Response) => {
-      try {
-        const roles = await getPermissions.all();
-        res.status(200).json(roles.map(mapPermissionToApiPermission));
-      } catch (error) {
-        handleError(error);
-      }
+  route.get('/permissions', hasPermission(LIST_PERMISSIONS), async (req: AuthenticatedRequest, res: Response) => {
+    try {
+      const roles = await getPermissions.all();
+      res.status(200).json(roles.map(mapPermissionToApiPermission));
+    } catch (error) {
+      handleError(error);
     }
-  );
+  });
 
-  route.post(
-    '/permissions',
-    hasPermission(CREATE_NEW_PERMISSION),
-    async (req: AuthenticatedRequest, res: Response) => {
-      const { name } = req.body;
+  route.post('/permissions', hasPermission(CREATE_NEW_PERMISSION), async (req: AuthenticatedRequest, res: Response) => {
+    const { name } = req.body;
 
-      try {
-        const permission = await createPermission.execute(
-          name,
-          getAuthenticationOrFail(req).user
-        );
-        res.status(201).json(mapPermissionToApiPermission(permission));
-      } catch (error) {
-        handleError(error);
-      }
+    try {
+      const permission = await createPermission.execute(name, getAuthenticationOrFail(req).user);
+      res.status(201).json(mapPermissionToApiPermission(permission));
+    } catch (error) {
+      handleError(error);
     }
-  );
+  });
 
   route.post(
     '/roles/:roleName/permissions',
@@ -80,9 +62,7 @@ export default () => {
   return route.middleware();
 };
 
-export function mapPermissionToApiPermission(
-  permission: Permission
-): ApiPermission {
+export function mapPermissionToApiPermission(permission: Permission): ApiPermission {
   return {
     name: permission.name,
   };

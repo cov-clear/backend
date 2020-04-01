@@ -55,11 +55,7 @@ export class PsqlUserRepository implements UserRepository {
   }
 
   private async saveUserRoleAssignments(user: User) {
-    await Promise.all(
-      user.roleAssignments.newAssignmentActions.map(
-        this.saveRoleAssignment.bind(this)
-      )
-    );
+    await Promise.all(user.roleAssignments.newAssignmentActions.map(this.saveRoleAssignment.bind(this)));
     Reflect.set(user.roleAssignments, 'newAssignmentActions', []);
   }
 
@@ -109,21 +105,13 @@ export class PsqlUserRepository implements UserRepository {
       userRow.modificationTime
     );
     const roleAssignmentActions = await this.getRoleAssignments(user);
-    Reflect.set(
-      user.roleAssignments,
-      'assignmentActions',
-      roleAssignmentActions
-    );
+    Reflect.set(user.roleAssignments, 'assignmentActions', roleAssignmentActions);
     Reflect.set(user.roleAssignments, 'newAssignmentActions', []);
     return user;
   }
 
-  private async getRoleAssignments(
-    user: User
-  ): Promise<RoleAssignmentAction[]> {
-    const roleAssignmentRows: any[] = await this.db(
-      'role_to_user_assignment as rua'
-    )
+  private async getRoleAssignments(user: User): Promise<RoleAssignmentAction[]> {
+    const roleAssignmentRows: any[] = await this.db('role_to_user_assignment as rua')
       .select([
         'rua.id as ruaId',
         'rua.creation_time as ruaCreationTime',
@@ -141,11 +129,7 @@ export class PsqlUserRepository implements UserRepository {
         'p.creation_time as permissionCreationTime',
       ])
       .leftJoin('role as r', 'r.name', 'rua.role_name')
-      .leftJoin(
-        'permission_to_role_assignment as pra',
-        'r.name',
-        'pra.role_name'
-      )
+      .leftJoin('permission_to_role_assignment as pra', 'r.name', 'pra.role_name')
       .leftJoin('permission as p', 'pra.permission_name', 'p.name')
       .where('rua.user_id', '=', user.id.value);
 
@@ -159,39 +143,26 @@ export class PsqlUserRepository implements UserRepository {
       .filter((row) => row.roleName && row.roleCreationTime)
       .forEach((row) => {
         const rowsForKey = groupedByAssignmentId.get(row.ruaId);
-        rowsForKey
-          ? rowsForKey.push(row)
-          : groupedByAssignmentId.set(row.ruaId, [row]);
+        rowsForKey ? rowsForKey.push(row) : groupedByAssignmentId.set(row.ruaId, [row]);
       });
     return groupedByAssignmentId;
   }
 
-  private mapToRoleAssignmentActions(
-    groupedByAssignmentId: Map<string, any[]>,
-    user: User
-  ) {
+  private mapToRoleAssignmentActions(groupedByAssignmentId: Map<string, any[]>, user: User) {
     const roleAssignmentActions: RoleAssignmentAction[] = [];
     groupedByAssignmentId.forEach((roleRows) => {
       const role = createRoleWithAssignedPermissions(roleRows);
-      roleAssignmentActions.push(
-        this.createRoleAssignmentAction(roleRows[0], user, role)
-      );
+      roleAssignmentActions.push(this.createRoleAssignmentAction(roleRows[0], user, role));
     });
     return roleAssignmentActions;
   }
 
-  private createRoleAssignmentAction(
-    roleAssignmentRow: any,
-    user: User,
-    role: Role
-  ) {
+  private createRoleAssignmentAction(roleAssignmentRow: any, user: User, role: Role) {
     return new RoleAssignmentAction(
       new AssignmentId(roleAssignmentRow.ruaId),
       user,
       role,
-      roleAssignmentRow.ruaActionType === 'ADD'
-        ? AssignmentActionType.ADD
-        : AssignmentActionType.REMOVE,
+      roleAssignmentRow.ruaActionType === 'ADD' ? AssignmentActionType.ADD : AssignmentActionType.REMOVE,
       new UserId(roleAssignmentRow.ruaActor),
       roleAssignmentRow.ruaOrder,
       roleAssignmentRow.ruaCreationTime

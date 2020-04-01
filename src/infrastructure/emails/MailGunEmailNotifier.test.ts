@@ -7,11 +7,9 @@ describe('MailGunEmailNotifier', () => {
   it('sends calls the mailgun api with the right parameters', async () => {
     const mailGunClient = new mailgun({ apiKey: 'ak', domain: 'example.com' });
 
-    const sendMethodSpy = jest
-      .spyOn(mailGunClient, 'messages')
-      .mockImplementation(() => ({
-        send: jest.fn().mockImplementation((data, fn) => fn()),
-      }));
+    const sendMethodSpy = jest.spyOn(mailGunClient, 'messages').mockImplementation(() => ({
+      send: jest.fn().mockImplementation((data, fn) => fn()),
+    }));
 
     const mailGunEmailNotifier = new MailGunEmailNotifier(mailGunClient);
 
@@ -29,11 +27,9 @@ describe('MailGunEmailNotifier', () => {
   it('an error in mailgun makes the promise to fail', async () => {
     const mailGunClient = new mailgun({ apiKey: 'ak', domain: 'example.com' });
 
-    const sendMethodSpy = jest
-      .spyOn(mailGunClient, 'messages')
-      .mockImplementation(() => ({
-        send: jest.fn().mockImplementation((data, fn) => fn('error')),
-      }));
+    const sendMethodSpy = jest.spyOn(mailGunClient, 'messages').mockImplementation(() => ({
+      send: jest.fn().mockImplementation((data, fn) => fn('error')),
+    }));
 
     const mailGunEmailNotifier = new MailGunEmailNotifier(mailGunClient);
 

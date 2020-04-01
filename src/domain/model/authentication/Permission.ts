@@ -3,10 +3,7 @@ import { DomainValidationError } from '../DomainValidationError';
 const PERMISSION_NAME_REG_EXP = /^[A-Z]+[A-Z_]*[A-Z]+$/;
 
 export class Permission {
-  constructor(
-    readonly name: string,
-    readonly creationTime: Date = new Date()
-  ) {}
+  constructor(readonly name: string, readonly creationTime: Date = new Date()) {}
 }
 
 function validateName(name: String) {

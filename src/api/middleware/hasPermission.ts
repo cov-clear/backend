@@ -1,8 +1,5 @@
 import { Response } from 'express';
-import {
-  AuthenticatedRequest,
-  getAuthenticationOrFail,
-} from '../AuthenticatedRequest';
+import { AuthenticatedRequest, getAuthenticationOrFail } from '../AuthenticatedRequest';
 import { ApiError, apiErrorCodes } from '../ApiError';
 
 export function hasPermission(neededPermissionName: string) {

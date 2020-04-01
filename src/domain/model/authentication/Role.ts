@@ -10,10 +10,7 @@ export class Role {
 
   constructor(readonly name: string, readonly creationTime: Date = new Date()) {
     validateName(name);
-    this.permissionAssignments = new AssignmentActions(
-      [],
-      (permission) => permission.name
-    );
+    this.permissionAssignments = new AssignmentActions([], (permission) => permission.name);
   }
 
   assignPermission(permission: Permission, actor: UserId) {

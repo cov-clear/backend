@@ -13,10 +13,5 @@ export class CreateTestType {
 }
 
 function getTestType(command: CreateTestTypeCommand) {
-  return new TestType(
-    new TestTypeId(),
-    command.name,
-    command.resultsSchema,
-    command.neededPermissionToAddResults
-  );
+  return new TestType(new TestTypeId(), command.name, command.resultsSchema, command.neededPermissionToAddResults);
 }

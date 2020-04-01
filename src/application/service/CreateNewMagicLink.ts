@@ -1,9 +1,6 @@
 import { Email } from '../../domain/model/user/Email';
 import { EmailNotifier } from '../../domain/model/EmailNotifier';
-import {
-  MagicLink,
-  MagicLinkCode,
-} from '../../domain/model/magiclink/MagicLink';
+import { MagicLink, MagicLinkCode } from '../../domain/model/magiclink/MagicLink';
 import { MagicLinkRepository } from '../../domain/model/magiclink/MagicLinkRepository';
 
 export class CreateNewMagicLink {
@@ -16,18 +13,13 @@ export class CreateNewMagicLink {
   ) {}
 
   public async execute(emailValue: string) {
-    const magicLink = await this.magicLinkRepository.save(
-      new MagicLink(new MagicLinkCode(), new Email(emailValue))
-    );
+    const magicLink = await this.magicLinkRepository.save(new MagicLink(new MagicLinkCode(), new Email(emailValue)));
 
     this.emailNotifier.send(
       this.fromEmailHeader,
       magicLink.email,
       'Sign in to COV-Clear',
-      this.emailTemplate.replace(
-        /{{LINK}}/g,
-        `${this.frontendBaseUrl}link/${magicLink.code.value}`
-      )
+      this.emailTemplate.replace(/{{LINK}}/g, `${this.frontendBaseUrl}link/${magicLink.code.value}`)
     );
 
     return magicLink;

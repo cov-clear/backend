@@ -1,8 +1,5 @@
 import database from '../../database';
-import {
-  accessPassRepository,
-  sharingCodeRepository,
-} from '../../infrastructure/persistence';
+import { accessPassRepository, sharingCodeRepository } from '../../infrastructure/persistence';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import { UserId } from '../../domain/model/user/UserId';
 import { SharingCode } from '../../domain/model/sharingCode/SharingCode';
@@ -20,15 +17,9 @@ describe('CreateAccessPass', () => {
     const sharingCode = new SharingCode(subjectUserId);
     await sharingCodeRepository.save(sharingCode);
 
-    const createdAccessPass = await createAccessPass.withSharingCode(
-      sharingCode.code,
-      actorUserId.value
-    );
+    const createdAccessPass = await createAccessPass.withSharingCode(sharingCode.code, actorUserId.value);
 
-    const persistedAccessPass = await accessPassRepository.findByUserIds(
-      actorUserId,
-      subjectUserId
-    );
+    const persistedAccessPass = await accessPassRepository.findByUserIds(actorUserId, subjectUserId);
 
     expect(persistedAccessPass).toEqual(createdAccessPass);
   });

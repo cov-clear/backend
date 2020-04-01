@@ -20,16 +20,12 @@ describe('sharing code endpoints', () => {
   describe('POST /users/:id/sharing-code', () => {
     it('returns 404 if user is not found', async () => {
       const id = new UserId();
-      await request(app)
-        .get(`/api/v1/users/${id.value}/sharing-code`)
-        .expect(404);
+      await request(app).get(`/api/v1/users/${id.value}/sharing-code`).expect(404);
     });
 
     it('returns 200 with the sharing code if user is found', async () => {
       const id = new UserId();
-      const user = await userRepository.save(
-        new User(id, new Email('kostas@example.com'))
-      );
+      const user = await userRepository.save(new User(id, new Email('kostas@example.com')));
 
       await request(app)
         .post(`/api/v1/users/${id.value}/sharing-code`)
@@ -43,9 +39,7 @@ describe('sharing code endpoints', () => {
 
     it('returns 404 if trying to access a different userId', async () => {
       const id = new UserId();
-      const user = await userRepository.save(
-        new User(id, new Email('kostas@example.com'))
-      );
+      const user = await userRepository.save(new User(id, new Email('kostas@example.com')));
 
       await request(app)
         .post(`/api/v1/users/${new UserId().value}/sharing-code`)

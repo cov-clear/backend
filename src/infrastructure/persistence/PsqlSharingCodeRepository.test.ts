@@ -16,9 +16,7 @@ describe('PsqlSharingCodeRepository', () => {
 
     await psqlSharingCodeRepository.save(sharingCode);
 
-    const persistedSharingCode = await psqlSharingCodeRepository.findByCode(
-      sharingCode.code
-    );
+    const persistedSharingCode = await psqlSharingCodeRepository.findByCode(sharingCode.code);
 
     expect(persistedSharingCode).toEqual(sharingCode);
   });

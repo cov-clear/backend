@@ -3,10 +3,7 @@ import expressApp from '../../loaders/express';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import database from '../../database';
 import { getTokenForUser } from '../../test/authentication';
-import {
-  permissionRepository,
-  roleRepository,
-} from '../../infrastructure/persistence';
+import { permissionRepository, roleRepository } from '../../infrastructure/persistence';
 import { ADMIN, DOCTOR, USER } from '../../domain/model/authentication/Roles';
 import {
   ASSIGN_PERMISSION_TO_ROLE,
@@ -29,10 +26,7 @@ describe('roles endpoints', () => {
   describe('POST /permissions', () => {
     it('successfully creates a new permission', async () => {
       const newRole = 'SOME_NEW_PERMISSION';
-      const authenticatedUser = await persistedUserWithRoleAndPermissions(
-        ADMIN,
-        [CREATE_NEW_PERMISSION]
-      );
+      const authenticatedUser = await persistedUserWithRoleAndPermissions(ADMIN, [CREATE_NEW_PERMISSION]);
 
       await request(app)
         .post(`/api/v1/permissions`)
@@ -50,13 +44,8 @@ describe('roles endpoints', () => {
   describe('POST /roles/:name/permissions', () => {
     it('successfully assigns the designated permission to the provided role', async () => {
       const role = await roleRepository.save(new Role(DOCTOR));
-      const permission = await permissionRepository.save(
-        new Permission(ASSIGN_ROLE_TO_USER)
-      );
-      const authenticatedUser = await persistedUserWithRoleAndPermissions(
-        ADMIN,
-        [ASSIGN_PERMISSION_TO_ROLE]
-      );
+      const permission = await permissionRepository.save(new Permission(ASSIGN_ROLE_TO_USER));
+      const authenticatedUser = await persistedUserWithRoleAndPermissions(ADMIN, [ASSIGN_PERMISSION_TO_ROLE]);
 
       await request(app)
         .post(`/api/v1/roles/${role.name}/permissions`)
@@ -82,10 +71,7 @@ describe('roles endpoints', () => {
     });
 
     it('returns 403 if authenticated user does not have the required permission', async () => {
-      const authenticatedUser = await persistedUserWithRoleAndPermissions(
-        USER,
-        []
-      );
+      const authenticatedUser = await persistedUserWithRoleAndPermissions(USER, []);
 
       await request(app)
         .get(`/api/v1/permissions`)
@@ -99,13 +85,8 @@ describe('roles endpoints', () => {
     });
 
     it('gets all the existing permissions', async () => {
-      const permission = await permissionRepository.save(
-        new Permission('SOME_PERMISSION')
-      );
-      const authenticatedUser = await persistedUserWithRoleAndPermissions(
-        ADMIN,
-        [LIST_PERMISSIONS]
-      );
+      const permission = await permissionRepository.save(new Permission('SOME_PERMISSION'));
+      const authenticatedUser = await persistedUserWithRoleAndPermissions(ADMIN, [LIST_PERMISSIONS]);
 
       await request(app)
         .get(`/api/v1/permissions`)
@@ -116,9 +97,7 @@ describe('roles endpoints', () => {
         .expect((res) => {
           expect(Array.isArray(res.body)).toBe(true);
           const permissions = res.body as ApiPermission[];
-          expect(
-            permissions.find(({ name }) => name === permission.name)
-          ).toBeDefined();
+          expect(permissions.find(({ name }) => name === permission.name)).toBeDefined();
         });
     });
   });

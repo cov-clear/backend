@@ -20,11 +20,7 @@ describe('AccessManager', () => {
     it('returns false if authenticated user is not the same as test user', () => {
       const authenticatedAs = new Authentication(aNewUser(), [], []);
 
-      expect(
-        accessManagerFactory
-          .forAuthentication(authenticatedAs)
-          .isLoggedInAsUser(new UserId())
-      ).toBe(false);
+      expect(accessManagerFactory.forAuthentication(authenticatedAs).isLoggedInAsUser(new UserId())).toBe(false);
     });
   });
 });

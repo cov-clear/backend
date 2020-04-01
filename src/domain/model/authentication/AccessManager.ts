@@ -11,10 +11,7 @@ export class AccessManagerFactory {
 }
 
 export class AccessManager {
-  constructor(
-    private accessPassRepository: AccessPassRepository,
-    private authentication: Authentication
-  ) {}
+  constructor(private accessPassRepository: AccessPassRepository, private authentication: Authentication) {}
 
   async canAccessUser(userId: UserId): Promise<boolean> {
     if (!this.authentication) {
@@ -31,17 +28,11 @@ export class AccessManager {
   }
 
   isLoggedInAsUser(userId: UserId): boolean {
-    return (
-      !!this.authentication &&
-      this.authentication.user.id.value === userId.value
-    );
+    return !!this.authentication && this.authentication.user.id.value === userId.value;
   }
 
   async hasAccessPassForUser(userId: UserId): Promise<boolean> {
-    const accessPass = await this.accessPassRepository.findByUserIds(
-      this.authentication.user.id,
-      userId
-    );
+    const accessPass = await this.accessPassRepository.findByUserIds(this.authentication.user.id, userId);
 
     return !!accessPass && !accessPass.isExpired();
   }

@@ -22,10 +22,7 @@ export class User {
 
   set profile(newProfile) {
     if (!newProfile) {
-      throw new DomainValidationError(
-        'profile',
-        'Cannot set profile to null or undefined'
-      );
+      throw new DomainValidationError('profile', 'Cannot set profile to null or undefined');
     }
     this._profile = newProfile;
     this._modificationTime = new Date();
@@ -37,10 +34,7 @@ export class User {
 
   set address(newAddress) {
     if (!newAddress) {
-      throw new DomainValidationError(
-        'profile.address',
-        'Cannot set address to null or undefined'
-      );
+      throw new DomainValidationError('profile.address', 'Cannot set address to null or undefined');
     }
     this._address = newAddress;
     this._modificationTime = new Date();

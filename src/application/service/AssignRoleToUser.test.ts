@@ -1,10 +1,7 @@
 import database from '../../database';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import { AssignRoleToUser } from './AssignRoleToUser';
-import {
-  roleRepository,
-  userRepository,
-} from '../../infrastructure/persistence';
+import { roleRepository, userRepository } from '../../infrastructure/persistence';
 import { aNewUser } from '../../test/domainFactories';
 import { RoleNotFoundError } from '../../domain/model/authentication/RoleNotFoundError';
 import { UserId } from '../../domain/model/user/UserId';
@@ -26,9 +23,9 @@ describe('AssignRoleToUser', () => {
     const admin = await userRepository.save(aNewUser());
     const user = await userRepository.save(aNewUser());
 
-    await expect(
-      assignRoleToUser.execute('NON_EXISTING_ROLE_NAME', user.id.value, admin)
-    ).rejects.toEqual(new RoleNotFoundError('NON_EXISTING_ROLE_NAME'));
+    await expect(assignRoleToUser.execute('NON_EXISTING_ROLE_NAME', user.id.value, admin)).rejects.toEqual(
+      new RoleNotFoundError('NON_EXISTING_ROLE_NAME')
+    );
   });
 
   it('throws error if the userId is not found', async () => {
@@ -36,9 +33,9 @@ describe('AssignRoleToUser', () => {
     const role = await roleRepository.save(new Role(USER));
     const userId = new UserId();
 
-    await expect(
-      assignRoleToUser.execute(role.name, userId.value, admin)
-    ).rejects.toEqual(new UserNotFoundError(userId));
+    await expect(assignRoleToUser.execute(role.name, userId.value, admin)).rejects.toEqual(
+      new UserNotFoundError(userId)
+    );
   });
 
   it('throws error if the authenticated user does not have the necessary permission', async () => {
@@ -46,17 +43,15 @@ describe('AssignRoleToUser', () => {
     const authenticatedUser = await userRepository.save(aNewUser());
     const role = await roleRepository.save(new Role(USER));
 
-    await expect(
-      assignRoleToUser.execute(role.name, user.id.value, authenticatedUser)
-    ).rejects.toEqual(new AccessDeniedError(ASSIGN_ROLE_TO_USER));
+    await expect(assignRoleToUser.execute(role.name, user.id.value, authenticatedUser)).rejects.toEqual(
+      new AccessDeniedError(ASSIGN_ROLE_TO_USER)
+    );
   });
 
   it('works if the authenticatedUser has the right role', async () => {
     const user = await userRepository.save(aNewUser());
     const role = await roleRepository.save(new Role(USER));
-    const admin = await persistedUserWithRoleAndPermissions(ADMIN, [
-      ASSIGN_ROLE_TO_USER,
-    ]);
+    const admin = await persistedUserWithRoleAndPermissions(ADMIN, [ASSIGN_ROLE_TO_USER]);
 
     await assignRoleToUser.execute(role.name, user.id.value, admin);
 

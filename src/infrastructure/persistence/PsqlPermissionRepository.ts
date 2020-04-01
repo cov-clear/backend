@@ -6,9 +6,7 @@ export class PsqlPermissionRepository implements PermissionRepository {
   constructor(private db: knex) {}
 
   async findByName(name: string): Promise<Permission | null> {
-    const permissionRow: any = await this.selectAllPermissionsQuery()
-      .where('name', '=', name)
-      .first();
+    const permissionRow: any = await this.selectAllPermissionsQuery().where('name', '=', name).first();
 
     if (!permissionRow) {
       return null;
@@ -18,9 +16,7 @@ export class PsqlPermissionRepository implements PermissionRepository {
 
   async findAll(): Promise<Permission[]> {
     const permissionRows: any[] = await this.selectAllPermissionsQuery();
-    return permissionRows.map(
-      (row) => new Permission(row.name, row.creationTime)
-    );
+    return permissionRows.map((row) => new Permission(row.name, row.creationTime));
   }
 
   async save(permission: Permission): Promise<Permission> {
@@ -41,9 +37,6 @@ export class PsqlPermissionRepository implements PermissionRepository {
   }
 
   private selectAllPermissionsQuery(): QueryBuilder {
-    return this.db('permission').select([
-      'name',
-      'creation_time as creationTime',
-    ]);
+    return this.db('permission').select(['name', 'creation_time as creationTime']);
   }
 }
