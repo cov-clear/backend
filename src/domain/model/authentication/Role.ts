@@ -9,7 +9,7 @@ export class Role {
   readonly permissionAssignments: AssignmentActions<Role, Permission>;
 
   constructor(readonly name: string, readonly creationTime: Date = new Date()) {
-    Role.validateName(name);
+    validateName(name);
     this.permissionAssignments = new AssignmentActions([], (permission) => permission.name);
   }
 
@@ -24,13 +24,13 @@ export class Role {
   permissions(): Permission[] {
     return this.permissionAssignments.activeAssignments();
   }
+}
 
-  private static validateName(name: String) {
-    if (!name.match(ROLE_NAME_REG_EXP)) {
-      throw new DomainValidationError(
-        'roleName',
-        'Role name can be comprised of only capital english letters and underscores(_)'
-      );
-    }
+function validateName(name: String) {
+  if (!name.match(ROLE_NAME_REG_EXP)) {
+    throw new DomainValidationError(
+      'roleName',
+      'Role name can be comprised of only capital english letters and underscores(_)'
+    );
   }
 }
