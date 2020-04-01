@@ -95,7 +95,7 @@ export const getTestTypes = new GetTestTypes(testTypeRepository);
 export const createTest = new CreateTest(testRepository, testTypeRepository);
 export const getTests = new GetTests(testRepository);
 export const testResultsFactory = new ResultsFactory();
-export const addResultsToTest = new AddResultsToTest(testRepository, testTypeRepository, accessManagerFactory);
+export const addResultsToTest = new AddResultsToTest(testRepository, testTypeRepository);
 
 export const createSharingCode = new CreateSharingCode(sharingCodeRepository);
 export const createAccessPass = new CreateAccessPass(accessPassRepository, sharingCodeRepository);

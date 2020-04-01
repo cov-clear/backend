@@ -230,27 +230,11 @@ describe('test endpoints', () => {
         .expect(403);
     });
 
-    it('returns 403 if the tester does not have access to the userId', async () => {
+    it('returns 200 if the tester has the permission to add tests of this type', async () => {
       const testType = await testTypeRepository.save(aTestType());
       const tester = await persistedUserWithRoleAndPermissions('TESTER', [testType.neededPermissionToAddResults]);
       const testedUser = await persistedUserWithRoleAndPermissions('USER', []);
       const test = await testRepository.save(new Test(new TestId(), testedUser.id, testType.id));
-
-      await request(app)
-        .patch(`/api/v1/tests/${test.id.value}`)
-        .set({
-          Authorization: `Bearer ${await getTokenForUser(tester)}`,
-        })
-        .send({ results: getValidTestResultsCommand() })
-        .expect(403);
-    });
-
-    it('returns 200 if the tester does has access to the userId and the permission to add tests of this type', async () => {
-      const testType = await testTypeRepository.save(aTestType());
-      const tester = await persistedUserWithRoleAndPermissions('TESTER', [testType.neededPermissionToAddResults]);
-      const testedUser = await persistedUserWithRoleAndPermissions('USER', []);
-      const test = await testRepository.save(new Test(new TestId(), testedUser.id, testType.id));
-      await accessPassRepository.save(new AccessPass(tester.id, testedUser.id));
 
       await request(app)
         .patch(`/api/v1/tests/${test.id.value}`)

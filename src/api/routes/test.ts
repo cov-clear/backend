@@ -36,13 +36,6 @@ export default () => {
     return res.json(tests.map((test: any) => mapTestToApiTest(test))).status(200);
   });
 
-  route.get('/tests/:id', isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
-    const { id } = req.params;
-
-    const test = await getTests.byId(id);
-    return res.json(mapTestToApiTest(test)).status(200);
-  });
-
   route.post('/users/:id/tests', isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
     const { id } = req.params;
     const payload = req.body;
@@ -64,6 +57,13 @@ export default () => {
     } catch (error) {
       handleCreationError(error);
     }
+  });
+
+  route.get('/tests/:id', isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+    const { id } = req.params;
+
+    const test = await getTests.byId(id);
+    return res.json(mapTestToApiTest(test)).status(200);
   });
 
   route.patch('/tests/:id', isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
