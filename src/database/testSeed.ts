@@ -119,7 +119,7 @@ async function createDefaultTestType() {
         description: 'Indicator if sample shows IgG positive',
       },
       IgM: {
-        title: 'Control',
+        title: 'IgM',
         type: 'boolean',
         description: 'Indicator if sample shows IgM positive',
       },
