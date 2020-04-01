@@ -25,10 +25,10 @@
     <mj-section>
       <mj-column>
         <mj-image alt="Logo"
-                  src="https://app.cov-clear.com/logo512.png"
+                  src="https://app.cov-clear.com/images/logo192.png"
                   align="center"
                   border="none"
-                  width="196px"
+                  width="192px"
                   padding="0px 0px 0px 0px" />
       </mj-column>
     </mj-section>
