@@ -5,7 +5,7 @@ import { AuthenticatedRequest, getAuthenticationOrFail } from '../AuthenticatedR
 import { AccessDeniedError } from '../../domain/model/AccessDeniedError';
 import { ApiError, apiErrorCodes } from '../ApiError';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
-import { RoleNotFoundError } from '../../domain/model/authentication/RoleNotFoundError';
+import { RoleNotFoundError } from '../../domain/model/authentication/RoleRepository';
 import { Permission as ApiPermission } from '../interface';
 import { Permission } from '../../domain/model/authentication/Permission';
 import { hasPermission } from '../middleware/hasPermission';

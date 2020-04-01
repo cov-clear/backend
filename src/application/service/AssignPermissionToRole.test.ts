@@ -7,7 +7,7 @@ import { AccessDeniedError } from '../../domain/model/AccessDeniedError';
 import { persistedUserWithRoleAndPermissions } from '../../test/persistedEntities';
 import { AssignPermissionToRole } from './AssignPermissionToRole';
 import { PermissionNotFoundError } from '../../domain/model/authentication/PermissionNotFoundError';
-import { RoleNotFoundError } from '../../domain/model/authentication/RoleNotFoundError';
+import { RoleNotFoundError } from '../../domain/model/authentication/RoleRepository';
 import { Permission } from '../../domain/model/authentication/Permission';
 
 describe('AssignPermissionToRole', () => {

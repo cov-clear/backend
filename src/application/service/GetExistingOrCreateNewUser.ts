@@ -2,8 +2,7 @@ import { User } from '../../domain/model/user/User';
 import { Email } from '../../domain/model/user/Email';
 import { UserId } from '../../domain/model/user/UserId';
 import { UserRepository } from '../../domain/model/user/UserRepository';
-import { RoleRepository } from '../../domain/model/authentication/RoleRepository';
-import { RoleNotFoundError } from '../../domain/model/authentication/RoleNotFoundError';
+import { RoleRepository, RoleNotFoundError } from '../../domain/model/authentication/RoleRepository';
 import { USER } from '../../domain/model/authentication/Roles';
 
 export class GetExistingOrCreateNewUser {

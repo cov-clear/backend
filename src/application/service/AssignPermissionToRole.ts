@@ -1,5 +1,4 @@
-import { RoleRepository } from '../../domain/model/authentication/RoleRepository';
-import { RoleNotFoundError } from '../../domain/model/authentication/RoleNotFoundError';
+import { RoleRepository, RoleNotFoundError } from '../../domain/model/authentication/RoleRepository';
 import { User } from '../../domain/model/user/User';
 import { ASSIGN_PERMISSION_TO_ROLE } from '../../domain/model/authentication/Permissions';
 import { AccessDeniedError } from '../../domain/model/AccessDeniedError';

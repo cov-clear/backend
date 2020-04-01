@@ -6,7 +6,7 @@ import { AccessDeniedError } from '../../domain/model/AccessDeniedError';
 import { ApiError, apiErrorCodes } from '../ApiError';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
 import { UserNotFoundError } from '../../domain/model/user/UserRepository';
-import { RoleNotFoundError } from '../../domain/model/authentication/RoleNotFoundError';
+import { RoleNotFoundError } from '../../domain/model/authentication/RoleRepository';
 import { Role } from '../../domain/model/authentication/Role';
 import { Role as ApiRole } from '../interface';
 import { hasPermission } from '../middleware/hasPermission';

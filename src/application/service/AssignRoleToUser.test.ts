@@ -3,7 +3,7 @@ import { cleanupDatabase } from '../../test/cleanupDatabase';
 import { AssignRoleToUser } from './AssignRoleToUser';
 import { roleRepository, userRepository } from '../../infrastructure/persistence';
 import { aNewUser } from '../../test/domainFactories';
-import { RoleNotFoundError } from '../../domain/model/authentication/RoleNotFoundError';
+import { RoleNotFoundError } from '../../domain/model/authentication/RoleRepository';
 import { UserId } from '../../domain/model/user/UserId';
 import { ADMIN, USER } from '../../domain/model/authentication/Roles';
 import { Role } from '../../domain/model/authentication/Role';

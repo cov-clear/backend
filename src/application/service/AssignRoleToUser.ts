@@ -1,7 +1,6 @@
 import { UserRepository, UserNotFoundError } from '../../domain/model/user/UserRepository';
-import { RoleRepository } from '../../domain/model/authentication/RoleRepository';
+import { RoleRepository, RoleNotFoundError } from '../../domain/model/authentication/RoleRepository';
 import { UserId } from '../../domain/model/user/UserId';
-import { RoleNotFoundError } from '../../domain/model/authentication/RoleNotFoundError';
 import { User } from '../../domain/model/user/User';
 import { ASSIGN_ROLE_TO_USER } from '../../domain/model/authentication/Permissions';
 import { AccessDeniedError } from '../../domain/model/AccessDeniedError';
