@@ -34,13 +34,7 @@ export class PsqlTestRepository implements TestRepository {
   }
 
   async findById(testId: TestId) {
-    const testRow: any = await this.db(TEST_TABLE_NAME)
-      .select(TEST_TABLE_COLUMNS)
-      .leftJoin(
-        TEST_RESULTS_TABLE_NAME,
-        `${TEST_TABLE_NAME}.id`,
-        `${TEST_RESULTS_TABLE_NAME}.test_id`
-      )
+    const testRow: any = await this.getAllTestsQueryBuilder()
       .where(`${TEST_TABLE_NAME}.id`, '=', testId.value)
       .first();
 
@@ -54,13 +48,7 @@ export class PsqlTestRepository implements TestRepository {
   async findByUserId(userId: UserId) {
     let testRows: Array<any>;
 
-    testRows = await this.db(TEST_TABLE_NAME)
-      .select(TEST_TABLE_COLUMNS)
-      .leftJoin(
-        TEST_RESULTS_TABLE_NAME,
-        `${TEST_TABLE_NAME}.id`,
-        `${TEST_RESULTS_TABLE_NAME}.test_id`
-      )
+    testRows = await this.getAllTestsQueryBuilder()
       .where(`${TEST_TABLE_NAME}.user_id`, '=', userId.value)
       .orderBy(`${TEST_TABLE_NAME}.creation_time`, 'asc');
 
@@ -135,6 +123,16 @@ export class PsqlTestRepository implements TestRepository {
       .then(() => {
         return test;
       });
+  }
+
+  private getAllTestsQueryBuilder() {
+    return this.db(TEST_TABLE_NAME)
+      .select(TEST_TABLE_COLUMNS)
+      .leftJoin(
+        TEST_RESULTS_TABLE_NAME,
+        `${TEST_TABLE_NAME}.id`,
+        `${TEST_RESULTS_TABLE_NAME}.test_id`
+      );
   }
 }
 
