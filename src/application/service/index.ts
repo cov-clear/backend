@@ -110,10 +110,7 @@ export const getTestTypes = new GetTestTypes(testTypeRepository);
 
 export const createSharingCode = new CreateSharingCode(sharingCodeRepository);
 
-export const createOrUpdateTest = new CreateTest(
-  testRepository,
-  testTypeRepository
-);
+export const createTest = new CreateTest(testRepository, testTypeRepository);
 
 export const getTests = new GetTests(testRepository);
 export const testResultsFactory = new ResultsFactory();

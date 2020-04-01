@@ -3,7 +3,7 @@ import { Response } from 'express';
 
 import {
   accessManagerFactory,
-  createOrUpdateTest,
+  createTest,
   getTests,
 } from '../../application/service';
 
@@ -80,11 +80,7 @@ export default () => {
       }
 
       try {
-        const test = await createOrUpdateTest.execute(
-          authentication.user,
-          id,
-          payload
-        );
+        const test = await createTest.execute(authentication.user, id, payload);
 
         return res.status(201).json(mapTestToApiTest(test));
       } catch (error) {
