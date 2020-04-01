@@ -1,10 +1,10 @@
-import { Email } from './Email';
-import { UserId } from './UserId';
 import { Address } from './Address';
-import { Profile } from './Profile';
-import { DomainValidationError } from '../DomainValidationError';
 import { AssignmentActions } from '../authentication/AssignmentActions';
+import { DomainValidationError } from '../DomainValidationError';
+import { Email } from './Email';
+import { Profile } from './Profile';
 import { Role } from '../authentication/Role';
+import { UserId } from './UserId';
 
 export class User {
   readonly roleAssignments: AssignmentActions<User, Role>;
@@ -24,6 +24,7 @@ export class User {
     if (!newProfile) {
       throw new DomainValidationError('profile', 'Cannot set profile to null or undefined');
     }
+
     this._profile = newProfile;
     this._modificationTime = new Date();
   }
@@ -36,6 +37,7 @@ export class User {
     if (!newAddress) {
       throw new DomainValidationError('profile.address', 'Cannot set address to null or undefined');
     }
+
     this._address = newAddress;
     this._modificationTime = new Date();
   }
@@ -62,12 +64,14 @@ export class User {
 
   get permissions(): string[] {
     const permissions: Set<string> = new Set();
+
     this.roleAssignments.activeAssignments().forEach((role) => {
       role
         .permissions()
         .map((permission) => permission.name)
         .forEach((permissionName) => permissions.add(permissionName));
     });
+
     return Array.from(permissions);
   }
 }

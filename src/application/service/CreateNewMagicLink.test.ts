@@ -1,6 +1,6 @@
 import database from '../../database';
 import { magicLinkRepository } from '../../infrastructure/persistence';
-import { LoggingEmailNotifier } from '../../infrastructure/emails/LoggingEmailNotifier';
+import { LoggingEmailNotifier } from '../../infrastructure/notifications/LoggingEmailNotifier';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import { createMagicLink } from './index';
 

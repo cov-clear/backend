@@ -7,7 +7,7 @@ import { RoleNotFoundError } from '../../domain/model/authentication/RoleNotFoun
 import { UserId } from '../../domain/model/user/UserId';
 import { ADMIN, USER } from '../../domain/model/authentication/Roles';
 import { Role } from '../../domain/model/authentication/Role';
-import { UserNotFoundError } from '../../domain/model/user/UserNotFoundError';
+import { UserNotFoundError } from '../../domain/model/user/UserRepository';
 import { ASSIGN_ROLE_TO_USER } from '../../domain/model/authentication/Permissions';
 import { AccessDeniedError } from '../../domain/model/AccessDeniedError';
 import { persistedUserWithRoleAndPermissions } from '../../test/persistedEntities';

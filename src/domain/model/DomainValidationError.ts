@@ -1,5 +1,5 @@
 export class DomainValidationError extends Error {
-  constructor(public field: string, public reason: string) {
+  constructor(readonly field: string, readonly reason: string) {
     super(`[${field}] is invalid due to: ${reason}`);
   }
 }

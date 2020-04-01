@@ -1,4 +1,5 @@
 import * as EmailValidator from 'email-validator';
+
 import { DomainValidationError } from '../DomainValidationError';
 
 export class Email {

@@ -1,7 +1,7 @@
 import { Authentication } from './Authentication';
-import { UserId } from '../user/UserId';
 import { AccessPassRepository } from '../accessPass/AccessPassRepository';
 import { User } from '../user/User';
+import { UserId } from '../user/UserId';
 
 export class AccessManagerFactory {
   constructor(private accessPassRepository: AccessPassRepository) {}

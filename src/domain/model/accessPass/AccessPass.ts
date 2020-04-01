@@ -1,14 +1,15 @@
 import { v4 as uuidv4 } from 'uuid';
 import { UserId } from '../user/UserId';
 
-const ACCESS_REQUEST_LIFETIME_MSEC = 60 * 60_000;
+// 1 hour
+const ACCESS_REQUEST_LIFETIME_MSEC = 60 * 60 * 1_000;
 
 export class AccessPass {
   constructor(
-    public actorUserId: UserId,
-    public subjectUserId: UserId,
-    public id: string = uuidv4(),
-    public creationTime: Date = new Date()
+    readonly actorUserId: UserId,
+    readonly subjectUserId: UserId,
+    readonly id: string = uuidv4(),
+    readonly creationTime: Date = new Date()
   ) {}
 
   public isExpired(): boolean {

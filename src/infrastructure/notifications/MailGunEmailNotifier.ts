@@ -1,5 +1,5 @@
 import { Email } from '../../domain/model/user/Email';
-import { EmailNotifier } from '../../domain/model/EmailNotifier';
+import { EmailNotifier } from '../../domain/model/notifications/EmailNotifier';
 
 import { Mailgun } from 'mailgun-js';
 
