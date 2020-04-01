@@ -6,7 +6,7 @@ frontend:
 
 emailNotifier:
   type: logging
-  fromEmailHeader: cov-clear@example.com
+  fromEmailHeader: no-reply@cov-clear.com
   mailGunConfig:
     apiKey: dummy
     domain: dummy

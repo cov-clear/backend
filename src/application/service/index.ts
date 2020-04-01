@@ -1,5 +1,6 @@
 import fs from 'fs';
 import mailgun from 'mailgun-js';
+import AWS from 'aws-sdk';
 
 import { Email } from '../../domain/model/user/Email';
 import { GenerateAuthToken } from './authentication/GenerateAuthToken';
@@ -26,6 +27,7 @@ import { CreateAccessPass } from './access-sharing/CreateAccessPass';
 
 import { LoggingEmailNotifier } from '../../infrastructure/notifications/LoggingEmailNotifier';
 import { MailGunEmailNotifier } from '../../infrastructure/notifications/MailGunEmailNotifier';
+import { AWSEmailNotifier } from '../../infrastructure/notifications/AWSEmailNotifier';
 import { CreateTest } from './tests/CreateTest';
 import { GetTests } from './tests/GetTests';
 import { AssignRoleToUser } from './authorization/AssignRoleToUser';
@@ -43,14 +45,19 @@ import { AddResultsToTest } from './tests/AddResultsToTest';
 
 let emailNotifier = new LoggingEmailNotifier();
 
-if (config.get('emailNotifier.type') === 'mailgun') {
-  emailNotifier = new MailGunEmailNotifier(
-    new mailgun({
-      apiKey: config.get('emailNotifier.mailGunConfig.apiKey'),
-      domain: config.get('emailNotifier.mailGunConfig.domain'),
-    })
-  );
+switch (config.get('emailNotifier.type')) {
+  case 'mailgun':
+    emailNotifier = new MailGunEmailNotifier(
+      new mailgun({
+        apiKey: config.get('emailNotifier.mailGunConfig.apiKey'),
+        domain: config.get('emailNotifier.mailGunConfig.domain'),
+      })
+    );
+    break;
+  case 'aws':
+    emailNotifier = new AWSEmailNotifier(new AWS.SES({ apiVersion: '2010-12-01' }));
 }
+
 export const accessManagerFactory = new AccessManagerFactory(accessPassRepository);
 
 export const assignPermissionToRole = new AssignPermissionToRole(roleRepository, permissionRepository);

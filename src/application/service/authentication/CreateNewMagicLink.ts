@@ -1,3 +1,4 @@
+import logger from '../../../logger';
 import { Email } from '../../../domain/model/user/Email';
 import { EmailNotifier } from '../../../domain/model/notifications/EmailNotifier';
 import { MagicLink, MagicLinkCode } from '../../../domain/model/magiclink/MagicLink';
@@ -15,12 +16,16 @@ export class CreateNewMagicLink {
   public async execute(emailValue: string) {
     const magicLink = await this.magicLinkRepository.save(new MagicLink(new MagicLinkCode(), new Email(emailValue)));
 
-    this.emailNotifier.send(
-      this.fromEmailHeader,
-      magicLink.email,
-      'Sign in to COV-Clear',
-      this.emailTemplate.replace(/{{LINK}}/g, `${this.frontendBaseUrl}link/${magicLink.code.value}`)
-    );
+    this.emailNotifier
+      .send(
+        this.fromEmailHeader,
+        magicLink.email,
+        'Sign in to COV-Clear',
+        this.emailTemplate.replace(/{{LINK}}/g, `${this.frontendBaseUrl}link/${magicLink.code.value}`)
+      )
+      .catch((error) => {
+        logger.error(`Error sending email`, error);
+      });
 
     return magicLink;
   }
