@@ -7,16 +7,16 @@ export class Country {
   readonly name: string;
 
   constructor(readonly code: string) {
-    Country.validate(code);
+    validateCode(code);
 
     this.name = countries.getName(code) as string;
   }
+}
 
-  private static validate(code: string) {
-    Validators.validateNotEmpty('countryCode', code);
+function validateCode(code: string) {
+  Validators.validateNotEmpty('countryCode', code);
 
-    if (!countries.getName(code)) {
-      throw new DomainValidationError('countryCode', `${code} is not a valid country code`);
-    }
+  if (!countries.getName(code)) {
+    throw new DomainValidationError('countryCode', `${code} is not a valid country code`);
   }
 }
