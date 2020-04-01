@@ -10,14 +10,17 @@ import { UserId } from '../../domain/model/user/UserId';
 import { AccessPass } from '../../domain/model/accessPass/AccessPass';
 
 import {
-  userRepository,
+  accessPassRepository,
   testRepository,
   testTypeRepository,
-  accessPassRepository,
+  userRepository,
 } from '../../infrastructure/persistence';
 
-import { aNewUser, aTestType, aTest } from '../../test/domainFactories';
+import { aNewUser, aTest, aTestType } from '../../test/domainFactories';
 import { persistedUserWithRoleAndPermissions } from '../../test/persistedEntities';
+import { TestId } from '../../domain/model/test/TestId';
+import { Test } from '../../domain/model/test/Test';
+import { TestCommand, TestResultsCommand } from '../interface';
 
 describe('test endpoints', () => {
   const app = expressApp();
@@ -114,7 +117,7 @@ describe('test endpoints', () => {
       const accessPass = new AccessPass(actorUser.id, subjectUser.id);
       await accessPassRepository.save(accessPass);
 
-      const validTest = getValidTestCommand(testType.id, actorUser.id);
+      const validTest = getValidTestCommand(testType.id);
 
       await request(app)
         .post(`/api/v1/users/${subjectUser.id.value}/tests`)
@@ -133,7 +136,7 @@ describe('test endpoints', () => {
       const accessPass = new AccessPass(actorUser.id, subjectUser.id);
       await accessPassRepository.save(accessPass);
 
-      const validTest = getValidTestCommand(testType.id, actorUser.id);
+      const validTest = getValidTestCommand(testType.id);
 
       await request(app)
         .post(`/api/v1/users/${subjectUser.id.value}/tests`)
@@ -176,7 +179,7 @@ describe('test endpoints', () => {
       const testType = await testTypeRepository.save(aTestType());
       const user = await persistedUserWithRoleAndPermissions('TESTER', [testType.neededPermissionToAddResults]);
 
-      const validTest = getValidTestCommand(testType.id, user.id);
+      const validTest = getValidTestCommand(testType.id);
 
       await request(app)
         .post(`/api/v1/users/${user.id.value}/tests`)
@@ -193,15 +196,90 @@ describe('test endpoints', () => {
         });
     });
   });
+
+  describe('PATCH /tests/:id', () => {
+    it('returns 401 if the caller is not authenticated', async () => {
+      await request(app).patch(`/api/v1/tests/${new TestId().value}`).send({ results: {} }).expect(401);
+    });
+
+    it('returns 404 if the test could not be found', async () => {
+      const testType = await testTypeRepository.save(aTestType());
+      const tester = await persistedUserWithRoleAndPermissions('TESTER', [testType.neededPermissionToAddResults]);
+
+      await request(app)
+        .patch(`/api/v1/tests/${new TestId().value}`)
+        .set({
+          Authorization: `Bearer ${await getTokenForUser(tester)}`,
+        })
+        .send({ results: {} })
+        .expect(404);
+    });
+
+    it('returns 403 if the tester does not have permission to add test results for this testType', async () => {
+      const testType = await testTypeRepository.save(aTestType());
+      const tester = await persistedUserWithRoleAndPermissions('TESTER', []);
+      const testedUser = await persistedUserWithRoleAndPermissions('USER', []);
+      const test = await testRepository.save(new Test(new TestId(), testedUser.id, testType.id));
+
+      await request(app)
+        .patch(`/api/v1/tests/${test.id.value}`)
+        .set({
+          Authorization: `Bearer ${await getTokenForUser(tester)}`,
+        })
+        .send({ results: getValidTestResultsCommand() })
+        .expect(403);
+    });
+
+    it('returns 403 if the tester does not have access to the userId', async () => {
+      const testType = await testTypeRepository.save(aTestType());
+      const tester = await persistedUserWithRoleAndPermissions('TESTER', [testType.neededPermissionToAddResults]);
+      const testedUser = await persistedUserWithRoleAndPermissions('USER', []);
+      const test = await testRepository.save(new Test(new TestId(), testedUser.id, testType.id));
+
+      await request(app)
+        .patch(`/api/v1/tests/${test.id.value}`)
+        .set({
+          Authorization: `Bearer ${await getTokenForUser(tester)}`,
+        })
+        .send({ results: getValidTestResultsCommand() })
+        .expect(403);
+    });
+
+    it('returns 200 if the tester does has access to the userId and the permission to add tests of this type', async () => {
+      const testType = await testTypeRepository.save(aTestType());
+      const tester = await persistedUserWithRoleAndPermissions('TESTER', [testType.neededPermissionToAddResults]);
+      const testedUser = await persistedUserWithRoleAndPermissions('USER', []);
+      const test = await testRepository.save(new Test(new TestId(), testedUser.id, testType.id));
+      await accessPassRepository.save(new AccessPass(tester.id, testedUser.id));
+
+      await request(app)
+        .patch(`/api/v1/tests/${test.id.value}`)
+        .set({
+          Authorization: `Bearer ${await getTokenForUser(tester)}`,
+        })
+        .send({ results: getValidTestResultsCommand() })
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.results.testerUserId).toEqual(tester.id.value);
+          expect(res.body.results.details).toEqual(getValidTestResultsCommand().details);
+          expect(res.body.results.creationTime).toBeDefined();
+        });
+    });
+  });
 });
 
-function getValidTestCommand(testTypeId: TestTypeId, testerId: UserId) {
+function getValidTestCommand(testTypeId: TestTypeId): TestCommand {
   return {
     testTypeId: testTypeId.value,
     results: {
-      testerUserId: testerId.value,
-      details: { c: true, igg: false, igm: true },
+      details: getValidTestResultsCommand(),
     },
+  };
+}
+
+function getValidTestResultsCommand(): TestResultsCommand {
+  return {
+    details: { c: true, igg: false, igm: true },
   };
 }
 

@@ -39,6 +39,7 @@ import { AssignPermissionToRole } from './AssignPermissionToRole';
 import { GetRoles } from './GetRoles';
 import { GetPermissions } from './GetPermissions';
 import { CreateTestType } from './CreateTestType';
+import { AddResultsToTest } from './AddResultsToTest';
 
 let emailNotifier = new LoggingEmailNotifier();
 
@@ -91,12 +92,10 @@ export const exchangeAuthCode = new ExchangeAuthCode(
 );
 
 export const getTestTypes = new GetTestTypes(testTypeRepository);
-
-export const createSharingCode = new CreateSharingCode(sharingCodeRepository);
-
 export const createTest = new CreateTest(testRepository, testTypeRepository);
-
 export const getTests = new GetTests(testRepository);
 export const testResultsFactory = new ResultsFactory();
+export const addResultsToTest = new AddResultsToTest(testRepository, testTypeRepository, accessManagerFactory);
 
+export const createSharingCode = new CreateSharingCode(sharingCodeRepository);
 export const createAccessPass = new CreateAccessPass(accessPassRepository, sharingCodeRepository);
