@@ -1,7 +1,7 @@
 import AsyncRouter from '../AsyncRouter';
 import { Response } from 'express';
 
-import { accessManagerFactory, createTest, getTests } from '../../application/service';
+import { accessManagerFactory, addResultsToTest, createTest, getTests } from '../../application/service';
 
 import { AuthenticatedRequest, getAuthenticationOrFail } from '../AuthenticatedRequest';
 
@@ -13,6 +13,8 @@ import { ApiError, apiErrorCodes } from '../ApiError';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
 import { ResourceNotFoundError } from '../../domain/model/ResourceNotFoundError';
 import { AccessDeniedError } from '../../domain/model/AccessDeniedError';
+import { TestResultsCommand } from '../interface';
+import { TestNotFoundError } from '../../domain/model/test/TestNotFoundError';
 
 export default () => {
   const route = new AsyncRouter();
@@ -64,15 +66,17 @@ export default () => {
     }
   });
 
-  // TODO: implement patch to update results later if needed.
-  /*
-  route.patch(
-    '/tests/:id',
-    isAuthenticated,
-    async (req: AuthenticatedRequest, res: Response) => {
-      const { id } = req.params;
-      const payload = req.body;
-  );*/
+  route.patch('/tests/:id', isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
+    const { id: testIdValue } = req.params;
+    const { results }: { results: TestResultsCommand } = req.body;
+    const authentication = getAuthenticationOrFail(req);
+    try {
+      const test = await addResultsToTest.execute(authentication.user, testIdValue, results);
+      res.status(200).json(mapTestToApiTest(test));
+    } catch (error) {
+      handAddResultError(error);
+    }
+  });
 
   return route.middleware();
 };
@@ -85,20 +89,18 @@ export function mapTestToApiTest(test: Test | null) {
   const results = test.results
     ? {
         details: test.results.details,
-        testerUserId: test.results.createdBy,
+        testerUserId: test.results.createdBy.value,
         creationTime: test.results.creationTime,
       }
     : null;
 
-  let apiTest = {
+  return {
     id: test.id.value,
     userId: test.userId.value,
     testTypeId: test.testTypeId.value,
     creationTime: test.creationTime,
     results,
   };
-
-  return apiTest;
 }
 
 function handleCreationError(error: Error) {
@@ -109,7 +111,23 @@ function handleCreationError(error: Error) {
     throw new ApiError(422, `${error.resourceName}.not-found`);
   }
   if (error instanceof DomainValidationError) {
-    throw new ApiError(422, `test.invalid.${error.field}`, error.reason);
+    throw new ApiError(422, `invalid.test.${error.field}`, error.reason);
+  }
+  throw error;
+}
+
+function handAddResultError(error: Error) {
+  if (error instanceof TestNotFoundError) {
+    throw new ApiError(404, apiErrorCodes.TEST_NOT_FOUND);
+  }
+  if (error instanceof AccessDeniedError) {
+    throw new ApiError(403, apiErrorCodes.ACCESS_DENIED);
+  }
+  if (error instanceof ResourceNotFoundError) {
+    throw new ApiError(422, `${error.resourceName}.not-found`);
+  }
+  if (error instanceof DomainValidationError) {
+    throw new ApiError(422, `invalid.${error.field}`, error.reason);
   }
   throw error;
 }

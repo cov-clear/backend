@@ -1,12 +1,17 @@
 import { Authentication } from './Authentication';
 import { UserId } from '../user/UserId';
 import { AccessPassRepository } from '../accessPass/AccessPassRepository';
+import { User } from '../user/User';
 
 export class AccessManagerFactory {
   constructor(private accessPassRepository: AccessPassRepository) {}
 
   forAuthentication(authentication: Authentication) {
     return new AccessManager(this.accessPassRepository, authentication);
+  }
+
+  forAuthenticatedUser(user: User) {
+    return this.forAuthentication(new Authentication(user, user.roles, user.permissions));
   }
 }
 
@@ -20,11 +25,7 @@ export class AccessManager {
 
     const hasAccessPass = await this.hasAccessPassForUser(userId);
 
-    if (this.isLoggedInAsUser(userId) || hasAccessPass) {
-      return true;
-    }
-
-    return false;
+    return this.isLoggedInAsUser(userId) || hasAccessPass;
   }
 
   isLoggedInAsUser(userId: UserId): boolean {

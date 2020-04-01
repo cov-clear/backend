@@ -5,9 +5,9 @@ import { Results } from './Results';
 
 export class Test {
   constructor(
-    public id: TestId,
-    public userId: UserId,
-    public testTypeId: TestTypeId,
+    readonly id: TestId,
+    readonly userId: UserId,
+    readonly testTypeId: TestTypeId,
     public results?: Results,
     readonly creationTime: Date = new Date()
   ) {}
