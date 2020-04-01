@@ -1,11 +1,6 @@
-import { TestTypeId } from './TestTypeId';
 import { DomainValidationError } from '../DomainValidationError';
-import Ajv from 'ajv';
-
-const ajv = new Ajv({
-  strictDefaults: true,
-  strictKeywords: true,
-});
+import { TestTypeId } from './TestTypeId';
+import { Validators } from '../../Validators';
 
 export class TestType {
   constructor(
@@ -14,20 +9,8 @@ export class TestType {
     readonly resultsSchema: object,
     readonly neededPermissionToAddResults: string
   ) {
-    validateNotEmptyString('name', name);
-    validateNotEmptyString('neededPermissionToAddResults', neededPermissionToAddResults);
-    validateResultsSchema(resultsSchema);
-  }
-}
-
-function validateNotEmptyString(fieldName: string, value: string) {
-  if (!value || value.length === 0) {
-    throw new DomainValidationError(fieldName, value);
-  }
-}
-
-function validateResultsSchema(schema: object) {
-  if (!schema || !ajv.validateSchema(schema)) {
-    throw new DomainValidationError('resultsSchema', 'Not a valid Json Schema');
+    Validators.validateNotEmpty('name', name);
+    Validators.validateNotEmpty('neededPermissionToAddResults', neededPermissionToAddResults);
+    Validators.validateSchema('resultsSchema', resultsSchema);
   }
 }

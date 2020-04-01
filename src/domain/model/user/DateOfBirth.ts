@@ -9,11 +9,14 @@ export class DateOfBirth {
 
   get age(): number {
     const today = new Date();
+
     let age = today.getFullYear() - this.year;
     let monthDiff = today.getMonth() - this.month;
+
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < this.day)) {
       age -= 1;
     }
+
     return age;
   }
 
@@ -23,9 +26,11 @@ export class DateOfBirth {
 
   private static validate(year: number, month: number, day: number) {
     const dateObj = new Date(year, month - 1, day);
+
     if (isNaN(new Date(year, month - 1, day).getTime())) {
       throw new DomainValidationError('dateOfBirth', 'Invalid date');
     }
+
     if (dateObj.getMonth() !== month - 1 || dateObj.getFullYear() !== year || dateObj.getDate() !== day) {
       throw new DomainValidationError('dateOfBirth', 'Invalid date');
     }
@@ -35,7 +40,9 @@ export class DateOfBirth {
     if (!dateString.match(DATE_STRING_REG_EXP)) {
       throw new DomainValidationError('dateOfBirth', 'Invalid date format');
     }
+
     const dateParts = dateString.split('-').map((part) => parseInt(part, 10));
+
     return new DateOfBirth(dateParts[0], dateParts[1], dateParts[2]);
   }
 
@@ -43,6 +50,7 @@ export class DateOfBirth {
     if (isNaN(date.getTime())) {
       throw new DomainValidationError('dateOfBirth', 'Invalid date');
     }
+
     return new DateOfBirth(date.getFullYear(), date.getMonth() + 1, date.getDate());
   }
 }

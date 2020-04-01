@@ -24,8 +24,8 @@ import { GetTestTypes } from './GetTestTypes';
 import { CreateSharingCode } from './CreateSharingCode';
 import { CreateAccessPass } from './CreateAccessPass';
 
-import { LoggingEmailNotifier } from '../../infrastructure/emails/LoggingEmailNotifier';
-import { MailGunEmailNotifier } from '../../infrastructure/emails/MailGunEmailNotifier';
+import { LoggingEmailNotifier } from '../../infrastructure/notifications/LoggingEmailNotifier';
+import { MailGunEmailNotifier } from '../../infrastructure/notifications/MailGunEmailNotifier';
 import { CreateTest } from './CreateTest';
 import { GetTests } from './GetTests';
 import { AssignRoleToUser } from './AssignRoleToUser';

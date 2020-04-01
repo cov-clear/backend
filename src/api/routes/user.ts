@@ -16,7 +16,7 @@ import { AuthenticatedRequest, getAuthenticationOrFail } from '../AuthenticatedR
 import { ApiError, apiErrorCodes } from '../ApiError';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
 import { ResourceNotFoundError } from '../../domain/model/ResourceNotFoundError';
-import { UserNotFoundError } from '../../domain/model/user/UserNotFoundError';
+import { UserNotFoundError } from '../../domain/model/user/UserRepository';
 
 export default () => {
   const route = new AsyncRouter();

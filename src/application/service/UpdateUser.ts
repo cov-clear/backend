@@ -1,12 +1,11 @@
 import { UserId } from '../../domain/model/user/UserId';
-import { UserRepository } from '../../domain/model/user/UserRepository';
+import { UserRepository, UserNotFoundError } from '../../domain/model/user/UserRepository';
 import { Address as ApiAddress, Profile as ApiProfile, UpdateUserCommand } from '../../api/interface';
 import { Profile } from '../../domain/model/user/Profile';
 import { Address } from '../../domain/model/user/Address';
 import { Sex } from '../../domain/model/user/Sex';
 import { Country } from '../../domain/model/user/Country';
 import { DateOfBirth } from '../../domain/model/user/DateOfBirth';
-import { UserNotFoundError } from '../../domain/model/user/UserNotFoundError';
 
 export class UpdateUser {
   constructor(private userRepository: UserRepository) {}

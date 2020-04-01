@@ -1,7 +1,8 @@
 import { Email } from '../user/Email';
 import { Uuid } from '../../Uuid';
 
-const MAGIC_LINK_LIFETIME_MSEC = 5 * 60_000;
+// 1 hour
+const MAGIC_LINK_LIFETIME_MSEC = 60 * 60 * 1_000;
 
 export class MagicLink {
   constructor(
