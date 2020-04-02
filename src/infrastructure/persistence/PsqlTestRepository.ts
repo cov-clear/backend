@@ -145,16 +145,15 @@ export class PsqlTestRepository implements TestRepository {
 }
 
 function createTestFromRow(testRow: any): Test {
-  const results = createResultsFromRow(testRow);
-
-  return new Test(
+  const test = new Test(
     new TestId(testRow.id),
     new UserId(testRow.userId),
     new TestTypeId(testRow.testTypeId),
     ConfidenceLevel.fromString(testRow.administrationConfidence),
-    results,
     testRow.creationTime
   );
+  Reflect.set(test, '_results', createResultsFromRow(testRow));
+  return test;
 }
 
 function createResultsFromRow(testRow: any) {

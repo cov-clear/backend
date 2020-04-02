@@ -56,6 +56,7 @@ export function aPermission(permissionName = 'ADD_PCR_TEST') {
 export function aTestType(
   name = 'PCR',
   permission = 'PCR_PERMISSION',
+  id = new TestTypeId(),
   resultsSchema = {
     type: 'object',
     properties: {
@@ -65,7 +66,7 @@ export function aTestType(
     },
   }
 ) {
-  return new TestType(new TestTypeId(), name, resultsSchema, permission);
+  return new TestType(id, name, resultsSchema, permission);
 }
 
 export function aTest(
@@ -75,7 +76,10 @@ export function aTest(
   testId = new TestId(),
   creationTime = new Date()
 ) {
-  return new Test(testId, userId, testTypeId, ConfidenceLevel.HIGH, results, creationTime);
+  const testType = aTestType('PCR', 'PCR_PERMISSION', testTypeId);
+  const test = new Test(testId, userId, testTypeId, ConfidenceLevel.HIGH, creationTime);
+  test.setResults(results, testType);
+  return test;
 }
 
 export function aResult(userId = new UserId(), details = { c: true, igg: true, igm: true }, notes = 'results notes') {

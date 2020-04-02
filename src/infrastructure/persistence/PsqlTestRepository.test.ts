@@ -8,6 +8,7 @@ import { UserId } from '../../domain/model/user/UserId';
 
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import { ConfidenceLevel } from '../../domain/model/test/ConfidenceLevel';
+import { aTestType } from '../../test/domainFactories';
 
 describe('PsqlTestRepository', () => {
   const psqlTestRepository = new PsqlTestRepository(database);
@@ -31,9 +32,10 @@ describe('PsqlTestRepository', () => {
     const details = { a: 1 };
     const results = new Results(userId, details, ConfidenceLevel.LOW);
 
-    const test = await psqlTestRepository.save(
-      new Test(new TestId(), userId, new TestTypeId(), ConfidenceLevel.HIGH, results)
-    );
+    const testType = aTestType();
+    const test = new Test(new TestId(), userId, testType.id, ConfidenceLevel.HIGH);
+    test.setResults(results, testType);
+    await psqlTestRepository.save(test);
 
     const persistedTest = await psqlTestRepository.findById(test.id)!;
 
@@ -47,15 +49,8 @@ describe('PsqlTestRepository', () => {
     const userId = new UserId();
     const testTypeId = new TestTypeId();
 
-    const test1 = new Test(
-      new TestId(),
-      userId,
-      testTypeId,
-      ConfidenceLevel.LOW,
-      undefined,
-      new Date(Date.now() - 10000)
-    );
-    const test2 = new Test(new TestId(), userId, testTypeId, ConfidenceLevel.HIGH, undefined, new Date(Date.now()));
+    const test1 = new Test(new TestId(), userId, testTypeId, ConfidenceLevel.LOW, new Date(Date.now() - 10000));
+    const test2 = new Test(new TestId(), userId, testTypeId, ConfidenceLevel.HIGH, new Date(Date.now()));
 
     await psqlTestRepository.save(test1);
     await psqlTestRepository.save(test2);
@@ -71,9 +66,9 @@ describe('PsqlTestRepository', () => {
     const details = { a: 1 };
     const notes = 'notes for test results';
 
-    const test = await psqlTestRepository.save(new Test(new TestId(), userId, new TestTypeId(), ConfidenceLevel.LOW));
-
-    test.results = new Results(userId, details, ConfidenceLevel.HIGH, notes);
+    const testType = aTestType();
+    const test = await psqlTestRepository.save(new Test(testType.id, userId, testType.id, ConfidenceLevel.LOW));
+    test.setResults(new Results(userId, details, ConfidenceLevel.HIGH, notes), testType);
 
     await psqlTestRepository.save(test);
 

@@ -24,11 +24,12 @@ export class CreateTest {
 
     const administrationConfidence = this.getAdministrationConfidence(actor);
 
+    const test = new Test(new TestId(), new UserId(subjectUserId), testType.id, administrationConfidence);
+
     if (results) {
       this.validatePermissionToAddResults(actor, testType);
+      test.setResults(results, testType);
     }
-
-    const test = new Test(new TestId(), new UserId(subjectUserId), testType.id, administrationConfidence, results);
 
     return this.testRepository.save(test);
   }
