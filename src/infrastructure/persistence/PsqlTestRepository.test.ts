@@ -54,7 +54,7 @@ describe('PsqlTestRepository', () => {
     expect(persistedTests[1]).toEqual(test2);
   });
 
-  it('updates a test with results and notes', async () => {
+  it('updates a test with results containing notes', async () => {
     const userId = new UserId();
     const details = { a: 1 };
     const notes = 'notes for test results';
