@@ -14,8 +14,9 @@ const TEST_TABLE_COLUMNS = [
   `${TEST_TABLE_NAME}.user_id as userId`,
   `${TEST_TABLE_NAME}.test_type_id as testTypeId`,
   `${TEST_TABLE_NAME}.creation_time as creationTime`,
-  `${TEST_RESULTS_TABLE_NAME}.details as details`,
   `${TEST_RESULTS_TABLE_NAME}.creator_id as resultsCreatorId`,
+  `${TEST_RESULTS_TABLE_NAME}.details as details`,
+  `${TEST_RESULTS_TABLE_NAME}.notes as notes`,
   `${TEST_RESULTS_TABLE_NAME}.creation_time as resultsCreationTime`,
 ];
 
@@ -99,6 +100,7 @@ export class PsqlTestRepository implements TestRepository {
         test_id,
         creator_id,
         details,
+        notes,
         creation_time
       )
       values (
@@ -106,6 +108,7 @@ export class PsqlTestRepository implements TestRepository {
         :test_id,
         :creator_id,
         :details,
+        :notes,
         :creation_time
       )
       on conflict(id) do nothing
@@ -115,6 +118,7 @@ export class PsqlTestRepository implements TestRepository {
           test_id: test.id.value,
           creator_id: test.results.createdBy.value,
           details: JSON.stringify(test.results.details),
+          notes: test.results.notes,
           creation_time: test.results.creationTime,
         }
       )
@@ -132,7 +136,7 @@ export class PsqlTestRepository implements TestRepository {
 
 function createResultsFromRow(testRow: any): Test {
   const results = testRow.details
-    ? new Results(new UserId(testRow.resultsCreatorId), testRow.details, testRow.resultsCreationTime)
+    ? new Results(new UserId(testRow.resultsCreatorId), testRow.details, testRow.notes, testRow.resultsCreationTime)
     : undefined;
 
   return new Test(

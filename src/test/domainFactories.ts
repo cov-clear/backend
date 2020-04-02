@@ -77,6 +77,6 @@ export function aTest(
   return new Test(testId, userId, testTypeId, results, creationTime);
 }
 
-export function aResult(userId = new UserId(), details = { c: true, igg: true, igm: true }) {
-  return new Results(userId, details);
+export function aResult(userId = new UserId(), details = { c: true, igg: true, igm: true }, notes = 'results notes') {
+  return new Results(userId, details, notes);
 }

@@ -1,5 +1,3 @@
-import { v4 } from 'uuid';
+import { Uuid } from '../../Uuid';
 
-export class TestId {
-  constructor(readonly value: string = v4()) {}
-}
+export class TestId extends Uuid {}

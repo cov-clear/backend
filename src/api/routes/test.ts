@@ -90,6 +90,7 @@ export function mapTestToApiTest(test: Test | null) {
     ? {
         details: test.results.details,
         testerUserId: test.results.createdBy.value,
+        notes: test.results.notes,
         creationTime: test.results.creationTime,
       }
     : null;
