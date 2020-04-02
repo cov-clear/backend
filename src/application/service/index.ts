@@ -33,7 +33,6 @@ import { GetTests } from './tests/GetTests';
 import { AssignRoleToUser } from './authorization/AssignRoleToUser';
 
 import { AccessManagerFactory } from '../../domain/model/authentication/AccessManager';
-import { ResultsFactory } from '../../domain/model/test/Results';
 
 import { CreateRole } from './authorization/CreateRole';
 import { CreatePermission } from './authorization/CreatePermission';
@@ -101,7 +100,6 @@ export const exchangeAuthCode = new ExchangeAuthCode(
 export const getTestTypes = new GetTestTypes(testTypeRepository);
 export const createTest = new CreateTest(testRepository, testTypeRepository);
 export const getTests = new GetTests(testRepository);
-export const testResultsFactory = new ResultsFactory();
 export const addResultsToTest = new AddResultsToTest(testRepository, testTypeRepository);
 
 export const createSharingCode = new CreateSharingCode(sharingCodeRepository);

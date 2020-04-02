@@ -14,6 +14,7 @@ import { TestTypeId } from '../domain/model/testType/TestTypeId';
 import { Test } from '../domain/model/test/Test';
 import { TestId } from '../domain/model/test/TestId';
 import { Results } from '../domain/model/test/Results';
+import { ConfidenceLevel } from '../domain/model/test/ConfidenceLevel';
 
 export function aNewUser() {
   return new User(new UserId(), anEmail());
@@ -74,9 +75,9 @@ export function aTest(
   testId = new TestId(),
   creationTime = new Date()
 ) {
-  return new Test(testId, userId, testTypeId, results, creationTime);
+  return new Test(testId, userId, testTypeId, ConfidenceLevel.HIGH, results, creationTime);
 }
 
 export function aResult(userId = new UserId(), details = { c: true, igg: true, igm: true }, notes = 'results notes') {
-  return new Results(userId, details, notes);
+  return new Results(userId, details, ConfidenceLevel.LOW, notes);
 }

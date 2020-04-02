@@ -5,12 +5,14 @@ import { TestTypeId } from '../../../domain/model/testType/TestTypeId';
 import { TestRepository } from '../../../domain/model/test/TestRepository';
 import { TestTypeRepository } from '../../../domain/model/testType/TestTypeRepository';
 import { TestCommand, TestResultsCommand } from '../../../api/interface';
-import { testResultsFactory } from '../index';
 import { DomainValidationError } from '../../../domain/model/DomainValidationError';
 import { ResourceNotFoundError } from '../../../domain/model/ResourceNotFoundError';
 import { TestType } from '../../../domain/model/testType/TestType';
 import { User } from '../../../domain/model/user/User';
 import { AccessDeniedError } from '../../../domain/model/AccessDeniedError';
+import { ConfidenceLevel } from '../../../domain/model/test/ConfidenceLevel';
+import { Results } from '../../../domain/model/test/Results';
+import { ADMINISTER_TEST_WITH_HIGH_CONFIDENCE } from '../../../domain/model/authentication/Permissions';
 
 export class CreateTest {
   constructor(private testRepository: TestRepository, private testTypeRepository: TestTypeRepository) {}
@@ -20,9 +22,13 @@ export class CreateTest {
 
     const results = this.getResults(actor.id, testType, testCommand.results);
 
-    this.validatePermissionToAddResults(actor, testType);
+    const administrationConfidence = this.getAdministrationConfidence(actor);
 
-    const test = new Test(new TestId(), new UserId(subjectUserId), testType.id, results);
+    if (results) {
+      this.validatePermissionToAddResults(actor, testType);
+    }
+
+    const test = new Test(new TestId(), new UserId(subjectUserId), testType.id, administrationConfidence, results);
 
     return this.testRepository.save(test);
   }
@@ -38,7 +44,7 @@ export class CreateTest {
       return undefined;
     }
 
-    return testResultsFactory.create(actorUserId, testType, results.details);
+    return Results.newResults(actorUserId, testType, results.details, ConfidenceLevel.LOW, results.notes);
   }
 
   private async getTestTypeOrFail(testTypeId: string) {
@@ -53,5 +59,12 @@ export class CreateTest {
     }
 
     return testType;
+  }
+
+  private getAdministrationConfidence(actor: User) {
+    if (actor.permissions.indexOf(ADMINISTER_TEST_WITH_HIGH_CONFIDENCE) !== -1) {
+      return ConfidenceLevel.HIGH;
+    }
+    return ConfidenceLevel.LOW;
   }
 }

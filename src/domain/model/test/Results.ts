@@ -1,24 +1,26 @@
-import { DomainValidationError } from '../DomainValidationError';
 import { UserId } from '../user/UserId';
 import { TestType } from '../testType/TestType';
 import { Validators } from '../../Validators';
+import { ConfidenceLevel } from './ConfidenceLevel';
 
 export class Results {
   constructor(
     readonly createdBy: UserId,
     readonly details: object,
+    readonly entryConfidence: ConfidenceLevel,
     readonly notes: string = '',
     readonly creationTime: Date = new Date()
-  ) {}
-}
+  ) {
+  }
 
-// TODO: This validation should be probably be part of the addResult() method of Test
-export class ResultsFactory {
-  constructor() {}
-
-  create(userId: UserId, testType: TestType, details: object, notes?: string): Results {
-    Validators.validateJson('result.details', details, testType.resultsSchema);
-
-    return new Results(userId, details, notes);
+  static newResults(
+    userId: UserId,
+    testType: TestType,
+    resultsDetails: object,
+    entryConfidence: ConfidenceLevel,
+    notes: string = '',
+  ): Results {
+    Validators.validateJson('result.details', resultsDetails, testType.resultsSchema);
+    return new Results(userId, resultsDetails, entryConfidence, notes);
   }
 }
