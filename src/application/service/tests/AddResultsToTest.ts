@@ -53,6 +53,6 @@ export class AddResultsToTest {
       throw new DomainValidationError('test.results', 'Results must not be undefined');
     }
 
-    return testResultsFactory.create(actorUserId, testType, results.details);
+    return testResultsFactory.create(actorUserId, testType, results.details, results.notes);
   }
 }

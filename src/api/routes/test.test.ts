@@ -37,10 +37,10 @@ describe('test endpoints', () => {
 
     it('returns 404 if user is not found', async () => {
       const user = await userRepository.save(aNewUser());
-      const unknowUserId = new UserId();
+      const unknownUserId = new UserId();
 
       await request(app)
-        .get(`/api/v1/users/${unknowUserId.value}/tests`)
+        .get(`/api/v1/users/${unknownUserId.value}/tests`)
         .set({ Authorization: `Bearer ${await getTokenForUser(user)}` })
         .expect(404);
     });
@@ -99,10 +99,10 @@ describe('test endpoints', () => {
 
     it('returns 404 if user is not found', async () => {
       const user = await userRepository.save(aNewUser());
-      const unknowUserId = new UserId();
+      const unknownUserId = new UserId();
 
       await request(app)
-        .post(`/api/v1/users/${unknowUserId.value}/tests`)
+        .post(`/api/v1/users/${unknownUserId.value}/tests`)
         .set({ Authorization: `Bearer ${await getTokenForUser(user)}` })
         .expect(404);
     });
@@ -230,7 +230,7 @@ describe('test endpoints', () => {
         .expect(403);
     });
 
-    it('returns 200 if the tester has the permission to add tests of this type', async () => {
+    it('returns 200 if the tester has the permission to add results of this type', async () => {
       const testType = await testTypeRepository.save(aTestType());
       const tester = await persistedUserWithRoleAndPermissions('TESTER', [testType.neededPermissionToAddResults]);
       const testedUser = await persistedUserWithRoleAndPermissions('USER', []);
@@ -249,6 +249,30 @@ describe('test endpoints', () => {
           expect(res.body.results.creationTime).toBeDefined();
         });
     });
+
+    it('returns 200 if the tester has the permission to add results with notes', async () => {
+      const testType = await testTypeRepository.save(aTestType());
+      const tester = await persistedUserWithRoleAndPermissions('TESTER', [testType.neededPermissionToAddResults]);
+      const testedUser = await persistedUserWithRoleAndPermissions('USER', []);
+      const test = await testRepository.save(new Test(new TestId(), testedUser.id, testType.id));
+      const notes =
+        'The patient shows IgG levels indicating immunity to COVID-19. ' +
+        'This along with regular symptom reporting the patient has done makes the patient less likely to be a carrier.';
+
+      await request(app)
+        .patch(`/api/v1/tests/${test.id.value}`)
+        .set({
+          Authorization: `Bearer ${await getTokenForUser(tester)}`,
+        })
+        .send({ results: getValidTestResultsCommand(notes) })
+        .expect(200)
+        .expect((res) => {
+          expect(res.body.results.testerUserId).toEqual(tester.id.value);
+          expect(res.body.results.details).toEqual(getValidTestResultsCommand(notes).details);
+          expect(res.body.results.creationTime).toBeDefined();
+          expect(res.body.results.notes).toEqual(getValidTestResultsCommand(notes).notes);
+        });
+    });
   });
 });
 
@@ -261,9 +285,10 @@ function getValidTestCommand(testTypeId: TestTypeId): TestCommand {
   };
 }
 
-function getValidTestResultsCommand(): TestResultsCommand {
+function getValidTestResultsCommand(str?: string): TestResultsCommand {
   return {
     details: { c: true, igg: false, igm: true },
+    notes: str,
   };
 }
 

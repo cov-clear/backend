@@ -54,17 +54,19 @@ describe('PsqlTestRepository', () => {
     expect(persistedTests[1]).toEqual(test2);
   });
 
-  it('updates a test with results', async () => {
+  it('updates a test with results and notes', async () => {
     const userId = new UserId();
     const details = { a: 1 };
+    const notes = 'notes for test results';
     const test = await psqlTestRepository.save(new Test(new TestId(), userId, new TestTypeId()));
 
-    test.results = new Results(userId, details);
+    test.results = new Results(userId, details, notes);
     await psqlTestRepository.save(test);
 
     const persistedTest = await psqlTestRepository.findById(test.id);
 
     expect(persistedTest?.results).toEqual(test.results);
+    expect(persistedTest?.results?.notes).toEqual(notes);
   });
 });
 
