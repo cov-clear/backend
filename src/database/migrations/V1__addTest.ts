@@ -17,6 +17,7 @@ export async function up(db: knex) {
       table.uuid('test_id').unique();
       table.uuid('creator_id').notNullable();
       table.jsonb('details').nullable();
+      table.string('notes').nullable();
       table.timestamp('creation_time').notNullable();
     })
     .raw('CREATE INDEX IDX_RESULTS on "test_results" USING GIN (details)');
