@@ -288,7 +288,7 @@ function getValidTestCommand(testTypeId: TestTypeId): TestCommand {
 function getValidTestResultsCommand(notes?: string): TestResultsCommand {
   return {
     details: { c: true, igg: false, igm: true },
-    notes: str,
+    notes: notes,
   };
 }
 
