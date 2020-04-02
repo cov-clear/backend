@@ -19,7 +19,6 @@ import {
 import { aNewUser, aTest, aTestType } from '../../test/domainFactories';
 import { persistedUserWithRoleAndPermissions } from '../../test/persistedEntities';
 import { TestId } from '../../domain/model/test/TestId';
-import { Test } from '../../domain/model/test/Test';
 import { TestCommand, TestResultsCommand } from '../interface';
 
 describe('test endpoints', () => {
@@ -107,7 +106,7 @@ describe('test endpoints', () => {
         .expect(404);
     });
 
-    it('returns 403 if a user with an access pass but wrong permission tries to create a test for another user', async () => {
+    it('returns 403 if a user with an access pass but wrong permission tries to create a test with results for another user', async () => {
       const actorUser = await userRepository.save(aNewUser());
       const subjectUser = await userRepository.save(aNewUser());
 
@@ -117,7 +116,7 @@ describe('test endpoints', () => {
       const accessPass = new AccessPass(actorUser.id, subjectUser.id);
       await accessPassRepository.save(accessPass);
 
-      const validTest = getValidTestCommand(testType.id);
+      const validTest = getValidTestCommandWithResults(testType.id);
 
       await request(app)
         .post(`/api/v1/users/${subjectUser.id.value}/tests`)
@@ -126,25 +125,6 @@ describe('test endpoints', () => {
         })
         .send(validTest)
         .expect(403);
-    });
-
-    it('returns 201 if a user with an access pass and permission tries to create a test for another user', async () => {
-      const testType = await testTypeRepository.save(aTestType());
-      const actorUser = await persistedUserWithRoleAndPermissions('TESTER', [testType.neededPermissionToAddResults]);
-      const subjectUser = await userRepository.save(aNewUser());
-
-      const accessPass = new AccessPass(actorUser.id, subjectUser.id);
-      await accessPassRepository.save(accessPass);
-
-      const validTest = getValidTestCommand(testType.id);
-
-      await request(app)
-        .post(`/api/v1/users/${subjectUser.id.value}/tests`)
-        .set({
-          Authorization: `Bearer ${await getTokenForUser(actorUser)}`,
-        })
-        .send(validTest)
-        .expect(201);
     });
 
     it('returns 422 if the test type does not exist', async () => {
@@ -175,11 +155,30 @@ describe('test endpoints', () => {
         .expect(422);
     });
 
-    it('returns 201 with the new test if user is found', async () => {
+    it('returns 201 if a user with an access pass tries to create a test for another user', async () => {
+      const testType = await testTypeRepository.save(aTestType());
+      const actorUser = await persistedUserWithRoleAndPermissions('TESTER', []);
+      const subjectUser = await userRepository.save(aNewUser());
+
+      const accessPass = new AccessPass(actorUser.id, subjectUser.id);
+      await accessPassRepository.save(accessPass);
+
+      const validTest = getValidTestCommandWithNoResults(testType.id);
+
+      await request(app)
+        .post(`/api/v1/users/${subjectUser.id.value}/tests`)
+        .set({
+          Authorization: `Bearer ${await getTokenForUser(actorUser)}`,
+        })
+        .send(validTest)
+        .expect(201);
+    });
+
+    it('returns 201 with the new test if user with the right permissions tries to create a test with results for themselves', async () => {
       const testType = await testTypeRepository.save(aTestType());
       const user = await persistedUserWithRoleAndPermissions('TESTER', [testType.neededPermissionToAddResults]);
 
-      const validTest = getValidTestCommand(testType.id);
+      const validTest = getValidTestCommandWithResults(testType.id);
 
       await request(app)
         .post(`/api/v1/users/${user.id.value}/tests`)
@@ -219,7 +218,7 @@ describe('test endpoints', () => {
       const testType = await testTypeRepository.save(aTestType());
       const tester = await persistedUserWithRoleAndPermissions('TESTER', []);
       const testedUser = await persistedUserWithRoleAndPermissions('USER', []);
-      const test = await testRepository.save(new Test(new TestId(), testedUser.id, testType.id));
+      const test = await testRepository.save(aTest(testedUser.id, testType.id));
 
       await request(app)
         .patch(`/api/v1/tests/${test.id.value}`)
@@ -234,7 +233,7 @@ describe('test endpoints', () => {
       const testType = await testTypeRepository.save(aTestType());
       const tester = await persistedUserWithRoleAndPermissions('TESTER', [testType.neededPermissionToAddResults]);
       const testedUser = await persistedUserWithRoleAndPermissions('USER', []);
-      const test = await testRepository.save(new Test(new TestId(), testedUser.id, testType.id));
+      const test = await testRepository.save(aTest(testedUser.id, testType.id));
 
       await request(app)
         .patch(`/api/v1/tests/${test.id.value}`)
@@ -244,9 +243,9 @@ describe('test endpoints', () => {
         .send({ results: getValidTestResultsCommand() })
         .expect(200)
         .expect((res) => {
-          expect(res.body.results.testerUserId).toEqual(tester.id.value);
-          expect(res.body.results.details).toEqual(getValidTestResultsCommand().details);
-          expect(res.body.results.creationTime).toBeDefined();
+          expect(res.body.testerUserId).toEqual(tester.id.value);
+          expect(res.body.details).toEqual(getValidTestResultsCommand().details);
+          expect(res.body.creationTime).toBeDefined();
         });
     });
 
@@ -254,7 +253,7 @@ describe('test endpoints', () => {
       const testType = await testTypeRepository.save(aTestType());
       const tester = await persistedUserWithRoleAndPermissions('TESTER', [testType.neededPermissionToAddResults]);
       const testedUser = await persistedUserWithRoleAndPermissions('USER', []);
-      const test = await testRepository.save(new Test(new TestId(), testedUser.id, testType.id));
+      const test = await testRepository.save(aTest(testedUser.id, testType.id));
       const notes =
         'The patient shows IgG levels indicating immunity to COVID-19. ' +
         'This along with regular symptom reporting the patient has done makes the patient less likely to be a carrier.';
@@ -267,16 +266,22 @@ describe('test endpoints', () => {
         .send({ results: getValidTestResultsCommand(notes) })
         .expect(200)
         .expect((res) => {
-          expect(res.body.results.testerUserId).toEqual(tester.id.value);
-          expect(res.body.results.details).toEqual(getValidTestResultsCommand(notes).details);
-          expect(res.body.results.creationTime).toBeDefined();
-          expect(res.body.results.notes).toEqual(getValidTestResultsCommand(notes).notes);
+          expect(res.body.testerUserId).toEqual(tester.id.value);
+          expect(res.body.details).toEqual(getValidTestResultsCommand(notes).details);
+          expect(res.body.creationTime).toBeDefined();
+          expect(res.body.notes).toEqual(getValidTestResultsCommand(notes).notes);
         });
     });
   });
 });
 
-function getValidTestCommand(testTypeId: TestTypeId): TestCommand {
+function getValidTestCommandWithNoResults(testTypeId: TestTypeId): TestCommand {
+  return {
+    testTypeId: testTypeId.value,
+  };
+}
+
+function getValidTestCommandWithResults(testTypeId: TestTypeId): TestCommand {
   return {
     testTypeId: testTypeId.value,
     results: {

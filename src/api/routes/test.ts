@@ -15,6 +15,7 @@ import { ResourceNotFoundError } from '../../domain/model/ResourceNotFoundError'
 import { AccessDeniedError } from '../../domain/model/AccessDeniedError';
 import { TestResultsCommand } from '../interface';
 import { TestNotFoundError } from '../../domain/model/test/TestNotFoundError';
+import { Results } from '../../domain/model/test/Results';
 
 export default () => {
   const route = new AsyncRouter();
@@ -68,11 +69,11 @@ export default () => {
 
   route.patch('/tests/:id', isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
     const { id: testIdValue } = req.params;
-    const { results }: { results: TestResultsCommand } = req.body;
+    const { results: resultsCommand }: { results: TestResultsCommand } = req.body;
     const authentication = getAuthenticationOrFail(req);
     try {
-      const test = await addResultsToTest.execute(authentication.user, testIdValue, results);
-      res.status(200).json(mapTestToApiTest(test));
+      const results = await addResultsToTest.execute(authentication.user, testIdValue, resultsCommand);
+      res.status(200).json(mapResultsToApiResults(results));
     } catch (error) {
       handAddResultError(error);
     }
@@ -86,22 +87,26 @@ export function mapTestToApiTest(test: Test | null) {
     return null;
   }
 
-  const results = test.results
-    ? {
-        details: test.results.details,
-        testerUserId: test.results.createdBy.value,
-        notes: test.results.notes,
-        creationTime: test.results.creationTime,
-      }
-    : null;
-
   return {
     id: test.id.value,
     userId: test.userId.value,
     testTypeId: test.testTypeId.value,
     creationTime: test.creationTime,
-    results,
+    administrationConfidence: test.administrationConfidence,
+    results: mapResultsToApiResults(test.results),
   };
+}
+
+function mapResultsToApiResults(results?: Results) {
+  return results
+    ? {
+        details: results.details,
+        testerUserId: results.createdBy.value,
+        creationTime: results.creationTime,
+        notes: results.notes,
+        entryConfidence: results.entryConfidence,
+      }
+    : null;
 }
 
 function handleCreationError(error: Error) {

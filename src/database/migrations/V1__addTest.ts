@@ -7,6 +7,7 @@ export async function up(db: knex) {
   await db.schema.createTable(TEST_TABLE, (table) => {
     table.uuid('id').primary();
     table.uuid('user_id').notNullable();
+    table.string('administration_confidence');
     table.uuid('test_type_id').notNullable();
     table.timestamp('creation_time').notNullable().index();
   });
@@ -15,6 +16,7 @@ export async function up(db: knex) {
     .createTable(TEST_RESULTS_TABLE, (table) => {
       table.uuid('id').primary();
       table.uuid('test_id').unique();
+      table.string('entry_confidence').notNullable();
       table.uuid('creator_id').notNullable();
       table.jsonb('details').nullable();
       table.string('notes').nullable();

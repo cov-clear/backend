@@ -5,6 +5,7 @@ import { TestId } from '../../domain/model/test/TestId';
 import { TestTypeId } from '../../domain/model/testType/TestTypeId';
 import { UserId } from '../../domain/model/user/UserId';
 import { Results } from '../../domain/model/test/Results';
+import { ConfidenceLevel } from '../../domain/model/test/ConfidenceLevel';
 
 const TEST_TABLE_NAME = 'test';
 const TEST_RESULTS_TABLE_NAME = 'test_results';
@@ -14,9 +15,11 @@ const TEST_TABLE_COLUMNS = [
   `${TEST_TABLE_NAME}.user_id as userId`,
   `${TEST_TABLE_NAME}.test_type_id as testTypeId`,
   `${TEST_TABLE_NAME}.creation_time as creationTime`,
+  `${TEST_TABLE_NAME}.administration_confidence as administrationConfidence`,
   `${TEST_RESULTS_TABLE_NAME}.creator_id as resultsCreatorId`,
-  `${TEST_RESULTS_TABLE_NAME}.details as details`,
-  `${TEST_RESULTS_TABLE_NAME}.notes as notes`,
+  `${TEST_RESULTS_TABLE_NAME}.details as resultsDetails`,
+  `${TEST_RESULTS_TABLE_NAME}.notes as resultsNotes`,
+  `${TEST_RESULTS_TABLE_NAME}.entry_confidence as resultsEntryConfidence`,
   `${TEST_RESULTS_TABLE_NAME}.creation_time as resultsCreationTime`,
 ];
 
@@ -28,8 +31,9 @@ export class PsqlTestRepository implements TestRepository {
     try {
       await Promise.all([this.saveTest(test), this.saveTestResults(test)]);
       transaction.commit();
-    } catch (e) {
+    } catch (error) {
       transaction.rollback();
+      throw error;
     }
     return test;
   }
@@ -41,7 +45,7 @@ export class PsqlTestRepository implements TestRepository {
       return null;
     }
 
-    return createResultsFromRow(testRow);
+    return createTestFromRow(testRow);
   }
 
   async findByUserId(userId: UserId) {
@@ -55,7 +59,7 @@ export class PsqlTestRepository implements TestRepository {
       return [];
     }
 
-    return testRows.map(createResultsFromRow);
+    return testRows.map(createTestFromRow);
   }
 
   private async saveTest(test: Test) {
@@ -66,12 +70,14 @@ export class PsqlTestRepository implements TestRepository {
         id,
         user_id,
         test_type_id,
+        administration_confidence,
         creation_time
       )
       values (
         :id,
         :user_id,
         :test_type_id,
+        :administration_confidence,
         :creation_time
       )
       on conflict(id) do nothing
@@ -80,6 +86,7 @@ export class PsqlTestRepository implements TestRepository {
           id: test.id.value,
           user_id: test.userId.value,
           test_type_id: test.testTypeId.value,
+          administration_confidence: test.administrationConfidence,
           creation_time: test.creationTime,
         }
       )
@@ -99,6 +106,7 @@ export class PsqlTestRepository implements TestRepository {
         id,
         test_id,
         creator_id,
+        entry_confidence,
         details,
         notes,
         creation_time
@@ -107,6 +115,7 @@ export class PsqlTestRepository implements TestRepository {
         :id,
         :test_id,
         :creator_id,
+        :entry_confidence,
         :details,
         :notes,
         :creation_time
@@ -117,6 +126,7 @@ export class PsqlTestRepository implements TestRepository {
           id: test.id.value,
           test_id: test.id.value,
           creator_id: test.results.createdBy.value,
+          entry_confidence: test.results.entryConfidence,
           details: JSON.stringify(test.results.details),
           notes: test.results.notes,
           creation_time: test.results.creationTime,
@@ -134,16 +144,27 @@ export class PsqlTestRepository implements TestRepository {
   }
 }
 
-function createResultsFromRow(testRow: any): Test {
-  const results = testRow.details
-    ? new Results(new UserId(testRow.resultsCreatorId), testRow.details, testRow.notes, testRow.resultsCreationTime)
-    : undefined;
+function createTestFromRow(testRow: any): Test {
+  const results = createResultsFromRow(testRow);
 
   return new Test(
     new TestId(testRow.id),
     new UserId(testRow.userId),
     new TestTypeId(testRow.testTypeId),
+    ConfidenceLevel.fromString(testRow.administrationConfidence),
     results,
     testRow.creationTime
   );
+}
+
+function createResultsFromRow(testRow: any) {
+  return testRow.resultsDetails
+    ? new Results(
+        new UserId(testRow.resultsCreatorId),
+        testRow.resultsDetails,
+        ConfidenceLevel.fromString(testRow.resultsEntryConfidence),
+        testRow.resultsNotes,
+        testRow.resultsCreationTime
+      )
+    : undefined;
 }

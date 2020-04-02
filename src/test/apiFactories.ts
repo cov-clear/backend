@@ -1,4 +1,12 @@
-import { Address as ApiAddress, CreateTestTypeCommand, Profile as ApiProfile } from '../api/interface';
+import {
+  Address as ApiAddress,
+  CreateTestTypeCommand,
+  Profile as ApiProfile,
+  TestCommand,
+  TestResultsCommand,
+} from '../api/interface';
+import { TestTypeId } from '../domain/model/testType/TestTypeId';
+import { aResult } from './domainFactories';
 
 export function anApiAddress(): ApiAddress {
   return {
@@ -29,5 +37,17 @@ export function aCreateTestTypeCommand(
     name,
     resultsSchema: schema,
     neededPermissionToAddResults: permission,
+  };
+}
+
+export function aCreateTestCommand(testTypeId = new TestTypeId()): TestCommand {
+  return {
+    testTypeId: testTypeId.value,
+  };
+}
+
+export function aTestResultsCommand(): TestResultsCommand {
+  return {
+    details: aResult().details,
   };
 }
