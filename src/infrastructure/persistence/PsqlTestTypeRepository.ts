@@ -61,8 +61,6 @@ export class PsqlTestTypeRepository implements TestTypeRepository {
       return null;
     }
 
-    //    return linkRow.map(mapTestTypeRowToTestType);
-
     return new TestType(
       new TestTypeId(linkRow.id),
       linkRow.name,

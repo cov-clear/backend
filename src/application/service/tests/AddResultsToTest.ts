@@ -14,8 +14,7 @@ import { ConfidenceLevel } from '../../../domain/model/test/ConfidenceLevel';
 import { ADD_RESULTS_WITH_HIGH_CONFIDENCE } from '../../../domain/model/authentication/Permissions';
 
 export class AddResultsToTest {
-  constructor(private testRepository: TestRepository, private testTypeRepository: TestTypeRepository) {
-  }
+  constructor(private testRepository: TestRepository, private testTypeRepository: TestTypeRepository) {}
 
   public async execute(actor: User, testId: string, resultsCommand: TestResultsCommand): Promise<Results> {
     const test = await this.getTestOrFail(testId);
@@ -24,11 +23,11 @@ export class AddResultsToTest {
 
     await this.validateAccessAndPermissionToAddResults(actor, testType);
 
-    test.results = this.getResults(actor, testType, resultsDetails, resultsCommand.notes);
+    test.setResults(this.getResults(actor, testType, resultsDetails, resultsCommand.notes), testType);
 
     await this.testRepository.save(test);
 
-    return test.results;
+    return test.results as Results;
   }
 
   private async getTestOrFail(testId: string) {
