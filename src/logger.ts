@@ -1,7 +1,7 @@
 import { default as pino } from 'pino';
 import { default as expressPinoLogger } from 'express-pino-logger';
-
 import * as config from './config';
+import { rollbar } from './loaders/rollbar';
 
 const logger = pino(pinoConfig(config));
 
@@ -36,11 +36,21 @@ function info(message: string): void {
 }
 
 function error(message: string, err?: Error): void {
+  sendErrorToRollbar(message, err);
   logger.error({ err }, message);
 }
 
 function warn(message: string): void {
+  rollbar.warning(message);
   logger.warn(message);
+}
+
+function sendErrorToRollbar(message: string, err?: Error) {
+  if (err) {
+    rollbar.error(message, err);
+  } else {
+    rollbar.error(message);
+  }
 }
 
 export default {
