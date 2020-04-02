@@ -5,6 +5,7 @@ import securityHeaders from 'helmet';
 import * as config from '../config';
 import logger from '../logger';
 import routes from '../api';
+import { rollbar } from './rollbar';
 import { ApiError, apiErrorCodes } from '../api/ApiError';
 import { attachAuthenticationToRequest } from '../api/middleware/attachAuthenticationToRequest';
 import { wrapAsyncFunction } from '../api/AsyncRouter';
@@ -17,7 +18,8 @@ export default () => {
     .use('/api', wrapAsyncFunction(attachAuthenticationToRequest))
     .use('/api', routes())
     .use(notFoundHandling())
-    .use(errorHandling());
+    .use(errorHandling())
+    .use(rollbar.errorHandler());
 };
 
 function notFoundHandling() {
@@ -35,7 +37,7 @@ function errorHandling() {
     const code = ((err as any).code as string) || 'unexpected.error';
 
     if (status >= 500) {
-      logger.error('Internal Error', err);
+      logger.error(`Unexpected error: ${err.message}`, err);
     }
 
     const body: any = { code };

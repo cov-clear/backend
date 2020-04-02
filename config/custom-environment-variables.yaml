@@ -10,3 +10,6 @@ jwt:
   secret: JWT_SECRET
 
 port: PORT
+
+rollbar:
+  token: ROLLBAR_TOKEN
