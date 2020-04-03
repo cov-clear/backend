@@ -16,7 +16,7 @@ For more information on how the platform can be used, please refer to the docume
 
 ### Authentication
 
-Users register and log in to the system through 'magic-links', these are one-time links that are sent into user's email inbox. The link contains an authCode, that can be exchanged for a secure token used for future requests. The link is one-time, as it expires on first usage. To login again, a new magic link, containing a new auth code, must be requested. As such, the system does not contain any passwords, and can only be accessed via the users email inbox.
+Users register and log in to the system through 'magic-links', these are one-time links that are sent into the user's email inbox. The link contains an authCode that can be exchanged for a secure token used for future requests. The link is one-time, as it expires on first usage. To login again, a new magic link, containing a new auth code, must be requested. As such, the system does not contain any passwords, and can only be accessed via the users email inbox.
 
 ### Data capture
 
