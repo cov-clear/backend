@@ -1,5 +1,4 @@
 import request from 'supertest';
-import expressApp from '../../loaders/express';
 import database from '../../database';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 
@@ -9,9 +8,11 @@ import { UserId } from '../../domain/model/user/UserId';
 import { User } from '../../domain/model/user/User';
 import { Email } from '../../domain/model/user/Email';
 import { getTokenForUser } from '../../test/authentication';
+import { Container } from 'typedi';
+import { Application } from '../../presentation/Application';
 
 describe('sharing code endpoints', () => {
-  const app = expressApp();
+  const app = Container.get(Application).getExpressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();

@@ -1,21 +1,19 @@
 import request from 'supertest';
-import expressApp from '../../loaders/express';
 import database from '../../database';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 
-import { userRepository, sharingCodeRepository } from '../../infrastructure/persistence';
+import { sharingCodeRepository, userRepository } from '../../infrastructure/persistence';
 
-import { UserId } from '../../domain/model/user/UserId';
-import { User } from '../../domain/model/user/User';
-import { Email } from '../../domain/model/user/Email';
 import { SharingCode } from '../../domain/model/sharingCode/SharingCode';
 import { getTokenForUser } from '../../test/authentication';
 
 import { v4 as uuidv4 } from 'uuid';
 import { aUserWithAllInformation } from '../../test/domainFactories';
+import { Container } from 'typedi';
+import { Application } from '../../presentation/Application';
 
 describe('sharing code endpoints', () => {
-  const app = expressApp();
+  const app = Container.get(Application).getExpressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();

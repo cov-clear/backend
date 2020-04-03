@@ -1,6 +1,5 @@
 import { Address } from '../../../domain/model/user/Address';
-import { AddressDTO, ProfileDTO } from '../../../presentation/dtos/users';
-import { UpdateUserCommand } from '../../../api/interface';
+import { AddressDTO, ProfileDTO, UpdateUserCommand } from '../../../presentation/dtos/users';
 import { Country } from '../../../domain/model/user/Country';
 import { DateOfBirth } from '../../../domain/model/user/DateOfBirth';
 import { Profile } from '../../../domain/model/user/Profile';

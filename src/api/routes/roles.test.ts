@@ -1,5 +1,4 @@
 import request from 'supertest';
-import expressApp from '../../loaders/express';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import database from '../../database';
 import { getTokenForUser } from '../../test/authentication';
@@ -10,9 +9,11 @@ import { ASSIGN_ROLE_TO_USER, CREATE_NEW_ROLE, LIST_ROLES } from '../../domain/m
 import { persistedUserWithRoleAndPermissions } from '../../test/persistedEntities';
 import { Role } from '../../domain/model/authentication/Role';
 import { Role as ApiRole } from '../interface';
+import { Container } from 'typedi';
+import { Application } from '../../presentation/Application';
 
 describe('roles endpoints', () => {
-  const app = expressApp();
+  const app = Container.get(Application).getExpressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();

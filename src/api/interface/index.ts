@@ -1,8 +1,3 @@
-export interface UpdateUserCommand {
-  profile?: Profile;
-  address?: Address;
-}
-
 export interface TestType {
   id: string;
   name: string;

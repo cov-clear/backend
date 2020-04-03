@@ -4,13 +4,10 @@ import { Service } from 'typedi';
 import AsyncRouter from '../../api/AsyncRouter';
 import { isAuthenticated } from '../../api/middleware/isAuthenticated';
 import { AuthenticatedRequest } from '../../api/AuthenticatedRequest';
-import { ApiError, apiErrorCodes } from '../../api/ApiError';
 
 import { BulkCreateUsers } from '../../application/service/users/BulkCreateUsers';
 import { CreateUserCommand } from '../../application/commands/users';
-import { UserDTO } from '../dtos/users';
 import { UserTransformer } from '../transformers/users';
-import { User } from '../../domain/model/user/User';
 
 @Service()
 export class AdminController {

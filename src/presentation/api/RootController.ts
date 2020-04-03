@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { Service } from 'typedi';
+import { Inject, Service } from 'typedi';
 
 import * as config from '../../config';
 import logger from '../../logger';

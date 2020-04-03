@@ -13,16 +13,20 @@ import logger from '../logger';
 export class Application {
   constructor(private rootController: RootController, private rollbarConfig: RollbarConfig) {}
 
-  public async createAndRun() {
-    await this.migrateDatabase();
-    logger.info('DB connected and migrated');
-
+  public getExpressApp() {
     return express()
       .use(securityHeaders())
       .use(bodyParser.json())
       .use(logger.expressPlugin())
       .use('/api', this.rootController.routes())
       .use(this.rollbarConfig.get().errorHandler());
+  }
+
+  public async createAndRun() {
+    await this.migrateDatabase();
+    logger.info('DB connected and migrated');
+
+    return this.getExpressApp.bind(this)();
   }
 
   private async migrateDatabase() {

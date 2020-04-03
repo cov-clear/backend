@@ -2,14 +2,7 @@ import AsyncRouter from '../AsyncRouter';
 import { Response } from 'express';
 
 import { accessManagerFactory, getUser, updateUser } from '../../application/service';
-
-import { AddressDTO, ProfileDTO, UserDTO } from '../../presentation/dtos/users';
-import { UpdateUserCommand } from '../interface';
 import { UserTransformer } from '../../presentation/transformers/users';
-
-import { User } from '../../domain/model/user/User';
-import { Address } from '../../domain/model/user/Address';
-import { Profile } from '../../domain/model/user/Profile';
 import { UserId } from '../../domain/model/user/UserId';
 
 import { isAuthenticated } from '../middleware/isAuthenticated';
@@ -19,6 +12,7 @@ import { ApiError, apiErrorCodes } from '../ApiError';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
 import { ResourceNotFoundError } from '../../domain/model/ResourceNotFoundError';
 import { UserNotFoundError } from '../../domain/model/user/UserRepository';
+import { UpdateUserCommand } from '../../presentation/dtos/users';
 
 export default () => {
   const route = new AsyncRouter();
