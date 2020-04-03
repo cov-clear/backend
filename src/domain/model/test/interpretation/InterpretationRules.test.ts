@@ -5,6 +5,10 @@ import { UserId } from '../../user/UserId';
 import { ConfidenceLevel } from '../ConfidenceLevel';
 
 describe('InterpretationRules', () => {
+  it('does not allow creating an invalid interpretation', () => {
+    expect(() => InterpretationRules.from([{}])).toThrow();
+  });
+
   it('produces a correct Interpretation when the condition evaluates to true', () => {
     const interpretationRule = InterpretationRules.from([
       {
@@ -31,7 +35,7 @@ describe('InterpretationRules', () => {
     expect(interpretations[0]?.variables.get('value')).toEqual(3);
   });
 
-  it('produces a null result when the condition evaluates to false', () => {
+  it('produces no interpretation when the condition evaluates to false', () => {
     const interpretationRule = InterpretationRules.from([
       {
         output: {
@@ -62,5 +66,43 @@ describe('InterpretationRules', () => {
     const interpretations = interpretationRule.interpret(results);
 
     expect(interpretations.length).toEqual(0);
+  });
+
+  it('produces multiple interpretations if multiple rules match', () => {
+    const interpretationRule = InterpretationRules.from([
+      {
+        output: {
+          namePattern: 'Some pattern {{value}}',
+          theme: InterpretationTheme.NEGATIVE,
+          propertyVariables: {
+            value: 'c',
+          },
+        },
+        condition: {
+          property: 'c',
+          comparator: '>',
+          value: 2,
+        },
+      },
+      {
+        output: {
+          namePattern: 'Some other pattern {{value}}',
+          theme: InterpretationTheme.NEGATIVE,
+          propertyVariables: {
+            value: 'c',
+          },
+        },
+        condition: {
+          property: 'c',
+          comparator: '>',
+          value: 1,
+        },
+      },
+    ]);
+
+    const results = new Results(new UserId(), { c: 3 }, ConfidenceLevel.LOW);
+    const interpretations = interpretationRule.interpret(results);
+
+    expect(interpretations.length).toEqual(2);
   });
 });

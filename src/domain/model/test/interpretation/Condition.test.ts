@@ -3,6 +3,13 @@ import { Condition } from './Condition';
 
 describe('Condition', () => {
   describe('SimpleCondition', () => {
+    it('does not accept an invalid condition', () => {
+      expect(() => Condition.from({})).toThrow();
+      expect(() => Condition.from({ property: null, value: 3, comparator: '==' })).toThrow();
+      expect(() => Condition.from({ property: 'a', value: null, comparator: '' })).toThrow();
+      expect(() => Condition.from({ property: 'a', value: 3, comparator: '' })).toThrow();
+    });
+
     it('correctly evaluates ">="', () => {
       const condition = Condition.from({
         property: 'c',
@@ -119,6 +126,10 @@ describe('Condition', () => {
   });
 
   describe('AndCondition', () => {
+    it('throws an error for an invalid AND condition', () => {
+      expect(() => Condition.from({ and: {} })).toThrow();
+    });
+
     it('correctly calculates conjugation', () => {
       const condition = Condition.from({
         and: [
@@ -143,6 +154,10 @@ describe('Condition', () => {
   });
 
   describe('OrCondition', () => {
+    it('throws an error for an invalid OR condition', () => {
+      expect(() => Condition.from({ or: {} })).toThrow();
+    });
+
     it('correctly calculates disjunction', () => {
       const condition = Condition.from({
         or: [

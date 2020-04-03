@@ -3,6 +3,7 @@ import { Condition } from './Condition';
 import { OutputPattern } from './Output';
 import { Interpretation } from './Interpretation';
 import { DomainValidationError } from '../../DomainValidationError';
+import { Validators } from '../../../Validators';
 
 export class InterpretationRules {
   constructor(private rules: InterpretationRule[]) {}
@@ -32,6 +33,14 @@ class InterpretationRule {
   }
 
   static from(interpretationRuleSchema: any) {
+    Validators.validateNotNullOrUndefined(
+      interpretationRuleSchema.output,
+      `${JSON.stringify(interpretationRuleSchema)} is not a valid interpretation rule schema`
+    );
+    Validators.validateNotNullOrUndefined(
+      interpretationRuleSchema.condition,
+      `${JSON.stringify(interpretationRuleSchema)} is not a valid interpretation rule schema`
+    );
     return new InterpretationRule(
       OutputPattern.from(interpretationRuleSchema.output),
       Condition.from(interpretationRuleSchema.condition)

@@ -7,11 +7,11 @@ export interface Condition {
 
 export namespace Condition {
   export function from(ruleSchema: any): Condition {
-    if (ruleSchema.and && Array.isArray(ruleSchema.and)) {
-      return AndCondition.from(ruleSchema);
+    if (ruleSchema.and) {
+      return AndCondition.from(ruleSchema.and);
     }
-    if (ruleSchema.or && Array.isArray(ruleSchema.or)) {
-      return OrCondition.from(ruleSchema);
+    if (ruleSchema.or) {
+      return OrCondition.from(ruleSchema.or);
     }
     if (ruleSchema.comparator) {
       return SimpleCondition.from(ruleSchema);
@@ -33,7 +33,10 @@ class OrCondition implements Condition {
   }
 
   static from(ruleSchema: any) {
-    return new OrCondition(ruleSchema.or.map(Condition.from));
+    if (!Array.isArray(ruleSchema)) {
+      throw new DomainValidationError('ruleSchema', `${JSON.stringify(ruleSchema)} is not a valid OR condition`);
+    }
+    return new OrCondition(ruleSchema.map(Condition.from));
   }
 }
 
@@ -50,7 +53,10 @@ class AndCondition implements Condition {
   }
 
   static from(ruleSchema: any) {
-    return new AndCondition(ruleSchema.and.map(Condition.from));
+    if (!Array.isArray(ruleSchema)) {
+      throw new DomainValidationError('ruleSchema', `${JSON.stringify(ruleSchema)} is not a valid AND condition`);
+    }
+    return new AndCondition(ruleSchema.map(Condition.from));
   }
 }
 
