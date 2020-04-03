@@ -1,4 +1,3 @@
-import { SimpleCondition } from 'aws-sdk/clients/pinpoint';
 import { Condition } from './Condition';
 
 describe('Condition', () => {

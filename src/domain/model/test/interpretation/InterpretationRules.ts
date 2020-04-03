@@ -9,9 +9,7 @@ export class InterpretationRules {
   constructor(private rules: InterpretationRule[]) {}
 
   interpret(results: Results): Array<Interpretation> {
-    return this.rules
-      .map((rule) => rule.interpret(results))
-      .filter((interpretation) => interpretation !== null) as Interpretation[];
+    return this.rules.filter((rule) => rule.matches(results)).map((rule) => rule.interpret(results));
   }
 
   static from(interpretationRulesSchema: Array<any>) {
@@ -25,11 +23,12 @@ export class InterpretationRules {
 class InterpretationRule {
   constructor(private output: OutputPattern, private condition: Condition) {}
 
-  interpret(results: Results): Interpretation | null {
-    if (this.condition.evaluate(results.details)) {
-      return this.output.evaluate(results);
-    }
-    return null;
+  interpret(results: Results): Interpretation {
+    return this.output.evaluate(results);
+  }
+
+  matches(results: Results): boolean {
+    return this.condition.evaluate(results.details);
   }
 
   static from(interpretationRuleSchema: any) {
