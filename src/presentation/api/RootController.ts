@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import { Inject, Service } from 'typedi';
 
 import * as config from '../../config';
-import logger from '../../logger';
+import logger from '../../infrastructure/logging/logger';
 import { ApiError, apiErrorCodes } from '../../api/ApiError';
 import { attachAuthenticationToRequest } from '../../api/middleware/attachAuthenticationToRequest';
 import { wrapAsyncFunction } from '../../api/AsyncRouter';

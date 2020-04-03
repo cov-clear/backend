@@ -6,12 +6,12 @@ import { Service } from 'typedi';
 import { migrateLatest, rollbackDatabase } from '../database';
 import { createSeedDataForTestingPeriod } from '../database/testSeed';
 import { RootController } from './api/RootController';
-import { RollbarConfig } from './config/rollbar';
-import logger from '../logger';
+import logger from '../infrastructure/logging/logger';
+import { Rollbar } from '../infrastructure/logging/Rollbar';
 
 @Service()
 export class Application {
-  constructor(private rootController: RootController, private rollbarConfig: RollbarConfig) {}
+  constructor(private rootController: RootController, private rollbar: Rollbar) {}
 
   public getExpressApp() {
     return express()
@@ -19,7 +19,7 @@ export class Application {
       .use(bodyParser.json())
       .use(logger.expressPlugin())
       .use('/api', this.rootController.routes())
-      .use(this.rollbarConfig.get().errorHandler());
+      .use(this.rollbar.errorHandler());
   }
 
   public async createAndRun() {

@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { Container } from 'typedi';
 
 import * as config from './config';
-import logger from './logger';
+import logger from './infrastructure/logging/logger';
 import { Application } from './presentation/Application';
 
 async function main() {

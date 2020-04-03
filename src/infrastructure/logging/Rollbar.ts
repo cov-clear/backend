@@ -1,12 +1,12 @@
 import { Service } from 'typedi';
-import Rollbar from 'rollbar';
+import ActualRollbar from 'rollbar';
 
 import * as config from '../../config';
 
 @Service()
-export class RollbarConfig {
-  public get() {
-    return new Rollbar({
+export class Rollbar extends ActualRollbar {
+  constructor() {
+    super({
       accessToken: config.get('rollbar.token'),
       captureUncaught: true,
       captureUnhandledRejections: true,

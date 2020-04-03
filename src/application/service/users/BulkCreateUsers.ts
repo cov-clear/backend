@@ -4,7 +4,7 @@ import { RoleRepository } from '../../../domain/model/authentication/RoleReposit
 import { User } from '../../../domain/model/user/User';
 import { UserId } from '../../../domain/model/user/UserId';
 import { UserRepository } from '../../../domain/model/user/UserRepository';
-import logger from '../../../logger';
+import logger from '../../../infrastructure/logging/logger';
 
 export class BulkCreateUsers {
   constructor(private userRepository: UserRepository, private roleRepository: RoleRepository) {}

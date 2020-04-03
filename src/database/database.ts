@@ -1,6 +1,6 @@
 import knex from 'knex';
 import * as config from '../config';
-import logger from '../logger';
+import logger from '../infrastructure/logging/logger';
 
 const migrationConfig = {
   directory: `${__dirname}/migrations`,

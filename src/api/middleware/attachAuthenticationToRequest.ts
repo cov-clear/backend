@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import * as config from '../../config';
 import { Request, Response } from 'express';
-import logger from '../../logger';
+import logger from '../../infrastructure/logging/logger';
 import { userRepository } from '../../infrastructure/persistence';
 import { UserId } from '../../domain/model/user/UserId';
 import { AuthenticatedRequest } from '../AuthenticatedRequest';
