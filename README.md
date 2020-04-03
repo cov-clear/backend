@@ -40,7 +40,7 @@ If a test is administered and processed by a medical professional with a recogni
 
 Data analysis is performed on anonymised data sets, and by authorised personnel only. For analysis, test subjects are given unique identifiers unconnected to their PII, allowing the analysis of a single patient's test results over time, but without exposing any link back to the original patient, or their data.
 
-It is also not possible to use a patients other data to deanonymise test result data. There is no link between the two in either direction.
+It is also not possible to use a patient's other data to deanonymise test result data. There is no link between the two in either direction.
 
 Date of birth data is converted to age, and address data converted to regions to further prevent statistical deanonymisation of result data.
 
