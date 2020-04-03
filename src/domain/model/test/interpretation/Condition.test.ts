@@ -3,14 +3,14 @@ import { Condition } from './Condition';
 describe('Condition', () => {
   describe('SimpleCondition', () => {
     it('does not accept an invalid condition', () => {
-      expect(() => Condition.from({})).toThrow();
-      expect(() => Condition.from({ property: null, value: 3, comparator: '==' })).toThrow();
-      expect(() => Condition.from({ property: 'a', value: null, comparator: '' })).toThrow();
-      expect(() => Condition.from({ property: 'a', value: 3, comparator: '' })).toThrow();
+      expect(() => Condition.fromSchema({})).toThrow();
+      expect(() => Condition.fromSchema({ property: null, value: 3, comparator: '==' })).toThrow();
+      expect(() => Condition.fromSchema({ property: 'a', value: null, comparator: '' })).toThrow();
+      expect(() => Condition.fromSchema({ property: 'a', value: 3, comparator: '' })).toThrow();
     });
 
     it('correctly evaluates ">="', () => {
-      const condition = Condition.from({
+      const condition = Condition.fromSchema({
         property: 'c',
         comparator: '>=',
         value: 30,
@@ -22,7 +22,7 @@ describe('Condition', () => {
     });
 
     it('correctly evaluates ">"', () => {
-      const condition = Condition.from({
+      const condition = Condition.fromSchema({
         property: 'c',
         comparator: '>',
         value: 30,
@@ -34,7 +34,7 @@ describe('Condition', () => {
     });
 
     it('correctly evaluates "<="', () => {
-      const condition = Condition.from({
+      const condition = Condition.fromSchema({
         property: 'c',
         comparator: '<=',
         value: 30,
@@ -46,7 +46,7 @@ describe('Condition', () => {
     });
 
     it('correctly evaluates "<"', () => {
-      const condition = Condition.from({
+      const condition = Condition.fromSchema({
         property: 'c',
         comparator: '<',
         value: 30,
@@ -58,7 +58,7 @@ describe('Condition', () => {
     });
 
     it('correctly evaluates "==" for numbers', () => {
-      const condition = Condition.from({
+      const condition = Condition.fromSchema({
         property: 'c',
         comparator: '==',
         value: 30,
@@ -69,7 +69,7 @@ describe('Condition', () => {
     });
 
     it('correctly evaluates "==" for strings', () => {
-      const condition = Condition.from({
+      const condition = Condition.fromSchema({
         property: 'c',
         comparator: '==',
         value: 'value',
@@ -80,7 +80,7 @@ describe('Condition', () => {
     });
 
     it('correctly evaluates "==" for booleans', () => {
-      const condition = Condition.from({
+      const condition = Condition.fromSchema({
         property: 'c',
         comparator: '==',
         value: false,
@@ -91,7 +91,7 @@ describe('Condition', () => {
     });
 
     it('correctly evaluates "!=" for numbers', () => {
-      const condition = Condition.from({
+      const condition = Condition.fromSchema({
         property: 'c',
         comparator: '!=',
         value: 30,
@@ -102,7 +102,7 @@ describe('Condition', () => {
     });
 
     it('correctly evaluates "!=" for strings', () => {
-      const condition = Condition.from({
+      const condition = Condition.fromSchema({
         property: 'c',
         comparator: '!=',
         value: 'value',
@@ -113,7 +113,7 @@ describe('Condition', () => {
     });
 
     it('correctly evaluates "!=" for booleans', () => {
-      const condition = Condition.from({
+      const condition = Condition.fromSchema({
         property: 'c',
         comparator: '!=',
         value: false,
@@ -126,11 +126,11 @@ describe('Condition', () => {
 
   describe('AndCondition', () => {
     it('throws an error for an invalid AND condition', () => {
-      expect(() => Condition.from({ and: {} })).toThrow();
+      expect(() => Condition.fromSchema({ and: {} })).toThrow();
     });
 
     it('correctly calculates conjugation', () => {
-      const condition = Condition.from({
+      const condition = Condition.fromSchema({
         and: [
           {
             property: 'c',
@@ -154,11 +154,11 @@ describe('Condition', () => {
 
   describe('OrCondition', () => {
     it('throws an error for an invalid OR condition', () => {
-      expect(() => Condition.from({ or: {} })).toThrow();
+      expect(() => Condition.fromSchema({ or: {} })).toThrow();
     });
 
     it('correctly calculates disjunction', () => {
-      const condition = Condition.from({
+      const condition = Condition.fromSchema({
         or: [
           {
             property: 'c',
@@ -182,7 +182,7 @@ describe('Condition', () => {
 
   describe('Nested Conditions', () => {
     it('correctly calculates complex nested expressions', () => {
-      const condition = Condition.from({
+      const condition = Condition.fromSchema({
         or: [
           {
             property: 'c',

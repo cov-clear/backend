@@ -6,17 +6,21 @@ import { DomainValidationError } from '../../DomainValidationError';
 import { Validators } from '../../../Validators';
 
 export class InterpretationRules {
-  constructor(private rules: InterpretationRule[]) {}
+  constructor(readonly rules: InterpretationRule[]) {}
 
   interpret(results: Results): Array<Interpretation> {
     return this.rules.filter((rule) => rule.matches(results)).map((rule) => rule.interpret(results));
   }
 
-  static from(interpretationRulesSchema: Array<any>) {
+  toSchema() {
+    return this.rules.map((rule) => rule.toSchema());
+  }
+
+  static fromSchema(interpretationRulesSchema: Array<any>) {
     if (!Array.isArray(interpretationRulesSchema)) {
       throw new DomainValidationError('interpretationRules', 'InterpretationRules must be an array');
     }
-    return new InterpretationRules(interpretationRulesSchema.map(InterpretationRule.from));
+    return new InterpretationRules(interpretationRulesSchema.map(InterpretationRule.fromSchema));
   }
 }
 
@@ -31,13 +35,20 @@ class InterpretationRule {
     return this.condition.evaluate(results.details);
   }
 
-  static from(interpretationRuleSchema: any) {
+  toSchema() {
+    return {
+      output: this.output.toSchema(),
+      condition: this.condition.toSchema(),
+    };
+  }
+
+  static fromSchema(interpretationRuleSchema: any) {
     Validators.validateNotNullOrUndefined('interpretationRule.output', interpretationRuleSchema.output);
     Validators.validateNotNullOrUndefined('interpretationRule.condition', interpretationRuleSchema.condition);
 
     return new InterpretationRule(
       OutputPattern.from(interpretationRuleSchema.output),
-      Condition.from(interpretationRuleSchema.condition)
+      Condition.fromSchema(interpretationRuleSchema.condition)
     );
   }
 }

@@ -6,11 +6,11 @@ import { ConfidenceLevel } from '../ConfidenceLevel';
 
 describe('InterpretationRules', () => {
   it('does not allow creating an invalid interpretation', () => {
-    expect(() => InterpretationRules.from([{}])).toThrow();
+    expect(() => InterpretationRules.fromSchema([{}])).toThrow();
   });
 
   it('produces a correct Interpretation when the condition evaluates to true', () => {
-    const interpretationRule = InterpretationRules.from([
+    const interpretationRule = InterpretationRules.fromSchema([
       {
         output: {
           namePattern: 'Some pattern {{value}}',
@@ -36,7 +36,7 @@ describe('InterpretationRules', () => {
   });
 
   it('produces no interpretation when the condition evaluates to false', () => {
-    const interpretationRule = InterpretationRules.from([
+    const interpretationRule = InterpretationRules.fromSchema([
       {
         output: {
           namePattern: 'Some pattern {{value}}',
@@ -60,7 +60,7 @@ describe('InterpretationRules', () => {
   });
 
   it('produces no interpretations for an empty interpretation rule array', () => {
-    const interpretationRule = InterpretationRules.from([]);
+    const interpretationRule = InterpretationRules.fromSchema([]);
 
     const results = new Results(new UserId(), { c: 1 }, ConfidenceLevel.LOW);
     const interpretations = interpretationRule.interpret(results);
@@ -69,7 +69,7 @@ describe('InterpretationRules', () => {
   });
 
   it('produces multiple interpretations if multiple rules match', () => {
-    const interpretationRule = InterpretationRules.from([
+    const interpretationRule = InterpretationRules.fromSchema([
       {
         output: {
           namePattern: 'Some pattern {{value}}',

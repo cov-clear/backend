@@ -3,18 +3,19 @@ import { DomainValidationError } from '../../DomainValidationError';
 
 export interface Condition {
   evaluate(obj: any): boolean;
+  toSchema(): object;
 }
 
 export namespace Condition {
-  export function from(conditionSchema: any): Condition {
+  export function fromSchema(conditionSchema: any): Condition {
     if (conditionSchema.and) {
-      return AndCondition.from(conditionSchema.and);
+      return AndCondition.fromSchema(conditionSchema.and);
     }
     if (conditionSchema.or) {
-      return OrCondition.from(conditionSchema.or);
+      return OrCondition.fromSchema(conditionSchema.or);
     }
     if (conditionSchema.comparator) {
-      return SimpleCondition.from(conditionSchema);
+      return SimpleCondition.fromSchema(conditionSchema);
     }
     throw new DomainValidationError('conditionSchema', `${JSON.stringify(conditionSchema)} is not a valid condition`);
   }
@@ -32,14 +33,20 @@ class OrCondition implements Condition {
     return false;
   }
 
-  static from(conditionSchema: any) {
+  toSchema(): object {
+    return {
+      and: this.conditions.map((condition) => condition.toSchema()),
+    };
+  }
+
+  static fromSchema(conditionSchema: any) {
     if (!Array.isArray(conditionSchema)) {
       throw new DomainValidationError(
         'conditionSchema',
         `${JSON.stringify(conditionSchema)} is not a valid OR condition`
       );
     }
-    return new OrCondition(conditionSchema.map(Condition.from));
+    return new OrCondition(conditionSchema.map(Condition.fromSchema));
   }
 }
 
@@ -55,14 +62,20 @@ class AndCondition implements Condition {
     return true;
   }
 
-  static from(conditionSchema: any) {
+  toSchema(): object {
+    return {
+      and: this.conditions.map((condition) => condition.toSchema()),
+    };
+  }
+
+  static fromSchema(conditionSchema: any) {
     if (!Array.isArray(conditionSchema)) {
       throw new DomainValidationError(
         'conditionSchema',
         `${JSON.stringify(conditionSchema)} is not a valid AND condition`
       );
     }
-    return new AndCondition(conditionSchema.map(Condition.from));
+    return new AndCondition(conditionSchema.map(Condition.fromSchema));
   }
 }
 
@@ -99,7 +112,15 @@ class SimpleCondition implements Condition {
     }
   }
 
-  static from(conditionSchema: any) {
+  toSchema(): object {
+    return {
+      property: this.property,
+      comparator: this.comparator,
+      value: this.value,
+    };
+  }
+
+  static fromSchema(conditionSchema: any) {
     try {
       return new SimpleCondition(conditionSchema.property, conditionSchema.comparator, conditionSchema.value);
     } catch (error) {
