@@ -1,4 +1,4 @@
-# Cov-Clear web client
+# Cov-Clear backend
 
 The cov clear backend is a platform designed to securely manage:
 
