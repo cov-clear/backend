@@ -26,7 +26,7 @@ The application asks users to submit both demographic (date of birth & sex) & lo
 
 The system is secured such that patients control their own data. A patient may issue a unique, short-lived, sharing code that enables another user to securely view and verify those results. Sharing codes have a life span of only 60 seconds to prevent their leakage and to prevent any brute force attempt to crack codes.
 
-Sharing codes will typically be converted into a QR code which can be captured by another user. On capture, the capturer is granted an 'access pass' giving them permissions to view the sharers test result data (currently for one hour). There is no other way to lookup or view a patients data, ensuring the patient controls who can access their data.
+Sharing codes will typically be converted into a QR code which can be captured by another user. On capture, the capturer is granted an 'access pass' giving them permissions to view the sharers test result data (currently for one hour). There is no other way to lookup or view a patient's data, ensuring the patient controls who can access their data.
 
 If the capturing user is granted an access code, and has sufficient permission (e.g. they are a registered doctor), they may add new results on behalf of a patient.
 
