@@ -14,8 +14,8 @@ export class Validators {
     }
   }
 
-  static validateNotNull(fieldName: string, value: object) {
-    if (!value) {
+  static validateNotNullOrUndefined(fieldName: string, value: any) {
+    if (value === null || value === undefined) {
       throw new DomainValidationError(fieldName, 'Cannot be null');
     }
   }
