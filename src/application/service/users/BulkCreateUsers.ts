@@ -1,4 +1,4 @@
-import { CreateUserCommand } from '../../commands/users';
+import { CreateUserCommand } from '../../../presentation/commands/users';
 import { Email } from '../../../domain/model/user/Email';
 import { RoleRepository } from '../../../domain/model/authentication/RoleRepository';
 import { User } from '../../../domain/model/user/User';
@@ -15,14 +15,16 @@ export class BulkCreateUsers {
 
     for (const userCommand of createUsersCommand) {
       const user = new User(new UserId(), new Email(userCommand.email));
-      const role = roles.find((r) => r.name === userCommand.role);
+      for (const roleName of userCommand.roles) {
+        const role = roles.find((r) => r.name === roleName);
 
-      if (!role) {
-        logger.info(`Invalid role: ${userCommand.role}`);
-        continue;
+        if (!role) {
+          logger.info(`Invalid role: ${roleName}`);
+          continue;
+        }
+
+        user.assignRole(role, user.id);
       }
-
-      user.assignRole(role, user.id);
       await this.userRepository.save(user);
 
       users.push(user);
