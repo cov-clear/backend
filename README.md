@@ -4,7 +4,7 @@ The cov clear backend is a platform designed to securely manage:
 
 - The administration of mass community testing for covid-19.
 - The ability to securely share test results with others, acting as an "immunity passport".
-- The ability to anlyse aggregated and anonymised test result data. Helping to establish:
+- The ability to analyse aggregated and anonymised test result data. Helping to establish:
   - the efficacy of different tests.
   - the persistence of antibodies over time.
   - patient reinfection rates.
