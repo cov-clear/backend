@@ -12,7 +12,7 @@ The cov clear backend is a platform designed to securely manage:
 
 ### User interaction
 
-For more information on how the platform can be used, please refer to the documentation for the corresponding [https://github.com/cov-clear/web/blob/master/README.md](web application).
+For more information on how the platform can be used, please refer to the documentation for the corresponding [web application](https://github.com/cov-clear/web/blob/master/README.md).
 
 ### Authentication
 
@@ -46,11 +46,11 @@ Date of birth data is converted to age, and address data converted to regions to
 
 ### API
 
-Full API documentation is available [https://documenter.getpostman.com/view/870016/SzYUZ1LQ?version=latest](here).
+Full API documentation is available [here](https://documenter.getpostman.com/view/870016/SzYUZ1LQ?version=latest).
 
 ## Team
 
-This application was designed and built by a team of engineers from [https://transferwise.com/](transferwise.com/) in partnership with a team of medical professionals. To learn more about the project and the team, please visit [https://cov-clear.com/about](cov-clear.com/about).
+This application was designed and built by a team of engineers from [transferwise.com](https://transferwise.com) in partnership with a team of medical professionals. To learn more about the project and the team, please visit [cov-clear.com/about](https://cov-clear.com/about).
 
 ## Getting started
 
