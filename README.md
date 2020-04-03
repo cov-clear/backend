@@ -20,7 +20,7 @@ Users register and log in to the system through 'magic-links', these are one-tim
 
 ### Data capture
 
-The application asks users to submit both demographic (date of birth & sex) & location (full address) information, to enable demographic segmentation of results. Address information may be used to verify a petients identity, and at later stages to track outbreaks via test results. Data is only communicated over secure SSL connections.
+The application asks users to submit both demographic (date of birth & sex) & location (full address) information, to enable demographic segmentation of results. Address information may be used to verify a patient's identity, and at later stages to track outbreaks via test results. Data is only communicated over secure SSL connections.
 
 ### Data access & sharing results
 
