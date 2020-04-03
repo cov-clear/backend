@@ -10,5 +10,7 @@
     "resolveJsonModule": true,
     "sourceMap": true
   },
+  "emitDecoratorMetadata": true,
+  "experimentalDecorators": true,
   "include": ["src"]
 }
