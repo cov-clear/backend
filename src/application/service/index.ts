@@ -8,6 +8,7 @@ import { ExchangeAuthCode } from './authentication/ExchangeAuthCode';
 import { CreateNewMagicLink } from './authentication/CreateNewMagicLink';
 import * as config from '../../config';
 import { GetExistingOrCreateNewUser } from './users/GetExistingOrCreateNewUser';
+import { BulkCreateUsers } from './users/BulkCreateUsers';
 import {
   accessPassRepository,
   magicLinkRepository,
@@ -90,6 +91,8 @@ export const getUser = new GetUser(userRepository);
 export const updateUser = new UpdateUser(userRepository);
 
 export const getExistingOrCreateNewUser = new GetExistingOrCreateNewUser(userRepository, roleRepository);
+
+export const bulkCreateUsers = new BulkCreateUsers(userRepository, roleRepository);
 
 export const exchangeAuthCode = new ExchangeAuthCode(
   magicLinkRepository,

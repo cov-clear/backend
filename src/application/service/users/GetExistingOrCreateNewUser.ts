@@ -8,18 +8,24 @@ import { UserRepository } from '../../../domain/model/user/UserRepository';
 export class GetExistingOrCreateNewUser {
   constructor(private userRepository: UserRepository, private roleRepository: RoleRepository) {}
 
-  public async execute(email: string) {
+  public async execute(email: string, roleName?: string) {
+    roleName = roleName ? roleName : USER;
+
     const existingUser = await this.userRepository.findByEmail(new Email(email));
+
     if (existingUser) {
       return existingUser;
     }
 
     const user = new User(new UserId(), new Email(email));
-    const userRole = await this.roleRepository.findByName(USER);
-    if (!userRole) {
-      throw new RoleNotFoundError(USER);
+    const role = await this.roleRepository.findByName(roleName);
+
+    if (!role) {
+      throw new RoleNotFoundError(roleName);
     }
-    user.assignRole(userRole, user.id);
+
+    user.assignRole(role, user.id);
+
     return this.userRepository.save(user);
   }
 }

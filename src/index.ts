@@ -1,11 +1,12 @@
 import 'reflect-metadata';
+import { Container } from 'typedi';
 
 import * as config from './config';
-import appLoader from './loaders';
 import logger from './logger';
+import { Application } from './presentation/Application';
 
 async function main() {
-  const app = await appLoader();
+  const app = await Container.get(Application).createAndRun();
 
   app.listen(config.get('port'), (err: any) => {
     if (err) {

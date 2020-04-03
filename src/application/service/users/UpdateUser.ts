@@ -1,5 +1,6 @@
 import { Address } from '../../../domain/model/user/Address';
-import { Address as ApiAddress, Profile as ApiProfile, UpdateUserCommand } from '../../../api/interface';
+import { AddressDTO, ProfileDTO } from '../../../presentation/dtos/users';
+import { UpdateUserCommand } from '../../../api/interface';
 import { Country } from '../../../domain/model/user/Country';
 import { DateOfBirth } from '../../../domain/model/user/DateOfBirth';
 import { Profile } from '../../../domain/model/user/Profile';
@@ -27,7 +28,7 @@ export class UpdateUser {
   }
 }
 
-function mapApiProfileToProfile(profile: ApiProfile): Profile {
+function mapApiProfileToProfile(profile: ProfileDTO): Profile {
   return new Profile(
     profile.firstName,
     profile.lastName,
@@ -36,7 +37,7 @@ function mapApiProfileToProfile(profile: ApiProfile): Profile {
   );
 }
 
-export function mapApiAddressToAddress(address?: ApiAddress): Address | undefined {
+export function mapApiAddressToAddress(address?: AddressDTO): Address | undefined {
   return address
     ? {
         address1: address.address1,

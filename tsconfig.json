@@ -1,16 +1,16 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
-    "target": "es6",
-    "module": "commonjs",
-    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "module": "commonjs",
     "moduleResolution": "node",
+    "outDir": "dist",
     "resolveJsonModule": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "strict": true,
+    "target": "es6"
   },
-  "emitDecoratorMetadata": true,
-  "experimentalDecorators": true,
   "include": ["src"]
 }
