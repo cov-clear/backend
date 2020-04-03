@@ -6,57 +6,63 @@ export interface Condition {
 }
 
 export namespace Condition {
-  export function from(ruleSchema: any): Condition {
-    if (ruleSchema.and) {
-      return AndCondition.from(ruleSchema.and);
+  export function from(conditionSchema: any): Condition {
+    if (conditionSchema.and) {
+      return AndCondition.from(conditionSchema.and);
     }
-    if (ruleSchema.or) {
-      return OrCondition.from(ruleSchema.or);
+    if (conditionSchema.or) {
+      return OrCondition.from(conditionSchema.or);
     }
-    if (ruleSchema.comparator) {
-      return SimpleCondition.from(ruleSchema);
+    if (conditionSchema.comparator) {
+      return SimpleCondition.from(conditionSchema);
     }
-    throw new DomainValidationError('ruleSchema', `${JSON.stringify(ruleSchema)} is not a valid rule`);
+    throw new DomainValidationError('conditionSchema', `${JSON.stringify(conditionSchema)} is not a valid condition`);
   }
 }
 
 class OrCondition implements Condition {
-  constructor(private rules: Condition[]) {}
+  constructor(private conditions: Condition[]) {}
 
   evaluate(obj: object): boolean {
-    for (const rule of this.rules) {
-      if (rule.evaluate(obj)) {
+    for (const condition of this.conditions) {
+      if (condition.evaluate(obj)) {
         return true;
       }
     }
     return false;
   }
 
-  static from(ruleSchema: any) {
-    if (!Array.isArray(ruleSchema)) {
-      throw new DomainValidationError('ruleSchema', `${JSON.stringify(ruleSchema)} is not a valid OR condition`);
+  static from(conditionSchema: any) {
+    if (!Array.isArray(conditionSchema)) {
+      throw new DomainValidationError(
+        'conditionSchema',
+        `${JSON.stringify(conditionSchema)} is not a valid OR condition`
+      );
     }
-    return new OrCondition(ruleSchema.map(Condition.from));
+    return new OrCondition(conditionSchema.map(Condition.from));
   }
 }
 
 class AndCondition implements Condition {
-  constructor(private rules: Condition[]) {}
+  constructor(private conditions: Condition[]) {}
 
   evaluate(obj: any): boolean {
-    for (const rule of this.rules) {
-      if (!rule.evaluate(obj)) {
+    for (const condition of this.conditions) {
+      if (!condition.evaluate(obj)) {
         return false;
       }
     }
     return true;
   }
 
-  static from(ruleSchema: any) {
-    if (!Array.isArray(ruleSchema)) {
-      throw new DomainValidationError('ruleSchema', `${JSON.stringify(ruleSchema)} is not a valid AND condition`);
+  static from(conditionSchema: any) {
+    if (!Array.isArray(conditionSchema)) {
+      throw new DomainValidationError(
+        'conditionSchema',
+        `${JSON.stringify(conditionSchema)} is not a valid AND condition`
+      );
     }
-    return new AndCondition(ruleSchema.map(Condition.from));
+    return new AndCondition(conditionSchema.map(Condition.from));
   }
 }
 
@@ -93,11 +99,14 @@ class SimpleCondition implements Condition {
     }
   }
 
-  static from(ruleSchema: any) {
+  static from(conditionSchema: any) {
     try {
-      return new SimpleCondition(ruleSchema.property, ruleSchema.comparator, ruleSchema.value);
+      return new SimpleCondition(conditionSchema.property, conditionSchema.comparator, conditionSchema.value);
     } catch (error) {
-      throw new DomainValidationError('ruleSchema', `${JSON.stringify(ruleSchema)} is not a valid SimpleCondition`);
+      throw new DomainValidationError(
+        'conditionSchema',
+        `${JSON.stringify(conditionSchema)} is not a valid SimpleCondition`
+      );
     }
   }
 }

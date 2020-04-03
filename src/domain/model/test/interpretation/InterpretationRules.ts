@@ -33,14 +33,9 @@ class InterpretationRule {
   }
 
   static from(interpretationRuleSchema: any) {
-    Validators.validateNotNullOrUndefined(
-      interpretationRuleSchema.output,
-      `${JSON.stringify(interpretationRuleSchema)} is not a valid interpretation rule schema`
-    );
-    Validators.validateNotNullOrUndefined(
-      interpretationRuleSchema.condition,
-      `${JSON.stringify(interpretationRuleSchema)} is not a valid interpretation rule schema`
-    );
+    Validators.validateNotNullOrUndefined('interpretationRule.output', interpretationRuleSchema.output);
+    Validators.validateNotNullOrUndefined('interpretationRule.condition', interpretationRuleSchema.condition);
+
     return new InterpretationRule(
       OutputPattern.from(interpretationRuleSchema.output),
       Condition.from(interpretationRuleSchema.condition)
