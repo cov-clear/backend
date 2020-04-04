@@ -13,7 +13,7 @@ export class Address {
     Validators.validateNotEmpty('address1', address1);
     Validators.validateNotEmpty('city', city);
     Validators.validateNotEmpty('postcode', postcode);
-    Validators.validateNotNull('country', country);
+    Validators.validateNotNullOrUndefined('country', country);
     Validators.validateOptionalNotEmpty('address2', address2);
     Validators.validateOptionalNotEmpty('region', region);
 
