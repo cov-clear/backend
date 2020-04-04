@@ -24,4 +24,11 @@ export class Test {
   get results() {
     return this._results;
   }
+
+  get interpretations() {
+    if (!this.results) {
+      return [];
+    }
+    return this.testType.interpretationRules.interpret(this.results);
+  }
 }

@@ -16,10 +16,10 @@ import {
   userRepository,
 } from '../../infrastructure/persistence';
 
-import { aNewUser, aTest, aTestType } from '../../test/domainFactories';
+import { aNewUser, antibodyTestType, aResult, aTest, aTestType } from '../../test/domainFactories';
 import { persistedUserWithRoleAndPermissions } from '../../test/persistedEntities';
 import { TestId } from '../../domain/model/test/TestId';
-import { TestCommand, TestResultsCommand } from '../interface';
+import { TestCommand, TestDTO, TestResultsCommand } from '../interface';
 
 describe('test endpoints', () => {
   const app = expressApp();
@@ -89,6 +89,35 @@ describe('test endpoints', () => {
         .get(`/api/v1/users/${subjectUser.id.value}/tests`)
         .set({ Authorization: `Bearer ${await getTokenForUser(actorUser)}` })
         .expect(404);
+    });
+
+    it('returns interpretations correctly for tests that have them', async () => {
+      const actor = await persistedUserWithRoleAndPermissions('USER', []);
+      const testType = await testTypeRepository.save(antibodyTestType());
+      const test = await testRepository.save(
+        aTest(
+          actor.id,
+          testType,
+          aResult(actor.id, {
+            c: true,
+            igg: true,
+            igm: false,
+          })
+        )
+      );
+
+      await request(app)
+        .get(`/api/v1/users/${actor.id.value}/tests`)
+        .set({ Authorization: `Bearer ${await getTokenForUser(actor)}` })
+        .expect(200)
+        .expect((res) => {
+          const [test]: [TestDTO] = res.body;
+          const [interpretation] = test.resultsInterpretations;
+
+          expect(interpretation.namePattern).toBeDefined();
+          expect(interpretation.theme).toBeDefined();
+          expect(interpretation.variables).toBeDefined();
+        });
     });
   });
 
@@ -180,17 +209,17 @@ describe('test endpoints', () => {
       const testType = await testTypeRepository.save(aTestType());
       const user = await persistedUserWithRoleAndPermissions('TESTER', [testType.neededPermissionToAddResults]);
 
-      const validTest = getValidTestCommandWithResults(testType.id);
+      const validTestCommandWithResults = getValidTestCommandWithResults(testType.id);
 
       await request(app)
         .post(`/api/v1/users/${user.id.value}/tests`)
         .set({
           Authorization: `Bearer ${await getTokenForUser(user)}`,
         })
-        .send(validTest)
+        .send(validTestCommandWithResults)
         .expect(201)
         .expect((response) => {
-          expect(response.body.testTypeId).toEqual(validTest.testTypeId);
+          expect(response.body.testType.id).toEqual(validTestCommandWithResults.testTypeId);
           expect(response.body.id).toBeDefined();
           expect(response.body.userId).toEqual(user.id.value);
           expect(response.body.creationTime).toBeDefined();

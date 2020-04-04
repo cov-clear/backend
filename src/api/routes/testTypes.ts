@@ -2,7 +2,7 @@ import AsyncRouter from '../AsyncRouter';
 import { Request, Response } from 'express';
 import { createTestType, getTestTypes } from '../../application/service';
 import { TestType } from '../../domain/model/test/testType/TestType';
-import { TestType as ApiTestType } from '../interface';
+import { TestTypeDTO as ApiTestType } from '../interface';
 import { getAuthenticationOrFail } from '../AuthenticatedRequest';
 import { hasPermission } from '../middleware/hasPermission';
 import { CREATE_TEST_TYPE } from '../../domain/model/authentication/Permissions';

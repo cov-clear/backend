@@ -13,9 +13,11 @@ import { ApiError, apiErrorCodes } from '../ApiError';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
 import { ResourceNotFoundError } from '../../domain/model/ResourceNotFoundError';
 import { AccessDeniedError } from '../../domain/model/AccessDeniedError';
-import { TestResultsCommand } from '../interface';
+import { TestDTO, TestInterpretationDTO, TestResultsCommand, TestResultsDTO, TestTypeDTO } from '../interface';
 import { TestNotFoundError } from '../../domain/model/test/TestNotFoundError';
 import { Results } from '../../domain/model/test/Results';
+import { TestType } from '../../domain/model/test/testType/TestType';
+import { Interpretation } from '../../domain/model/test/interpretation/Interpretation';
 
 export default () => {
   const route = new AsyncRouter();
@@ -82,27 +84,45 @@ export default () => {
   return route.middleware();
 };
 
-export function mapTestToApiTest(test: Test) {
+export function mapTestToApiTest(test: Test): TestDTO {
   return {
     id: test.id.value,
     userId: test.userId.value,
-    testTypeId: test.testType.id.value,
     creationTime: test.creationTime,
     administrationConfidence: test.administrationConfidence,
     results: mapResultsToApiResults(test.results),
+    testType: mapTestTypeToDTO(test.testType),
+    resultsInterpretations: test.interpretations.map(mapInterpretationToDTO),
   };
 }
 
-function mapResultsToApiResults(results?: Results) {
+function mapResultsToApiResults(results?: Results): TestResultsDTO | null {
   return results
     ? {
         details: results.details,
         testerUserId: results.createdBy.value,
         creationTime: results.creationTime,
-        notes: results.notes,
         entryConfidence: results.entryConfidence,
+        notes: results.notes,
       }
     : null;
+}
+
+function mapTestTypeToDTO(testType: TestType): TestTypeDTO {
+  return {
+    id: testType.id.value,
+    name: testType.name,
+    neededPermissionToAddResults: testType.neededPermissionToAddResults,
+    resultsSchema: testType.resultsSchema,
+  };
+}
+
+function mapInterpretationToDTO(interpretation: Interpretation): TestInterpretationDTO {
+  return {
+    namePattern: interpretation.name,
+    theme: interpretation.theme,
+    variables: interpretation.variables,
+  };
 }
 
 function handleCreationError(error: Error) {
