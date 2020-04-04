@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, Router } from 'express';
 import { Inject, Service } from 'typedi';
 
 import * as config from '../../config';
@@ -8,6 +8,7 @@ import { attachAuthenticationToRequest } from '../../api/middleware/attachAuthen
 import { wrapAsyncFunction } from '../../api/AsyncRouter';
 
 import accessPass from '../../api/routes/accessPass';
+import { ApiController } from './ApiController';
 import { AdminController } from './AdminController';
 import auth from '../../api/routes/auth';
 import countries from '../../api/routes/countries';
@@ -19,10 +20,10 @@ import testTypes from '../../api/routes/testTypes';
 import user from '../../api/routes/user';
 
 @Service()
-export class RootController {
+export class RootController implements ApiController {
   constructor(private adminController: AdminController) {}
 
-  public routes() {
+  public routes(): Router {
     return express()
       .use('', wrapAsyncFunction(attachAuthenticationToRequest))
       .use('/v1', accessPass())

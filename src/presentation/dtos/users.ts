@@ -1,8 +1,3 @@
-export interface UpdateUserCommand {
-  profile?: ProfileDTO;
-  address?: AddressDTO;
-}
-
 export interface UserDTO {
   id: string;
   email: string;

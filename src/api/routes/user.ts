@@ -12,7 +12,7 @@ import { ApiError, apiErrorCodes } from '../ApiError';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
 import { ResourceNotFoundError } from '../../domain/model/ResourceNotFoundError';
 import { UserNotFoundError } from '../../domain/model/user/UserRepository';
-import { UpdateUserCommand } from '../../presentation/dtos/users';
+import { UpdateUserCommand } from '../../presentation/commands/users';
 
 export default () => {
   const route = new AsyncRouter();
