@@ -3,8 +3,10 @@ import { PsqlTestTypeRepository } from './PsqlTestTypeRepository';
 import { TestTypeId } from '../../domain/model/testType/TestTypeId';
 import { TestType } from '../../domain/model/testType/TestType';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
-import { aTestType } from '../../test/domainFactories';
+import { antibodyTestTypeInterpretationRules, aTestType } from '../../test/domainFactories';
 import { TestTypeNameAlreadyExists } from '../../domain/model/testType/TestTypeRepository';
+import { InterpretationRules } from '../../domain/model/test/interpretation/InterpretationRules';
+import { InterpretationTheme } from '../../domain/model/test/interpretation/Interpretation';
 
 describe('PsqlTestTypeRepository', () => {
   const psqlTestTypeRepository = new PsqlTestTypeRepository(database);
@@ -65,8 +67,19 @@ describe('PsqlTestTypeRepository', () => {
 
     expect(persistedTestType).toEqual(testType);
   });
-});
 
+  it('inserts new and retrieves a test type containing interpretation rules', async () => {
+    const interpretationRules = antibodyTestTypeInterpretationRules();
+
+    const testType = await psqlTestTypeRepository.save(
+      new TestType(new TestTypeId(), 'PCR', {}, 'PCR_PERMISSION', interpretationRules)
+    );
+
+    const persistedTestType = await psqlTestTypeRepository.findById(testType.id);
+
+    expect(persistedTestType).toEqual(testType);
+  });
+});
 afterAll(() => {
   return database.destroy();
 });

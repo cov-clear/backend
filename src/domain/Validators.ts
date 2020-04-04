@@ -33,8 +33,12 @@ export class Validators {
   }
 
   static validateJson(fieldName: string, doc: object, schema: object) {
-    if (!schema || !doc || !ajv.validate(schema, doc)) {
+    if (!this.isValidJson(doc, schema)) {
       throw new DomainValidationError(fieldName, 'The document does not follow the schema');
     }
+  }
+
+  static isValidJson(doc: object, schema: object): boolean {
+    return !!(schema && doc && ajv.validate(schema, doc));
   }
 }
