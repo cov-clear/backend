@@ -1,5 +1,8 @@
 import { aResult } from './domainFactories';
+import { CreateTestTypeCommand, TestCommand, TestResultsCommand } from '../api/interface';
+
 import { AddressDTO, ProfileDTO } from '../presentation/dtos/users';
+import { TestTypeId } from '../domain/model/test/testType/TestTypeId';
 
 export function anApiAddress(): AddressDTO {
   return {
