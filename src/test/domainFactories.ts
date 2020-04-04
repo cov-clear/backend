@@ -110,12 +110,12 @@ export function antibodyResultsSchema() {
         type: 'boolean',
         description: "Indicator if sample doesn't show COVID-19",
       },
-      IgG: {
+      igg: {
         title: 'IgG',
         type: 'boolean',
         description: 'Indicator if sample shows IgG positive',
       },
-      IgM: {
+      igm: {
         title: 'IgM',
         type: 'boolean',
         description: 'Indicator if sample shows IgM positive',
