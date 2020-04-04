@@ -82,11 +82,7 @@ export default () => {
   return route.middleware();
 };
 
-export function mapTestToApiTest(test: Test | null) {
-  if (!test) {
-    return null;
-  }
-
+export function mapTestToApiTest(test: Test) {
   return {
     id: test.id.value,
     userId: test.userId.value,

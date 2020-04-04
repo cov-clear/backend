@@ -24,6 +24,14 @@ export class OutputPattern {
     return variables;
   }
 
+  toSchema() {
+    return {
+      namePattern: this.namePattern,
+      theme: this.theme,
+      propertyVariables: this.propertyVariables,
+    };
+  }
+
   static from(outputSchema: any) {
     return new OutputPattern(outputSchema.namePattern, outputSchema.theme, outputSchema.propertyVariables);
   }

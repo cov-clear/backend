@@ -2,6 +2,7 @@ import knex from 'knex';
 import { TestTypeNameAlreadyExists, TestTypeRepository } from '../../domain/model/testType/TestTypeRepository';
 import { TestType } from '../../domain/model/testType/TestType';
 import { TestTypeId } from '../../domain/model/testType/TestTypeId';
+import { InterpretationRules } from '../../domain/model/test/interpretation/InterpretationRules';
 
 const TEST_TYPE_TABLE_NAME = 'test_type';
 const TEST_TYPE_COLUMNS = [
@@ -9,6 +10,7 @@ const TEST_TYPE_COLUMNS = [
   'name',
   'results_schema as resultsSchema',
   'needed_permission_to_add_results as neededPermissionToAddResults',
+  'results_interpretation_rules as resultsInterpretationRules',
 ];
 
 export class PsqlTestTypeRepository implements TestTypeRepository {
@@ -19,8 +21,10 @@ export class PsqlTestTypeRepository implements TestTypeRepository {
       return await this.db
         .raw(
           `
-        insert into "${TEST_TYPE_TABLE_NAME}" (id, name, results_schema, needed_permission_to_add_results)
-        values (:id, :name, :results_schema, :needed_permission_to_add_results)
+        insert into "${TEST_TYPE_TABLE_NAME}" 
+            (id, name, results_schema, needed_permission_to_add_results, results_interpretation_rules)
+        values
+            (:id, :name, :results_schema, :needed_permission_to_add_results, :results_interpretation_rules)
         on conflict (id) do nothing
       `,
           {
@@ -28,6 +32,7 @@ export class PsqlTestTypeRepository implements TestTypeRepository {
             name: testType.name,
             results_schema: JSON.stringify(testType.resultsSchema),
             needed_permission_to_add_results: testType.neededPermissionToAddResults,
+            results_interpretation_rules: JSON.stringify(testType.interpretationRules.toSchema()),
           }
         )
         .then(() => testType);
@@ -52,26 +57,27 @@ export class PsqlTestTypeRepository implements TestTypeRepository {
   }
 
   async findById(testTypeId: TestTypeId) {
-    const linkRow: any = await this.db(TEST_TYPE_TABLE_NAME)
+    const testTypeRow: any = await this.db(TEST_TYPE_TABLE_NAME)
       .where('id', '=', testTypeId.value)
       .select(TEST_TYPE_COLUMNS)
       .first();
 
-    if (!linkRow) {
+    if (!testTypeRow) {
       return null;
     }
 
-    return new TestType(
-      new TestTypeId(linkRow.id),
-      linkRow.name,
-      linkRow.resultsSchema,
-      linkRow.neededPermissionToAddResults
-    );
+    return mapTestTypeRowToTestType(testTypeRow);
   }
 }
 
 function mapTestTypeRowToTestType(row: TestTypeRow): TestType {
-  return new TestType(new TestTypeId(row.id), row.name, row.resultsSchema, row.neededPermissionToAddResults);
+  return new TestType(
+    new TestTypeId(row.id),
+    row.name,
+    row.resultsSchema,
+    row.neededPermissionToAddResults,
+    InterpretationRules.fromSchema(row.resultsInterpretationRules)
+  );
 }
 
 interface TestTypeRow {
@@ -79,4 +85,5 @@ interface TestTypeRow {
   name: string;
   resultsSchema: object;
   neededPermissionToAddResults: string;
+  resultsInterpretationRules: object[];
 }

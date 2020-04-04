@@ -15,6 +15,8 @@ import { Test } from '../domain/model/test/Test';
 import { TestId } from '../domain/model/test/TestId';
 import { Results } from '../domain/model/test/Results';
 import { ConfidenceLevel } from '../domain/model/test/ConfidenceLevel';
+import { InterpretationRules } from '../domain/model/test/interpretation/InterpretationRules';
+import { InterpretationTheme } from '../domain/model/test/interpretation/Interpretation';
 
 export function aNewUser() {
   return new User(new UserId(), anEmail());
@@ -84,4 +86,51 @@ export function aTest(
 
 export function aResult(userId = new UserId(), details = { c: true, igg: true, igm: true }, notes = 'results notes') {
   return new Results(userId, details, ConfidenceLevel.LOW, notes);
+}
+
+export function antibodyTestTypeInterpretationRules() {
+  return InterpretationRules.fromSchema([
+    {
+      output: {
+        namePattern: 'IgG antibodies found',
+        theme: InterpretationTheme.POSITIVE,
+        variables: {},
+      },
+      condition: {
+        type: 'object',
+        properties: {
+          c: { type: 'boolean', const: true },
+          igg: { type: 'boolean', const: true },
+        },
+        required: ['c', 'igg'],
+      },
+    },
+    {
+      output: {
+        namePattern: 'IgM antibodies not found',
+        theme: InterpretationTheme.NEUTRAL,
+      },
+      condition: {
+        type: 'object',
+        properties: {
+          c: { type: 'boolean', const: true },
+          igm: { type: 'boolean', const: true },
+        },
+        required: ['c', 'igm'],
+      },
+    },
+    {
+      output: {
+        namePattern: 'Test Invalid',
+        theme: InterpretationTheme.MUTED,
+      },
+      condition: {
+        type: 'object',
+        properties: {
+          c: { type: 'boolean', const: false },
+        },
+        required: ['c'],
+      },
+    },
+  ]);
 }
