@@ -20,9 +20,11 @@ describe('InterpretationRules', () => {
           },
         },
         condition: {
-          property: 'c',
-          comparator: '>',
-          value: 2,
+          type: 'object',
+          properties: {
+            c: { type: 'number', not: { maximum: 2 } },
+          },
+          required: ['c'],
         },
       },
     ]);
@@ -46,9 +48,11 @@ describe('InterpretationRules', () => {
           },
         },
         condition: {
-          property: 'c',
-          comparator: '>',
-          value: 2,
+          type: 'object',
+          properties: {
+            c: { type: 'number', not: { maximum: 2 } },
+          },
+          required: ['c'],
         },
       },
     ]);
@@ -79,9 +83,11 @@ describe('InterpretationRules', () => {
           },
         },
         condition: {
-          property: 'c',
-          comparator: '>',
-          value: 2,
+          type: 'object',
+          properties: {
+            c: { type: 'number', not: { maximum: 2 } },
+          },
+          required: ['c'],
         },
       },
       {
@@ -93,9 +99,11 @@ describe('InterpretationRules', () => {
           },
         },
         condition: {
-          property: 'c',
-          comparator: '>',
-          value: 1,
+          type: 'object',
+          properties: {
+            c: { type: 'number', not: { maximum: 1 } },
+          },
+          required: ['c'],
         },
       },
     ]);

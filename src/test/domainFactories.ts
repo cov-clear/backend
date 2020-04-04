@@ -97,18 +97,12 @@ export function antibodyTestTypeInterpretationRules() {
         variables: {},
       },
       condition: {
-        and: [
-          {
-            property: 'c',
-            comparator: '==',
-            value: true,
-          },
-          {
-            property: 'igg',
-            comparator: '==',
-            value: true,
-          },
-        ],
+        type: 'object',
+        properties: {
+          c: { type: 'boolean', const: true },
+          igg: { type: 'boolean', const: true },
+        },
+        required: ['c', 'igg'],
       },
     },
     {
@@ -117,18 +111,12 @@ export function antibodyTestTypeInterpretationRules() {
         theme: InterpretationTheme.NEUTRAL,
       },
       condition: {
-        and: [
-          {
-            property: 'c',
-            comparator: '==',
-            value: true,
-          },
-          {
-            property: 'igm',
-            comparator: '==',
-            value: true,
-          },
-        ],
+        type: 'object',
+        properties: {
+          c: { type: 'boolean', const: true },
+          igm: { type: 'boolean', const: true },
+        },
+        required: ['c', 'igm'],
       },
     },
     {
@@ -137,9 +125,11 @@ export function antibodyTestTypeInterpretationRules() {
         theme: InterpretationTheme.MUTED,
       },
       condition: {
-        property: 'c',
-        comparator: '==',
-        value: false,
+        type: 'object',
+        properties: {
+          c: { type: 'boolean', const: false },
+        },
+        required: ['c'],
       },
     },
   ]);

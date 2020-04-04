@@ -2,18 +2,21 @@ import { Condition } from './Condition';
 
 describe('Condition', () => {
   describe('SimpleCondition', () => {
-    it('does not accept an invalid condition', () => {
-      expect(() => Condition.fromSchema({})).toThrow();
-      expect(() => Condition.fromSchema({ property: null, value: 3, comparator: '==' })).toThrow();
-      expect(() => Condition.fromSchema({ property: 'a', value: null, comparator: '' })).toThrow();
-      expect(() => Condition.fromSchema({ property: 'a', value: 3, comparator: '' })).toThrow();
+    it('does not accept an invalid schema', () => {
+      expect(() =>
+        Condition.fromSchema({
+          type: 'WRONG_TYPE',
+        })
+      ).toThrow();
     });
 
     it('correctly evaluates ">="', () => {
       const condition = Condition.fromSchema({
-        property: 'c',
-        comparator: '>=',
-        value: 30,
+        type: 'object',
+        properties: {
+          c: { type: 'number', minimum: 30 },
+        },
+        required: ['c'],
       });
 
       expect(condition.evaluate({ c: 30 })).toBe(true);
@@ -23,9 +26,11 @@ describe('Condition', () => {
 
     it('correctly evaluates ">"', () => {
       const condition = Condition.fromSchema({
-        property: 'c',
-        comparator: '>',
-        value: 30,
+        type: 'object',
+        properties: {
+          c: { type: 'number', not: { maximum: 30 } },
+        },
+        required: ['c'],
       });
 
       expect(condition.evaluate({ c: 29 })).toBe(false);
@@ -35,9 +40,11 @@ describe('Condition', () => {
 
     it('correctly evaluates "<="', () => {
       const condition = Condition.fromSchema({
-        property: 'c',
-        comparator: '<=',
-        value: 30,
+        type: 'object',
+        properties: {
+          c: { type: 'number', maximum: 30 },
+        },
+        required: ['c'],
       });
 
       expect(condition.evaluate({ c: 29 })).toBe(true);
@@ -47,9 +54,11 @@ describe('Condition', () => {
 
     it('correctly evaluates "<"', () => {
       const condition = Condition.fromSchema({
-        property: 'c',
-        comparator: '<',
-        value: 30,
+        type: 'object',
+        properties: {
+          c: { type: 'number', not: { minimum: 30 } },
+        },
+        required: ['c'],
       });
 
       expect(condition.evaluate({ c: 29 })).toBe(true);
@@ -59,9 +68,11 @@ describe('Condition', () => {
 
     it('correctly evaluates "==" for numbers', () => {
       const condition = Condition.fromSchema({
-        property: 'c',
-        comparator: '==',
-        value: 30,
+        type: 'object',
+        properties: {
+          c: { type: 'number', const: 30 },
+        },
+        required: ['c'],
       });
 
       expect(condition.evaluate({ c: 20 })).toBe(false);
@@ -70,9 +81,11 @@ describe('Condition', () => {
 
     it('correctly evaluates "==" for strings', () => {
       const condition = Condition.fromSchema({
-        property: 'c',
-        comparator: '==',
-        value: 'value',
+        type: 'object',
+        properties: {
+          c: { type: 'string', const: 'value' },
+        },
+        required: ['c'],
       });
 
       expect(condition.evaluate({ c: 'value2' })).toBe(false);
@@ -81,9 +94,11 @@ describe('Condition', () => {
 
     it('correctly evaluates "==" for booleans', () => {
       const condition = Condition.fromSchema({
-        property: 'c',
-        comparator: '==',
-        value: false,
+        type: 'object',
+        properties: {
+          c: { type: 'boolean', const: false },
+        },
+        required: ['c'],
       });
 
       expect(condition.evaluate({ c: true })).toBe(false);
@@ -92,9 +107,11 @@ describe('Condition', () => {
 
     it('correctly evaluates "!=" for numbers', () => {
       const condition = Condition.fromSchema({
-        property: 'c',
-        comparator: '!=',
-        value: 30,
+        type: 'object',
+        properties: {
+          c: { type: 'number', not: { const: 30 } },
+        },
+        required: ['c'],
       });
 
       expect(condition.evaluate({ c: 20 })).toBe(true);
@@ -103,9 +120,11 @@ describe('Condition', () => {
 
     it('correctly evaluates "!=" for strings', () => {
       const condition = Condition.fromSchema({
-        property: 'c',
-        comparator: '!=',
-        value: 'value',
+        type: 'object',
+        properties: {
+          c: { type: 'string', not: { const: 'value' } },
+        },
+        required: ['c'],
       });
 
       expect(condition.evaluate({ c: 'value2' })).toBe(true);
@@ -114,9 +133,11 @@ describe('Condition', () => {
 
     it('correctly evaluates "!=" for booleans', () => {
       const condition = Condition.fromSchema({
-        property: 'c',
-        comparator: '!=',
-        value: false,
+        type: 'object',
+        properties: {
+          c: { type: 'boolean', not: { const: false } },
+        },
+        required: ['c'],
       });
 
       expect(condition.evaluate({ c: true })).toBe(true);
@@ -125,24 +146,14 @@ describe('Condition', () => {
   });
 
   describe('AndCondition', () => {
-    it('throws an error for an invalid AND condition', () => {
-      expect(() => Condition.fromSchema({ and: {} })).toThrow();
-    });
-
     it('correctly calculates conjugation', () => {
       const condition = Condition.fromSchema({
-        and: [
-          {
-            property: 'c',
-            comparator: '>=',
-            value: 2,
-          },
-          {
-            property: 'b',
-            comparator: '==',
-            value: false,
-          },
-        ],
+        type: 'object',
+        properties: {
+          c: { type: 'number', minimum: 2 },
+          b: { type: 'boolean', const: false },
+        },
+        required: ['c', 'b'],
       });
 
       expect(condition.evaluate({ c: 3, b: false })).toBe(true);
@@ -153,22 +164,22 @@ describe('Condition', () => {
   });
 
   describe('OrCondition', () => {
-    it('throws an error for an invalid OR condition', () => {
-      expect(() => Condition.fromSchema({ or: {} })).toThrow();
-    });
-
     it('correctly calculates disjunction', () => {
       const condition = Condition.fromSchema({
-        or: [
+        anyOf: [
           {
-            property: 'c',
-            comparator: '>=',
-            value: 2,
+            type: 'object',
+            properties: {
+              c: { type: 'number', minimum: 2 },
+            },
+            required: ['c'],
           },
           {
-            property: 'b',
-            comparator: '==',
-            value: false,
+            type: 'object',
+            properties: {
+              b: { type: 'boolean', const: false },
+            },
+            required: ['c'],
           },
         ],
       });
@@ -183,25 +194,21 @@ describe('Condition', () => {
   describe('Nested Conditions', () => {
     it('correctly calculates complex nested expressions', () => {
       const condition = Condition.fromSchema({
-        or: [
+        anyOf: [
           {
-            property: 'c',
-            comparator: '>=',
-            value: 2,
+            type: 'object',
+            properties: {
+              c: { type: 'number', minimum: 2 },
+            },
+            required: ['c'],
           },
           {
-            and: [
-              {
-                property: 'c',
-                comparator: '<',
-                value: 2,
-              },
-              {
-                property: 'b',
-                comparator: '!=',
-                value: true,
-              },
-            ],
+            type: 'object',
+            properties: {
+              c: { type: 'number', not: { minimum: 2 } },
+              b: { type: 'boolean', not: { const: true } },
+            },
+            required: ['b', 'c'],
           },
         ],
       });
