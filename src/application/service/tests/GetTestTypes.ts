@@ -1,6 +1,6 @@
-import { TestType } from '../../../domain/model/testType/TestType';
-import { TestTypeId } from '../../../domain/model/testType/TestTypeId';
-import { TestTypeRepository } from '../../../domain/model/testType/TestTypeRepository';
+import { TestType } from '../../../domain/model/test/testType/TestType';
+import { TestTypeId } from '../../../domain/model/test/testType/TestTypeId';
+import { TestTypeRepository } from '../../../domain/model/test/testType/TestTypeRepository';
 
 export class GetTestTypes {
   constructor(private testTypeRepository: TestTypeRepository) {}

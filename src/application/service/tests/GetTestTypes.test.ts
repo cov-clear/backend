@@ -1,8 +1,8 @@
 import database from '../../../database';
 import { testTypeRepository } from '../../../infrastructure/persistence';
 import { GetTestTypes } from './GetTestTypes';
-import { TestType } from '../../../domain/model/testType/TestType';
-import { TestTypeId } from '../../../domain/model/testType/TestTypeId';
+import { TestType } from '../../../domain/model/test/testType/TestType';
+import { TestTypeId } from '../../../domain/model/test/testType/TestTypeId';
 import { cleanupDatabase } from '../../../test/cleanupDatabase';
 
 describe('GetTestTypes', () => {

@@ -1,6 +1,6 @@
 import { TestTypeId } from './TestTypeId';
-import { Validators } from '../../Validators';
-import { InterpretationRules } from '../test/interpretation/InterpretationRules';
+import { Validators } from '../../../Validators';
+import { InterpretationRules } from '../interpretation/InterpretationRules';
 
 export class TestType {
   constructor(

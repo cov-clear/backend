@@ -2,14 +2,14 @@ import { testRepository, testTypeRepository } from '../../../infrastructure/pers
 import { aTest, aTestType } from '../../../test/domainFactories';
 import { persistedUserWithRoleAndPermissions } from '../../../test/persistedEntities';
 import { ADD_RESULTS_WITH_HIGH_CONFIDENCE } from '../../../domain/model/authentication/Permissions';
-import { aCreateTestCommand, aTestResultsCommand } from '../../../test/apiFactories';
+import { aTestResultsCommand } from '../../../test/apiFactories';
 import { ConfidenceLevel } from '../../../domain/model/test/ConfidenceLevel';
 import database from '../../../database';
 import { cleanupDatabase } from '../../../test/cleanupDatabase';
 import { AddResultsToTest } from './AddResultsToTest';
 
 describe('AddResultsToTests', () => {
-  const addResultsToTest = new AddResultsToTest(testRepository, testTypeRepository);
+  const addResultsToTest = new AddResultsToTest(testRepository);
 
   beforeEach(async () => {
     await cleanupDatabase();
@@ -19,7 +19,7 @@ describe('AddResultsToTests', () => {
     const testType = await testTypeRepository.save(aTestType());
     const actor = await persistedUserWithRoleAndPermissions('TESTER', [testType.neededPermissionToAddResults]);
     const testedSubject = await persistedUserWithRoleAndPermissions('USER', []);
-    const test = await testRepository.save(aTest(testedSubject.id, testType.id));
+    const test = await testRepository.save(aTest(testedSubject.id, testType));
 
     const results = await addResultsToTest.execute(actor, test.id.value, aTestResultsCommand());
 
@@ -33,7 +33,7 @@ describe('AddResultsToTests', () => {
       testType.neededPermissionToAddResults,
     ]);
     const testedSubject = await persistedUserWithRoleAndPermissions('USER', []);
-    const test = await testRepository.save(aTest(testedSubject.id, testType.id));
+    const test = await testRepository.save(aTest(testedSubject.id, testType));
 
     const results = await addResultsToTest.execute(actor, test.id.value, aTestResultsCommand());
 

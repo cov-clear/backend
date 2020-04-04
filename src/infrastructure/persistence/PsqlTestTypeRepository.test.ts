@@ -1,12 +1,10 @@
 import database from '../../database';
 import { PsqlTestTypeRepository } from './PsqlTestTypeRepository';
-import { TestTypeId } from '../../domain/model/testType/TestTypeId';
-import { TestType } from '../../domain/model/testType/TestType';
+import { TestTypeId } from '../../domain/model/test/testType/TestTypeId';
+import { TestType } from '../../domain/model/test/testType/TestType';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import { antibodyTestTypeInterpretationRules, aTestType } from '../../test/domainFactories';
-import { TestTypeNameAlreadyExists } from '../../domain/model/testType/TestTypeRepository';
-import { InterpretationRules } from '../../domain/model/test/interpretation/InterpretationRules';
-import { InterpretationTheme } from '../../domain/model/test/interpretation/Interpretation';
+import { TestTypeNameAlreadyExists } from '../../domain/model/test/testType/TestTypeRepository';
 
 describe('PsqlTestTypeRepository', () => {
   const psqlTestTypeRepository = new PsqlTestTypeRepository(database);

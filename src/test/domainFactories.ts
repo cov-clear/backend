@@ -9,8 +9,8 @@ import { DateOfBirth } from '../domain/model/user/DateOfBirth';
 import { Role } from '../domain/model/authentication/Role';
 import { Permission } from '../domain/model/authentication/Permission';
 import { v4 } from 'uuid';
-import { TestType } from '../domain/model/testType/TestType';
-import { TestTypeId } from '../domain/model/testType/TestTypeId';
+import { TestType } from '../domain/model/test/testType/TestType';
+import { TestTypeId } from '../domain/model/test/testType/TestTypeId';
 import { Test } from '../domain/model/test/Test';
 import { TestId } from '../domain/model/test/TestId';
 import { Results } from '../domain/model/test/Results';
@@ -73,14 +73,13 @@ export function aTestType(
 
 export function aTest(
   userId = new UserId(),
-  testTypeId = new TestTypeId(),
+  testType = aTestType(),
   results = aResult(userId),
   testId = new TestId(),
   creationTime = new Date()
 ) {
-  const testType = aTestType('PCR', 'PCR_PERMISSION', testTypeId);
-  const test = new Test(testId, userId, testTypeId, ConfidenceLevel.HIGH, creationTime);
-  test.setResults(results, testType);
+  const test = new Test(testId, userId, testType, ConfidenceLevel.HIGH, creationTime);
+  test.setResults(results);
   return test;
 }
 

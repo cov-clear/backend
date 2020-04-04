@@ -5,7 +5,7 @@ import {
   TestCommand,
   TestResultsCommand,
 } from '../api/interface';
-import { TestTypeId } from '../domain/model/testType/TestTypeId';
+import { TestTypeId } from '../domain/model/test/testType/TestTypeId';
 import { aResult } from './domainFactories';
 
 export function anApiAddress(): ApiAddress {

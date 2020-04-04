@@ -7,9 +7,10 @@ import { aCreateTestCommand } from '../../../test/apiFactories';
 import { ConfidenceLevel } from '../../../domain/model/test/ConfidenceLevel';
 import database from '../../../database';
 import { cleanupDatabase } from '../../../test/cleanupDatabase';
+import { addResultsToTest } from '../';
 
 describe('CreateTest', () => {
-  const createTest = new CreateTest(testRepository, testTypeRepository);
+  const createTest = new CreateTest(testRepository, testTypeRepository, addResultsToTest);
 
   beforeEach(async () => {
     await cleanupDatabase();

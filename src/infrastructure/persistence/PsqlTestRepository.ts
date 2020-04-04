@@ -1,11 +1,13 @@
 import knex from 'knex';
-import { TestRepository } from '../../domain/model/test/TestRepository';
+import { TestRepository, TestTypeMissingForTestError } from '../../domain/model/test/TestRepository';
 import { Test } from '../../domain/model/test/Test';
 import { TestId } from '../../domain/model/test/TestId';
-import { TestTypeId } from '../../domain/model/testType/TestTypeId';
+import { TestTypeId } from '../../domain/model/test/testType/TestTypeId';
 import { UserId } from '../../domain/model/user/UserId';
 import { Results } from '../../domain/model/test/Results';
 import { ConfidenceLevel } from '../../domain/model/test/ConfidenceLevel';
+import { TestType } from '../../domain/model/test/testType/TestType';
+import { TestTypeNameAlreadyExists, TestTypeRepository } from '../../domain/model/test/testType/TestTypeRepository';
 
 const TEST_TABLE_NAME = 'test';
 const TEST_RESULTS_TABLE_NAME = 'test_results';
@@ -24,7 +26,7 @@ const TEST_TABLE_COLUMNS = [
 ];
 
 export class PsqlTestRepository implements TestRepository {
-  constructor(private db: knex) {}
+  constructor(private db: knex, private testTypeRepository: TestTypeRepository) {}
 
   async save(test: Test) {
     const transaction = await this.db.transaction();
@@ -40,15 +42,20 @@ export class PsqlTestRepository implements TestRepository {
 
   async findById(testId: TestId) {
     const testRow: any = await this.getAllTestsQueryBuilder().where(`${TEST_TABLE_NAME}.id`, '=', testId.value).first();
-
     if (!testRow) {
       return null;
     }
 
-    return createTestFromRow(testRow);
+    const testType = await this.testTypeRepository.findById(new TestTypeId(testRow.testTypeId));
+    if (!testType) {
+      throw new TestTypeMissingForTestError(testId.value, testRow.testTypeId);
+    }
+
+    return createTestFromRow(testRow, testType);
   }
 
   async findByUserId(userId: UserId) {
+    const testTypesById = await this.getTestTypesMapById();
     let testRows: Array<any>;
 
     testRows = await this.getAllTestsQueryBuilder()
@@ -59,7 +66,7 @@ export class PsqlTestRepository implements TestRepository {
       return [];
     }
 
-    return testRows.map(createTestFromRow);
+    return testRows.map((testRow) => createTestFromRow(testRow, testTypesById.get(testRow.testTypeId)));
   }
 
   private async saveTest(test: Test) {
@@ -85,7 +92,7 @@ export class PsqlTestRepository implements TestRepository {
         {
           id: test.id.value,
           user_id: test.userId.value,
-          test_type_id: test.testTypeId.value,
+          test_type_id: test.testType.id.value,
           administration_confidence: test.administrationConfidence,
           creation_time: test.creationTime,
         }
@@ -142,13 +149,21 @@ export class PsqlTestRepository implements TestRepository {
       .select(TEST_TABLE_COLUMNS)
       .leftJoin(TEST_RESULTS_TABLE_NAME, `${TEST_TABLE_NAME}.id`, `${TEST_RESULTS_TABLE_NAME}.test_id`);
   }
+
+  private async getTestTypesMapById() {
+    const testTypes = await this.testTypeRepository.findAll();
+    return testTypes.reduce((map, testType) => map.set(testType.id.value, testType), new Map<string, TestType>());
+  }
 }
 
-function createTestFromRow(testRow: any): Test {
+function createTestFromRow(testRow: any, testType?: TestType): Test {
+  if (!testType) {
+    throw new TestTypeMissingForTestError(testRow.id, testRow.testTypeId);
+  }
   const test = new Test(
     new TestId(testRow.id),
     new UserId(testRow.userId),
-    new TestTypeId(testRow.testTypeId),
+    testType,
     ConfidenceLevel.fromString(testRow.administrationConfidence),
     testRow.creationTime
   );

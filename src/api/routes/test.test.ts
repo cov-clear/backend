@@ -5,7 +5,7 @@ import { cleanupDatabase } from '../../test/cleanupDatabase';
 import { getTokenForUser } from '../../test/authentication';
 
 import { v4 as uuidv4 } from 'uuid';
-import { TestTypeId } from '../../domain/model/testType/TestTypeId';
+import { TestTypeId } from '../../domain/model/test/testType/TestTypeId';
 import { UserId } from '../../domain/model/user/UserId';
 import { AccessPass } from '../../domain/model/accessPass/AccessPass';
 
@@ -46,7 +46,8 @@ describe('test endpoints', () => {
 
     it('returns 200 with the existing test if user is found', async () => {
       const user = await userRepository.save(aNewUser());
-      const test = await testRepository.save(aTest(user.id));
+      const testType = await testTypeRepository.save(aTestType());
+      const test = await testRepository.save(aTest(user.id, testType));
 
       await request(app)
         .get(`/api/v1/users/${user.id.value}/tests`)
@@ -60,7 +61,8 @@ describe('test endpoints', () => {
     it('returns 200 if a user with an access pass requests another users tests', async () => {
       const actorUser = await userRepository.save(aNewUser());
       const subjectUser = await userRepository.save(aNewUser());
-      const test = await testRepository.save(aTest(subjectUser.id));
+      const testType = await testTypeRepository.save(aTestType());
+      const test = await testRepository.save(aTest(subjectUser.id, testType));
 
       const accessPass = new AccessPass(actorUser.id, subjectUser.id);
       await accessPassRepository.save(accessPass);
@@ -77,7 +79,7 @@ describe('test endpoints', () => {
     it('returns 404 if a user with an expired access pass requests another users tests', async () => {
       const actorUser = await userRepository.save(aNewUser());
       const subjectUser = await userRepository.save(aNewUser());
-      const test = await testRepository.save(aTest(subjectUser.id));
+      await testRepository.save(aTest(subjectUser.id));
 
       const accessPass = new AccessPass(actorUser.id, subjectUser.id, uuidv4(), new Date('1970-01-01'));
 
@@ -111,7 +113,7 @@ describe('test endpoints', () => {
       const subjectUser = await userRepository.save(aNewUser());
 
       const testType = await testTypeRepository.save(aTestType());
-      const test = await testRepository.save(aTest(subjectUser.id));
+      await testRepository.save(aTest(subjectUser.id));
 
       const accessPass = new AccessPass(actorUser.id, subjectUser.id);
       await accessPassRepository.save(accessPass);
@@ -139,8 +141,8 @@ describe('test endpoints', () => {
     });
 
     it('returns 422 if there are malformed results', async () => {
-      const user = await userRepository.save(aNewUser());
       const testType = await testTypeRepository.save(aTestType());
+      const user = await persistedUserWithRoleAndPermissions('USER', [testType.neededPermissionToAddResults]);
 
       await request(app)
         .post(`/api/v1/users/${user.id.value}/tests`)
@@ -218,7 +220,7 @@ describe('test endpoints', () => {
       const testType = await testTypeRepository.save(aTestType());
       const tester = await persistedUserWithRoleAndPermissions('TESTER', []);
       const testedUser = await persistedUserWithRoleAndPermissions('USER', []);
-      const test = await testRepository.save(aTest(testedUser.id, testType.id));
+      const test = await testRepository.save(aTest(testedUser.id, testType));
 
       await request(app)
         .patch(`/api/v1/tests/${test.id.value}`)
@@ -233,7 +235,7 @@ describe('test endpoints', () => {
       const testType = await testTypeRepository.save(aTestType());
       const tester = await persistedUserWithRoleAndPermissions('TESTER', [testType.neededPermissionToAddResults]);
       const testedUser = await persistedUserWithRoleAndPermissions('USER', []);
-      const test = await testRepository.save(aTest(testedUser.id, testType.id));
+      const test = await testRepository.save(aTest(testedUser.id, testType));
 
       await request(app)
         .patch(`/api/v1/tests/${test.id.value}`)
@@ -253,7 +255,7 @@ describe('test endpoints', () => {
       const testType = await testTypeRepository.save(aTestType());
       const tester = await persistedUserWithRoleAndPermissions('TESTER', [testType.neededPermissionToAddResults]);
       const testedUser = await persistedUserWithRoleAndPermissions('USER', []);
-      const test = await testRepository.save(aTest(testedUser.id, testType.id));
+      const test = await testRepository.save(aTest(testedUser.id, testType));
       const notes =
         'The patient shows IgG levels indicating immunity to COVID-19. ' +
         'This along with regular symptom reporting the patient has done makes the patient less likely to be a carrier.';

@@ -22,8 +22,8 @@ import { Profile } from '../domain/model/user/Profile';
 import { Sex } from '../domain/model/user/Sex';
 import { DateOfBirth } from '../domain/model/user/DateOfBirth';
 import { anAddress } from '../test/domainFactories';
-import { TestType } from '../domain/model/testType/TestType';
-import { TestTypeId } from '../domain/model/testType/TestTypeId';
+import { TestType } from '../domain/model/test/testType/TestType';
+import { TestTypeId } from '../domain/model/test/testType/TestTypeId';
 
 export async function createSeedDataForTestingPeriod() {
   const admin = await createAdminAccount();

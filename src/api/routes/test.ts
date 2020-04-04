@@ -86,7 +86,7 @@ export function mapTestToApiTest(test: Test) {
   return {
     id: test.id.value,
     userId: test.userId.value,
-    testTypeId: test.testTypeId.value,
+    testTypeId: test.testType.id.value,
     creationTime: test.creationTime,
     administrationConfidence: test.administrationConfidence,
     results: mapResultsToApiResults(test.results),

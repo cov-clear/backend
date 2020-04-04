@@ -6,6 +6,7 @@ export interface TestTypeRepository {
 
   findByPermissions(permissions: string[]): Promise<Array<TestType>>;
   findById(testTypeId: TestTypeId): Promise<TestType | null>;
+  findAll(): Promise<Array<TestType>>;
 }
 
 export class TestTypeNameAlreadyExists extends Error {
