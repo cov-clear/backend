@@ -1,6 +1,4 @@
 import { UserId } from '../user/UserId';
-import { TestType } from './testType/TestType';
-import { Validators } from '../../Validators';
 import { ConfidenceLevel } from './ConfidenceLevel';
 
 export class Results {

@@ -17,6 +17,7 @@ import { Results } from '../domain/model/test/Results';
 import { ConfidenceLevel } from '../domain/model/test/ConfidenceLevel';
 import { InterpretationRules } from '../domain/model/test/interpretation/InterpretationRules';
 import { InterpretationTheme } from '../domain/model/test/interpretation/Interpretation';
+import { ADD_TAKE_HOME_TEST_RESULT } from '../domain/model/authentication/Permissions';
 
 export function aNewUser() {
   return new User(new UserId(), anEmail());
@@ -85,6 +86,42 @@ export function aTest(
 
 export function aResult(userId = new UserId(), details = { c: true, igg: true, igm: true }, notes = 'results notes') {
   return new Results(userId, details, ConfidenceLevel.LOW, notes);
+}
+
+export function antibodyTestType() {
+  return new TestType(
+    new TestTypeId(),
+    'COVID19 Take Home Antibody Test',
+    antibodyResultsSchema(),
+    ADD_TAKE_HOME_TEST_RESULT,
+    antibodyTestTypeInterpretationRules()
+  );
+}
+
+export function antibodyResultsSchema() {
+  return {
+    $id: 'https://example.com/test.schema.json',
+    $schema: 'http://json-schema.org/draft-07/schema#',
+    title: 'COVID-19 Take Home Test',
+    type: 'object',
+    properties: {
+      c: {
+        title: 'Control',
+        type: 'boolean',
+        description: "Indicator if sample doesn't show COVID-19",
+      },
+      IgG: {
+        title: 'IgG',
+        type: 'boolean',
+        description: 'Indicator if sample shows IgG positive',
+      },
+      IgM: {
+        title: 'IgM',
+        type: 'boolean',
+        description: 'Indicator if sample shows IgM positive',
+      },
+    },
+  };
 }
 
 export function antibodyTestTypeInterpretationRules() {
