@@ -94,7 +94,7 @@ describe('test endpoints', () => {
     it('returns interpretations correctly for tests that have them', async () => {
       const actor = await persistedUserWithRoleAndPermissions('USER', []);
       const testType = await testTypeRepository.save(antibodyTestType());
-      const test = await testRepository.save(
+      await testRepository.save(
         aTest(
           actor.id,
           testType,
@@ -114,9 +114,8 @@ describe('test endpoints', () => {
           const [test]: [TestDTO] = res.body;
           const [interpretation] = test.resultsInterpretations;
 
-          expect(interpretation.namePattern).toBeDefined();
+          expect(interpretation.name).toBeDefined();
           expect(interpretation.theme).toBeDefined();
-          expect(interpretation.variables).toBeDefined();
         });
     });
   });
@@ -274,7 +273,7 @@ describe('test endpoints', () => {
         .send({ results: getValidTestResultsCommand() })
         .expect(200)
         .expect((res) => {
-          expect(res.body.testerUserId).toEqual(tester.id.value);
+          expect(res.body.createdBy.userId).toEqual(tester.id.value);
           expect(res.body.details).toEqual(getValidTestResultsCommand().details);
           expect(res.body.creationTime).toBeDefined();
         });
@@ -297,7 +296,7 @@ describe('test endpoints', () => {
         .send({ results: getValidTestResultsCommand(notes) })
         .expect(200)
         .expect((res) => {
-          expect(res.body.testerUserId).toEqual(tester.id.value);
+          expect(res.body.createdBy.userId).toEqual(tester.id.value);
           expect(res.body.details).toEqual(getValidTestResultsCommand(notes).details);
           expect(res.body.creationTime).toBeDefined();
           expect(res.body.notes).toEqual(getValidTestResultsCommand(notes).notes);

@@ -43,9 +43,8 @@ export interface Permission {
 }
 
 export interface TestInterpretationDTO {
-  namePattern: string;
-  theme: string;
-  variables: object;
+  name: string;
+  theme: 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL' | 'MUTED';
 }
 
 export interface TestTypeDTO {
@@ -67,7 +66,7 @@ export interface TestDTO {
 
 export interface TestResultsDTO {
   details: object;
-  testerUserId: string;
+  createdBy: { userId: string };
   creationTime: Date;
   notes: string;
   entryConfidence: string;
