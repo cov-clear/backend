@@ -1,4 +1,4 @@
-import logger from '../../../logger';
+import logger from '../../../infrastructure/logging/logger';
 import { Email } from '../../../domain/model/user/Email';
 import { EmailNotifier } from '../../../domain/model/notifications/EmailNotifier';
 import { MagicLink, MagicLinkCode } from '../../../domain/model/magiclink/MagicLink';

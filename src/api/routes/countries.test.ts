@@ -1,13 +1,13 @@
 import request from 'supertest';
-import expressApp from '../../loaders/express';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import database from '../../database';
 import { getTokenForUser } from '../../test/authentication';
 import { userRepository } from '../../infrastructure/persistence';
 import { aNewUser } from '../../test/domainFactories';
+import { Application } from '../../presentation/Application';
 
 describe('GET /countries', () => {
-  const app = expressApp();
+  const app = new Application().getExpressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();

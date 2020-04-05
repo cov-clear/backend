@@ -1,7 +1,7 @@
 import { default as pino } from 'pino';
 import { default as expressPinoLogger } from 'express-pino-logger';
-import * as config from './config';
-import { rollbar } from './loaders/rollbar';
+import * as config from '../../config';
+import { rollbarClient } from './Rollbar';
 
 const logger = pino(pinoConfig(config));
 
@@ -24,6 +24,20 @@ function pinoConfig(config: any): pino.LoggerOptions {
   return cfg;
 }
 
+function info(message: string): void {
+  logger.info(message);
+}
+
+function error(message: string, err?: Error): void {
+  sendErrorToRollbar(message, err);
+
+  logger.error({ err }, message);
+}
+
+function warn(message: string): void {
+  logger.warn(message);
+}
+
 function expressPlugin(): expressPinoLogger.HttpLogger {
   return expressPinoLogger({
     level: config.get('logLevels.requests'),
@@ -31,25 +45,11 @@ function expressPlugin(): expressPinoLogger.HttpLogger {
   });
 }
 
-function info(message: string): void {
-  logger.info(message);
-}
-
-function error(message: string, err?: Error): void {
-  sendErrorToRollbar(message, err);
-  logger.error({ err }, message);
-}
-
-function warn(message: string): void {
-  rollbar.warning(message);
-  logger.warn(message);
-}
-
 function sendErrorToRollbar(message: string, err?: Error) {
   if (err) {
-    rollbar.error(message, err);
+    rollbarClient.error(message, err);
   } else {
-    rollbar.error(message);
+    rollbarClient.error(message);
   }
 }
 

@@ -1,9 +1,9 @@
 import * as config from './config';
-import appLoader from './loaders';
-import logger from './logger';
+import logger from './infrastructure/logging/logger';
+import { Application } from './presentation/Application';
 
 async function main() {
-  const app = await appLoader();
+  const app = await new Application().createAndRun();
 
   app.listen(config.get('port'), (err: any) => {
     if (err) {

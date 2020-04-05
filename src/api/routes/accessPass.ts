@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { AuthenticatedRequest, getAuthenticationOrFail } from '../AuthenticatedRequest';
 import AsyncRouter from '../AsyncRouter';
-import { createAccessPass, getUser, accessManagerFactory } from '../../application/service';
+import { accessManagerFactory, createAccessPass } from '../../application/service';
 import { ApiError } from '../ApiError';
 import { UserId } from '../../domain/model/user/UserId';
 import { AccessPassFailedError } from '../../application/service/access-sharing/CreateAccessPass';

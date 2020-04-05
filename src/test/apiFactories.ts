@@ -1,14 +1,10 @@
-import {
-  Address as ApiAddress,
-  CreateTestTypeCommand,
-  Profile as ApiProfile,
-  TestCommand,
-  TestResultsCommand,
-} from '../api/interface';
-import { TestTypeId } from '../domain/model/test/testType/TestTypeId';
 import { aResult } from './domainFactories';
+import { CreateTestTypeCommand, TestCommand, TestResultsCommand } from '../api/interface';
 
-export function anApiAddress(): ApiAddress {
+import { AddressDTO, ProfileDTO } from '../presentation/dtos/users';
+import { TestTypeId } from '../domain/model/test/testType/TestTypeId';
+
+export function anApiAddress(): AddressDTO {
   return {
     address1: 'Some address',
     address2: 'Some street',
@@ -19,7 +15,7 @@ export function anApiAddress(): ApiAddress {
   };
 }
 
-export function anApiProfile(): ApiProfile {
+export function anApiProfile(): ProfileDTO {
   return {
     firstName: 'John',
     lastName: 'Lennon',

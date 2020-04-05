@@ -10,16 +10,20 @@ export class GetExistingOrCreateNewUser {
 
   public async execute(email: string) {
     const existingUser = await this.userRepository.findByEmail(new Email(email));
+
     if (existingUser) {
       return existingUser;
     }
 
     const user = new User(new UserId(), new Email(email));
     const userRole = await this.roleRepository.findByName(USER);
+
     if (!userRole) {
       throw new RoleNotFoundError(USER);
     }
+
     user.assignRole(userRole, user.id);
+
     return this.userRepository.save(user);
   }
 }

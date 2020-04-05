@@ -1,5 +1,4 @@
 import request from 'supertest';
-import expressApp from '../../loaders/express';
 import database from '../../database';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import { getTokenForUser } from '../../test/authentication';
@@ -20,9 +19,10 @@ import { aNewUser, antibodyTestType, aResult, aTest, aTestType } from '../../tes
 import { persistedUserWithRoleAndPermissions } from '../../test/persistedEntities';
 import { TestId } from '../../domain/model/test/TestId';
 import { TestCommand, TestDTO, TestResultsCommand } from '../interface';
+import { Application } from '../../presentation/Application';
 
 describe('test endpoints', () => {
-  const app = expressApp();
+  const app = new Application().getExpressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();

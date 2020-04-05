@@ -1,5 +1,4 @@
 import request from 'supertest';
-import expressApp from '../../loaders/express';
 import database from '../../database';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 
@@ -12,9 +11,10 @@ import { getTokenForUser } from '../../test/authentication';
 import { CREATE_TEST_TYPE } from '../../domain/model/authentication/Permissions';
 import { apiErrorCodes } from '../ApiError';
 import { aCreateTestTypeCommand } from '../../test/apiFactories';
+import { Application } from '../../presentation/Application';
 
 describe('test type endpoints', () => {
-  const app = expressApp();
+  const app = new Application().getExpressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();

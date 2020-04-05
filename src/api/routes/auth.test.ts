@@ -1,13 +1,13 @@
 import request from 'supertest';
-import expressApp from '../../loaders/express';
 import { v4 } from 'uuid';
 import { createMagicLink } from '../../application/service';
 import database from '../../database';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import { AuthorisationFailureReason } from '../../application/service/authentication/ExchangeAuthCode';
+import { Application } from '../../presentation/Application';
 
 describe('auth endpoints', () => {
-  const app = expressApp();
+  const app = new Application().getExpressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();

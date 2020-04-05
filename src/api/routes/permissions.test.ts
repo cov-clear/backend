@@ -1,5 +1,4 @@
 import request from 'supertest';
-import expressApp from '../../loaders/express';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import database from '../../database';
 import { getTokenForUser } from '../../test/authentication';
@@ -15,9 +14,10 @@ import { persistedUserWithRoleAndPermissions } from '../../test/persistedEntitie
 import { Role } from '../../domain/model/authentication/Role';
 import { Permission as ApiPermission } from '../interface';
 import { Permission } from '../../domain/model/authentication/Permission';
+import { Application } from '../../presentation/Application';
 
 describe('roles endpoints', () => {
-  const app = expressApp();
+  const app = new Application().getExpressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();

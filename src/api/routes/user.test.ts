@@ -1,19 +1,19 @@
 import request from 'supertest';
-import expressApp from '../../loaders/express';
 import database from '../../database';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import { UserId } from '../../domain/model/user/UserId';
 import { v4 as uuidv4 } from 'uuid';
-import { userRepository, accessPassRepository } from '../../infrastructure/persistence';
+import { accessPassRepository, userRepository } from '../../infrastructure/persistence';
 import { User } from '../../domain/model/user/User';
 import { Email } from '../../domain/model/user/Email';
 import { AccessPass } from '../../domain/model/accessPass/AccessPass';
 import { anAddress, aNewUser, aUserWithAllInformation } from '../../test/domainFactories';
 import { getTokenForUser } from '../../test/authentication';
 import { anApiAddress, anApiProfile } from '../../test/apiFactories';
+import { Application } from '../../presentation/Application';
 
 describe('user endpoints', () => {
-  const app = expressApp();
+  const app = new Application().getExpressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();
