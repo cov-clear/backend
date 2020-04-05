@@ -40,11 +40,17 @@ export interface TestTypeDTO {
   interpretationRules: InterpretationRuleDTO[];
 }
 
+export interface TestTypeSimpleDTO {
+  id: string;
+  name: string;
+  neededPermissionToAddResults: string;
+}
+
 export interface TestDTO {
   id: string;
   userId: string;
   creationTime: Date;
-  testType: TestTypeDTO;
+  testType: TestTypeSimpleDTO;
   administrationConfidence: string;
   resultsInterpretations: TestInterpretationDTO[];
   results: TestResultsDTO | null;

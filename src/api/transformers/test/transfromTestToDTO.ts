@@ -3,6 +3,7 @@ import { TestDTO } from '../../interface';
 import { transformTestTypeToDTO } from './transformTestTypeToDTO';
 import { transformTestResultsToDTO } from './transformTestResultsToDTO';
 import { transformTestInterpretationToDTO } from './transformTestInterpretationToDTO';
+import { transformTestTypeToSimpleDTO } from './transformTestTypeToSimpleDTO';
 
 export function transformTestToDTO(test: Test): TestDTO {
   return {
@@ -11,7 +12,7 @@ export function transformTestToDTO(test: Test): TestDTO {
     creationTime: test.creationTime,
     administrationConfidence: test.administrationConfidence,
     results: test.results ? transformTestResultsToDTO(test.results) : null,
-    testType: transformTestTypeToDTO(test.testType),
+    testType: transformTestTypeToSimpleDTO(test.testType),
     resultsInterpretations: test.interpretations.map(transformTestInterpretationToDTO),
   };
 }
