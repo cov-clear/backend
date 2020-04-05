@@ -143,7 +143,22 @@ export function antibodyTestTypeInterpretationRules() {
     },
     {
       output: {
-        namePattern: 'IgM antibodies not found',
+        namePattern: 'IgG antibodies not found',
+        theme: InterpretationTheme.MUTED,
+        variables: {},
+      },
+      condition: {
+        type: 'object',
+        properties: {
+          c: { type: 'boolean', const: true },
+          igg: { type: 'boolean', const: false },
+        },
+        required: ['c', 'igg'],
+      },
+    },
+    {
+      output: {
+        namePattern: 'IgM antibodies found',
         theme: InterpretationTheme.NEUTRAL,
       },
       condition: {
@@ -151,6 +166,20 @@ export function antibodyTestTypeInterpretationRules() {
         properties: {
           c: { type: 'boolean', const: true },
           igm: { type: 'boolean', const: true },
+        },
+        required: ['c', 'igm'],
+      },
+    },
+    {
+      output: {
+        namePattern: 'IgM antibodies not found',
+        theme: InterpretationTheme.MUTED,
+      },
+      condition: {
+        type: 'object',
+        properties: {
+          c: { type: 'boolean', const: true },
+          igm: { type: 'boolean', const: false },
         },
         required: ['c', 'igm'],
       },
