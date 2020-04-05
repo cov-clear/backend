@@ -7,7 +7,7 @@ import { UserId } from '../../domain/model/user/UserId';
 
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import { ConfidenceLevel } from '../../domain/model/test/ConfidenceLevel';
-import { aTestType } from '../../test/domainFactories';
+import { aTest, aTestType } from '../../test/domainFactories';
 import { testTypeRepository } from './';
 
 describe('PsqlTestRepository', () => {
@@ -75,6 +75,31 @@ describe('PsqlTestRepository', () => {
 
     expect(persistedTest?.results).toEqual(test.results);
     expect(persistedTest?.results?.notes).toEqual(notes);
+  });
+
+  it('updates a test with new results', async () => {
+    const testType = await testTypeRepository.save(aTestType());
+    const testedUserId = new UserId();
+    const test = aTest(testedUserId, testType);
+
+    test.setResults(new Results(new UserId(), { c: true, igg: true, igm: false }, ConfidenceLevel.HIGH));
+    await psqlTestRepository.save(test);
+
+    const newResults = new Results(
+      new UserId(),
+      {
+        c: false,
+        igg: false,
+        igm: false,
+      },
+      ConfidenceLevel.LOW,
+      'Some notes'
+    );
+    test.setResults(newResults);
+    await psqlTestRepository.save(test);
+
+    const persistedTest = await psqlTestRepository.findById(test.id);
+    expect(persistedTest?.results).toEqual(newResults);
   });
 });
 

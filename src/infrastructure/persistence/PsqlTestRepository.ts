@@ -127,7 +127,12 @@ export class PsqlTestRepository implements TestRepository {
         :notes,
         :creation_time
       )
-      on conflict(id) do nothing
+      on conflict(test_id) do update
+      set creator_id = excluded.creator_id,
+         entry_confidence = excluded.entry_confidence,
+         details = excluded.details,
+         notes = excluded.notes,
+         creation_time = excluded.creation_time
     `,
         {
           id: test.id.value,
