@@ -14,7 +14,12 @@ export class BulkCreateUsers {
     let users: User[] = [];
 
     for (const userCommand of createUsersCommand) {
-      const user = new User(new UserId(), new Email(userCommand.email));
+      let user = await this.userRepository.findByEmail(new Email(userCommand.email));
+
+      if (!user) {
+        user = new User(new UserId(), new Email(userCommand.email));
+      }
+
       for (const roleName of userCommand.roles) {
         const role = roles.find((r) => r.name === roleName);
 
@@ -25,9 +30,8 @@ export class BulkCreateUsers {
 
         user.assignRole(role, user.id);
       }
-      await this.userRepository.save(user);
 
-      users.push(user);
+      users.push(await this.userRepository.save(user));
     }
 
     return users;
