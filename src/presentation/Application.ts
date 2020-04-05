@@ -2,6 +2,7 @@ import bodyParser from 'body-parser';
 import express from 'express';
 import securityHeaders from 'helmet';
 
+import * as config from '../config';
 import { migrateLatest, rollbackDatabase } from '../database';
 import { createSeedDataForTestingPeriod } from '../database/testSeed';
 import { RootController } from './api/RootController';
@@ -28,12 +29,16 @@ export class Application {
   private async migrateDatabase() {
     try {
       //TODO: Remove before rolling out to production
-      await rollbackDatabase();
+      if (!config.isDevelopment) {
+        await rollbackDatabase();
+      }
 
       await migrateLatest();
 
       //TODO: Remove before rolling out to production
-      await createSeedDataForTestingPeriod();
+      if (!config.isDevelopment) {
+        await createSeedDataForTestingPeriod();
+      }
     } catch (error) {
       logger.error('Failed to apply migrations', error);
       process.exit(1);
