@@ -75,11 +75,12 @@ export function aTestType(
 export function aTest(
   userId = new UserId(),
   testType = aTestType(),
+  administeringUserId = new UserId(),
   results = aResult(userId),
   testId = new TestId(),
   creationTime = new Date()
 ) {
-  const test = new Test(testId, userId, testType, ConfidenceLevel.HIGH, creationTime);
+  const test = new Test(testId, userId, testType, administeringUserId, ConfidenceLevel.HIGH, creationTime);
   test.setResults(results);
   return test;
 }

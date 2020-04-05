@@ -98,6 +98,7 @@ describe('test endpoints', () => {
         aTest(
           actor.id,
           testType,
+          actor.id,
           aResult(actor.id, {
             c: true,
             igg: true,

@@ -7,7 +7,7 @@ import { UserId } from '../../domain/model/user/UserId';
 import { Results } from '../../domain/model/test/Results';
 import { ConfidenceLevel } from '../../domain/model/test/ConfidenceLevel';
 import { TestType } from '../../domain/model/test/testType/TestType';
-import { TestTypeNameAlreadyExists, TestTypeRepository } from '../../domain/model/test/testType/TestTypeRepository';
+import { TestTypeRepository } from '../../domain/model/test/testType/TestTypeRepository';
 
 const TEST_TABLE_NAME = 'test';
 const TEST_RESULTS_TABLE_NAME = 'test_results';
@@ -17,6 +17,7 @@ const TEST_TABLE_COLUMNS = [
   `${TEST_TABLE_NAME}.user_id as userId`,
   `${TEST_TABLE_NAME}.test_type_id as testTypeId`,
   `${TEST_TABLE_NAME}.creation_time as creationTime`,
+  `${TEST_TABLE_NAME}.administering_user_id as administeringUserId`,
   `${TEST_TABLE_NAME}.administration_confidence as administrationConfidence`,
   `${TEST_RESULTS_TABLE_NAME}.creator_id as resultsCreatorId`,
   `${TEST_RESULTS_TABLE_NAME}.details as resultsDetails`,
@@ -77,6 +78,7 @@ export class PsqlTestRepository implements TestRepository {
         id,
         user_id,
         test_type_id,
+        administering_user_id,
         administration_confidence,
         creation_time
       )
@@ -84,6 +86,7 @@ export class PsqlTestRepository implements TestRepository {
         :id,
         :user_id,
         :test_type_id,
+        :administering_user_id,
         :administration_confidence,
         :creation_time
       )
@@ -92,6 +95,7 @@ export class PsqlTestRepository implements TestRepository {
         {
           id: test.id.value,
           user_id: test.userId.value,
+          administering_user_id: test.administeredBy.value,
           test_type_id: test.testType.id.value,
           administration_confidence: test.administrationConfidence,
           creation_time: test.creationTime,
@@ -169,6 +173,7 @@ function createTestFromRow(testRow: any, testType?: TestType): Test {
     new TestId(testRow.id),
     new UserId(testRow.userId),
     testType,
+    new UserId(testRow.administeringUserId),
     ConfidenceLevel.fromString(testRow.administrationConfidence),
     testRow.creationTime
   );

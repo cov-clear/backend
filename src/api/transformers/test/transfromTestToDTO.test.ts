@@ -10,6 +10,7 @@ describe('transformTestToDTO', () => {
     expect(testDTO.id).toEqual(test.id.value);
     expect(testDTO.userId).toEqual(test.userId.value);
     expect(testDTO.creationTime).toEqual(test.creationTime);
+    expect(testDTO.administeredBy.userId).toEqual(test.administeredBy.value);
     expect(testDTO.administrationConfidence).toEqual(test.administrationConfidence);
 
     expect(testDTO.testType).toBeDefined();

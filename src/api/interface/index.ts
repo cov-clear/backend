@@ -58,6 +58,9 @@ export interface TestDTO {
   userId: string;
   creationTime: Date;
   testType: TestTypeSimpleDTO;
+  administeredBy: {
+    userId: string;
+  };
   administrationConfidence: string;
   resultsInterpretations: TestInterpretationDTO[];
   results: TestResultsDTO | null;

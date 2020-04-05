@@ -19,7 +19,9 @@ describe('PsqlTestRepository', () => {
 
   it('inserts a test without results and retrieves it by id', async () => {
     const testType = await testTypeRepository.save(aTestType());
-    const test = await psqlTestRepository.save(new Test(new TestId(), new UserId(), testType, ConfidenceLevel.LOW));
+    const test = await psqlTestRepository.save(
+      new Test(new TestId(), new UserId(), testType, new UserId(), ConfidenceLevel.LOW)
+    );
 
     const persistedTest = await psqlTestRepository.findById(test.id);
 
@@ -32,7 +34,7 @@ describe('PsqlTestRepository', () => {
     const results = new Results(userId, details, ConfidenceLevel.LOW);
 
     const testType = await testTypeRepository.save(aTestType());
-    const test = new Test(new TestId(), userId, testType, ConfidenceLevel.HIGH);
+    const test = new Test(new TestId(), userId, testType, new UserId(), ConfidenceLevel.HIGH);
     test.setResults(results);
     await psqlTestRepository.save(test);
 
@@ -46,10 +48,25 @@ describe('PsqlTestRepository', () => {
 
   it('inserts two new tests and retrieves them by User Id', async () => {
     const userId = new UserId();
+    const administeringUserId = new UserId();
     const testType = await testTypeRepository.save(aTestType());
 
-    const test1 = new Test(new TestId(), userId, testType, ConfidenceLevel.LOW, new Date(Date.now() - 10000));
-    const test2 = new Test(new TestId(), userId, testType, ConfidenceLevel.HIGH, new Date(Date.now()));
+    const test1 = new Test(
+      new TestId(),
+      userId,
+      testType,
+      administeringUserId,
+      ConfidenceLevel.LOW,
+      new Date(Date.now() - 10000)
+    );
+    const test2 = new Test(
+      new TestId(),
+      userId,
+      testType,
+      administeringUserId,
+      ConfidenceLevel.HIGH,
+      new Date(Date.now())
+    );
 
     await psqlTestRepository.save(test1);
     await psqlTestRepository.save(test2);
@@ -62,11 +79,14 @@ describe('PsqlTestRepository', () => {
 
   it('updates a test with results containing notes', async () => {
     const userId = new UserId();
+    const administeringUserId = new UserId();
     const details = { a: 1 };
     const notes = 'notes for test results';
 
     const testType = await testTypeRepository.save(aTestType());
-    const test = await psqlTestRepository.save(new Test(testType.id, userId, testType, ConfidenceLevel.LOW));
+    const test = await psqlTestRepository.save(
+      new Test(testType.id, userId, testType, administeringUserId, ConfidenceLevel.LOW)
+    );
     test.setResults(new Results(userId, details, ConfidenceLevel.HIGH, notes));
 
     await psqlTestRepository.save(test);

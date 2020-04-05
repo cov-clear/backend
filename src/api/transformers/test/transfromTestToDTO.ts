@@ -10,6 +10,9 @@ export function transformTestToDTO(test: Test): TestDTO {
     id: test.id.value,
     userId: test.userId.value,
     creationTime: test.creationTime,
+    administeredBy: {
+      userId: test.administeredBy.value,
+    },
     administrationConfidence: test.administrationConfidence,
     results: test.results ? transformTestResultsToDTO(test.results) : null,
     testType: transformTestTypeToSimpleDTO(test.testType),

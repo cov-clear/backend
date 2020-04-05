@@ -24,7 +24,7 @@ export class CreateTest {
 
     const administrationConfidence = this.getAdministrationConfidence(actor);
 
-    const test = new Test(new TestId(), new UserId(subjectUserId), testType, administrationConfidence);
+    const test = new Test(new TestId(), new UserId(subjectUserId), testType, actor.id, administrationConfidence);
 
     if (testCommand.results) {
       await this.addResultsToTest.executeForTest(actor, test, testCommand.results);
