@@ -100,7 +100,6 @@ export function antibodyTestType() {
 
 export function antibodyResultsSchema() {
   return {
-    $id: 'https://example.com/test.schema.json',
     $schema: 'http://json-schema.org/draft-07/schema#',
     title: 'COVID-19 Take Home Test',
     type: 'object',
