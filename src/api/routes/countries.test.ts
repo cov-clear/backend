@@ -4,11 +4,10 @@ import database from '../../database';
 import { getTokenForUser } from '../../test/authentication';
 import { userRepository } from '../../infrastructure/persistence';
 import { aNewUser } from '../../test/domainFactories';
-import { Container } from 'typedi';
 import { Application } from '../../presentation/Application';
 
 describe('GET /countries', () => {
-  const app = Container.get(Application).getExpressApp();
+  const app = new Application().getExpressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();

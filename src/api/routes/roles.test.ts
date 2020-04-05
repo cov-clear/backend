@@ -9,11 +9,10 @@ import { ASSIGN_ROLE_TO_USER, CREATE_NEW_ROLE, LIST_ROLES } from '../../domain/m
 import { persistedUserWithRoleAndPermissions } from '../../test/persistedEntities';
 import { Role } from '../../domain/model/authentication/Role';
 import { Role as ApiRole } from '../interface';
-import { Container } from 'typedi';
 import { Application } from '../../presentation/Application';
 
 describe('roles endpoints', () => {
-  const app = Container.get(Application).getExpressApp();
+  const app = new Application().getExpressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();

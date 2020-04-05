@@ -19,11 +19,10 @@ import { aNewUser, antibodyTestType, aResult, aTest, aTestType } from '../../tes
 import { persistedUserWithRoleAndPermissions } from '../../test/persistedEntities';
 import { TestId } from '../../domain/model/test/TestId';
 import { TestCommand, TestDTO, TestResultsCommand } from '../interface';
-import { Container } from 'typedi';
 import { Application } from '../../presentation/Application';
 
 describe('test endpoints', () => {
-  const app = Container.get(Application).getExpressApp();
+  const app = new Application().getExpressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();

@@ -1,25 +1,21 @@
 import bodyParser from 'body-parser';
 import express from 'express';
 import securityHeaders from 'helmet';
-import { Service } from 'typedi';
 
 import { migrateLatest, rollbackDatabase } from '../database';
 import { createSeedDataForTestingPeriod } from '../database/testSeed';
 import { RootController } from './api/RootController';
 import logger from '../infrastructure/logging/logger';
-import { Rollbar } from '../infrastructure/logging/Rollbar';
+import { rollbarClient } from '../infrastructure/logging/Rollbar';
 
-@Service()
 export class Application {
-  constructor(private rootController: RootController, private rollbar: Rollbar) {}
-
   public getExpressApp() {
     return express()
       .use(securityHeaders())
       .use(bodyParser.json())
       .use(logger.expressPlugin())
-      .use('/api', this.rootController.routes())
-      .use(this.rollbar.errorHandler());
+      .use('/api', new RootController().routes())
+      .use(rollbarClient.errorHandler());
   }
 
   public async createAndRun() {

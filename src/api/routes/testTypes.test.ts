@@ -11,11 +11,10 @@ import { getTokenForUser } from '../../test/authentication';
 import { CREATE_TEST_TYPE } from '../../domain/model/authentication/Permissions';
 import { apiErrorCodes } from '../ApiError';
 import { aCreateTestTypeCommand } from '../../test/apiFactories';
-import { Container } from 'typedi';
 import { Application } from '../../presentation/Application';
 
 describe('test type endpoints', () => {
-  const app = Container.get(Application).getExpressApp();
+  const app = new Application().getExpressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();

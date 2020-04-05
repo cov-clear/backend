@@ -1,10 +1,3 @@
-export interface TestType {
-  id: string;
-  name: string;
-  resultsSchema: object;
-  neededPermissionToAddResults: string;
-}
-
 export interface CreateTestTypeCommand {
   name: string;
   resultsSchema: object;

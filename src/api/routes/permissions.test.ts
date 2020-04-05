@@ -14,11 +14,10 @@ import { persistedUserWithRoleAndPermissions } from '../../test/persistedEntitie
 import { Role } from '../../domain/model/authentication/Role';
 import { Permission as ApiPermission } from '../interface';
 import { Permission } from '../../domain/model/authentication/Permission';
-import { Container } from 'typedi';
 import { Application } from '../../presentation/Application';
 
 describe('roles endpoints', () => {
-  const app = Container.get(Application).getExpressApp();
+  const app = new Application().getExpressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();

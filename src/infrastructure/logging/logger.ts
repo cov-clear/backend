@@ -1,11 +1,9 @@
 import { default as pino } from 'pino';
 import { default as expressPinoLogger } from 'express-pino-logger';
 import * as config from '../../config';
-import { Container } from 'typedi';
-import { Rollbar } from './Rollbar';
+import { rollbarClient } from './Rollbar';
 
 const logger = pino(pinoConfig(config));
-const rollbar = Container.get(Rollbar);
 
 function pinoConfig(config: any): pino.LoggerOptions {
   const cfg: pino.LoggerOptions = {
@@ -49,9 +47,9 @@ function expressPlugin(): expressPinoLogger.HttpLogger {
 
 function sendErrorToRollbar(message: string, err?: Error) {
   if (err) {
-    rollbar.error(message, err);
+    rollbarClient.error(message, err);
   } else {
-    rollbar.error(message);
+    rollbarClient.error(message);
   }
 }
 

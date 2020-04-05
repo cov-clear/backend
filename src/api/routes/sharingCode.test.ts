@@ -8,11 +8,10 @@ import { UserId } from '../../domain/model/user/UserId';
 import { User } from '../../domain/model/user/User';
 import { Email } from '../../domain/model/user/Email';
 import { getTokenForUser } from '../../test/authentication';
-import { Container } from 'typedi';
 import { Application } from '../../presentation/Application';
 
 describe('sharing code endpoints', () => {
-  const app = Container.get(Application).getExpressApp();
+  const app = new Application().getExpressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();

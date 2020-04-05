@@ -1,10 +1,8 @@
-import { Service } from 'typedi';
 import ActualRollbar from 'rollbar';
 
 import * as config from '../../config';
 
-@Service()
-export class Rollbar extends ActualRollbar {
+class Rollbar extends ActualRollbar {
   constructor() {
     super({
       accessToken: config.get('rollbar.token'),
@@ -14,3 +12,5 @@ export class Rollbar extends ActualRollbar {
     });
   }
 }
+
+export const rollbarClient = new Rollbar();

@@ -8,9 +8,7 @@ import { UserRepository } from '../../../domain/model/user/UserRepository';
 export class GetExistingOrCreateNewUser {
   constructor(private userRepository: UserRepository, private roleRepository: RoleRepository) {}
 
-  public async execute(email: string, roleName?: string) {
-    roleName = roleName ? roleName : USER;
-
+  public async execute(email: string) {
     const existingUser = await this.userRepository.findByEmail(new Email(email));
 
     if (existingUser) {
@@ -18,13 +16,13 @@ export class GetExistingOrCreateNewUser {
     }
 
     const user = new User(new UserId(), new Email(email));
-    const role = await this.roleRepository.findByName(roleName);
+    const userRole = await this.roleRepository.findByName(USER);
 
-    if (!role) {
-      throw new RoleNotFoundError(roleName);
+    if (!userRole) {
+      throw new RoleNotFoundError(USER);
     }
 
-    user.assignRole(role, user.id);
+    user.assignRole(userRole, user.id);
 
     return this.userRepository.save(user);
   }

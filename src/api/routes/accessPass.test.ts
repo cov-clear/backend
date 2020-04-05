@@ -9,11 +9,10 @@ import { getTokenForUser } from '../../test/authentication';
 
 import { v4 as uuidv4 } from 'uuid';
 import { aUserWithAllInformation } from '../../test/domainFactories';
-import { Container } from 'typedi';
 import { Application } from '../../presentation/Application';
 
 describe('sharing code endpoints', () => {
-  const app = Container.get(Application).getExpressApp();
+  const app = new Application().getExpressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();

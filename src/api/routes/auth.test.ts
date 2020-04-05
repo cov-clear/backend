@@ -4,11 +4,10 @@ import { createMagicLink } from '../../application/service';
 import database from '../../database';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import { AuthorisationFailureReason } from '../../application/service/authentication/ExchangeAuthCode';
-import { Container } from 'typedi';
 import { Application } from '../../presentation/Application';
 
 describe('auth endpoints', () => {
-  const app = Container.get(Application).getExpressApp();
+  const app = new Application().getExpressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();

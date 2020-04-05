@@ -1,5 +1,4 @@
 import express, { Request, Response, Router } from 'express';
-import { Inject, Service } from 'typedi';
 
 import * as config from '../../config';
 import logger from '../../infrastructure/logging/logger';
@@ -19,15 +18,12 @@ import test from '../../api/routes/test';
 import testTypes from '../../api/routes/testTypes';
 import user from '../../api/routes/user';
 
-@Service()
 export class RootController implements ApiController {
-  constructor(private adminController: AdminController) {}
-
   public routes(): Router {
     return express()
       .use('', wrapAsyncFunction(attachAuthenticationToRequest))
       .use('/v1', accessPass())
-      .use('/v1/admin', this.adminController.routes())
+      .use('/v1/admin', new AdminController().routes())
       .use('/v1', auth())
       .use('/v1', countries())
       .use('/v1', permissions())

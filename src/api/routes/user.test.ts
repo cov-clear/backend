@@ -10,11 +10,10 @@ import { AccessPass } from '../../domain/model/accessPass/AccessPass';
 import { anAddress, aNewUser, aUserWithAllInformation } from '../../test/domainFactories';
 import { getTokenForUser } from '../../test/authentication';
 import { anApiAddress, anApiProfile } from '../../test/apiFactories';
-import { Container } from 'typedi';
 import { Application } from '../../presentation/Application';
 
 describe('user endpoints', () => {
-  const app = Container.get(Application).getExpressApp();
+  const app = new Application().getExpressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();
