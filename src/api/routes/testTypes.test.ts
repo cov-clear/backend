@@ -94,6 +94,7 @@ describe('test type endpoints', () => {
           expect(res.body.name).toEqual(command.name);
           expect(res.body.resultsSchema).toEqual(command.resultsSchema);
           expect(res.body.neededPermissionToAddResults).toEqual(command.neededPermissionToAddResults);
+          expect(res.body.interpretationRules).toEqual(command.interpretationRules);
         });
     });
   });

@@ -1,8 +1,22 @@
-export interface CreateTestTypeCommand {
+export interface TestTypeCommand {
   name: string;
-  resultsSchema: object;
+  resultsSchema: JsonSchema;
+  interpretationRules: InterpretationRuleDTO[];
   neededPermissionToAddResults: string;
 }
+
+export interface InterpretationRuleDTO {
+  output: {
+    namePattern: string;
+    theme: InterpretationTheme;
+    propertyVariables: object;
+  };
+  condition: JsonSchema;
+}
+
+type JsonSchema = object;
+
+type InterpretationTheme = 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL' | 'MUTED';
 
 export interface Role {
   name: string;
@@ -15,14 +29,15 @@ export interface Permission {
 
 export interface TestInterpretationDTO {
   name: string;
-  theme: 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL' | 'MUTED';
+  theme: InterpretationTheme;
 }
 
 export interface TestTypeDTO {
   id: string;
   name: string;
-  resultsSchema: object;
+  resultsSchema: JsonSchema;
   neededPermissionToAddResults: string;
+  interpretationRules: InterpretationRuleDTO[];
 }
 
 export interface TestDTO {

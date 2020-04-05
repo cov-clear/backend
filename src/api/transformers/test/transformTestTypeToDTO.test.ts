@@ -11,5 +11,6 @@ describe('transformTestTypeToDTO', () => {
     expect(testTypeDTO.name).toEqual(testType.name);
     expect(testTypeDTO.neededPermissionToAddResults).toEqual(testType.neededPermissionToAddResults);
     expect(testTypeDTO.resultsSchema).toEqual(testType.resultsSchema);
+    expect(testTypeDTO.interpretationRules).toEqual(testType.interpretationRules.toSchema());
   });
 });
