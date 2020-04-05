@@ -4,8 +4,6 @@ import { Response } from 'express';
 import { accessManagerFactory, addResultsToTest, createTest, getTests } from '../../application/service';
 
 import { AuthenticatedRequest, getAuthenticationOrFail } from '../AuthenticatedRequest';
-
-import { Test } from '../../domain/model/test/Test';
 import { UserId } from '../../domain/model/user/UserId';
 
 import { isAuthenticated } from '../middleware/isAuthenticated';
@@ -15,7 +13,8 @@ import { ResourceNotFoundError } from '../../domain/model/ResourceNotFoundError'
 import { AccessDeniedError } from '../../domain/model/AccessDeniedError';
 import { TestResultsCommand } from '../interface';
 import { TestNotFoundError } from '../../domain/model/test/TestNotFoundError';
-import { Results } from '../../domain/model/test/Results';
+import { transformTestToDTO } from '../transformers/test/transfromTestToDTO';
+import { transformTestResultsToDTO } from '../transformers/test/transformTestResultsToDTO';
 
 export default () => {
   const route = new AsyncRouter();
@@ -34,7 +33,7 @@ export default () => {
 
     const tests = await getTests.byUserId(id);
 
-    return res.json(tests.map((test: any) => mapTestToApiTest(test))).status(200);
+    return res.json(tests.map((test) => transformTestToDTO(test))).status(200);
   });
 
   route.post('/users/:id/tests', isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
@@ -54,7 +53,7 @@ export default () => {
     try {
       const test = await createTest.execute(authentication.user, id, payload);
 
-      return res.status(201).json(mapTestToApiTest(test));
+      return res.status(201).json(transformTestToDTO(test));
     } catch (error) {
       handleCreationError(error);
     }
@@ -64,7 +63,7 @@ export default () => {
     const { id } = req.params;
 
     const test = await getTests.byId(id);
-    return res.json(mapTestToApiTest(test)).status(200);
+    return res.json(transformTestToDTO(test)).status(200);
   });
 
   route.patch('/tests/:id', isAuthenticated, async (req: AuthenticatedRequest, res: Response) => {
@@ -73,7 +72,7 @@ export default () => {
     const authentication = getAuthenticationOrFail(req);
     try {
       const results = await addResultsToTest.execute(authentication.user, testIdValue, resultsCommand);
-      res.status(200).json(mapResultsToApiResults(results));
+      res.status(200).json(transformTestResultsToDTO(results));
     } catch (error) {
       handAddResultError(error);
     }
@@ -81,29 +80,6 @@ export default () => {
 
   return route.middleware();
 };
-
-export function mapTestToApiTest(test: Test) {
-  return {
-    id: test.id.value,
-    userId: test.userId.value,
-    testTypeId: test.testTypeId.value,
-    creationTime: test.creationTime,
-    administrationConfidence: test.administrationConfidence,
-    results: mapResultsToApiResults(test.results),
-  };
-}
-
-function mapResultsToApiResults(results?: Results) {
-  return results
-    ? {
-        details: results.details,
-        testerUserId: results.createdBy.value,
-        creationTime: results.creationTime,
-        notes: results.notes,
-        entryConfidence: results.entryConfidence,
-      }
-    : null;
-}
 
 function handleCreationError(error: Error) {
   if (error instanceof AccessDeniedError) {

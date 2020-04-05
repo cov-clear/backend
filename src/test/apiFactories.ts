@@ -1,5 +1,3 @@
-import { CreateTestTypeCommand, TestCommand, TestResultsCommand } from '../api/interface';
-import { TestTypeId } from '../domain/model/testType/TestTypeId';
 import { aResult } from './domainFactories';
 import { AddressDTO, ProfileDTO } from '../presentation/dtos/users';
 

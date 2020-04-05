@@ -1,7 +1,7 @@
 import { CreateTestTypeCommand } from '../../../api/interface';
-import { TestType } from '../../../domain/model/testType/TestType';
-import { TestTypeId } from '../../../domain/model/testType/TestTypeId';
-import { TestTypeRepository } from '../../../domain/model/testType/TestTypeRepository';
+import { TestType } from '../../../domain/model/test/testType/TestType';
+import { TestTypeId } from '../../../domain/model/test/testType/TestTypeId';
+import { TestTypeRepository } from '../../../domain/model/test/testType/TestTypeRepository';
 
 export class CreateTestType {
   constructor(private testTypeRepository: TestTypeRepository) {}

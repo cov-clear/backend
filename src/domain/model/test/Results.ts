@@ -1,6 +1,4 @@
 import { UserId } from '../user/UserId';
-import { TestType } from '../testType/TestType';
-import { Validators } from '../../Validators';
 import { ConfidenceLevel } from './ConfidenceLevel';
 
 export class Results {
@@ -14,12 +12,10 @@ export class Results {
 
   static newResults(
     createdBy: UserId,
-    testType: TestType,
     resultsDetails: object,
     entryConfidence: ConfidenceLevel,
     notes: string = ''
   ): Results {
-    Validators.validateJson('result.details', resultsDetails, testType.resultsSchema);
     return new Results(createdBy, resultsDetails, entryConfidence, notes);
   }
 }

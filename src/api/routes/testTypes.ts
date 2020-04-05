@@ -1,14 +1,14 @@
 import AsyncRouter from '../AsyncRouter';
 import { Request, Response } from 'express';
 import { createTestType, getTestTypes } from '../../application/service';
-import { TestType } from '../../domain/model/testType/TestType';
-import { TestType as ApiTestType } from '../interface';
+import { TestType } from '../../domain/model/test/testType/TestType';
+import { TestTypeDTO as ApiTestType } from '../interface';
 import { getAuthenticationOrFail } from '../AuthenticatedRequest';
 import { hasPermission } from '../middleware/hasPermission';
 import { CREATE_TEST_TYPE } from '../../domain/model/authentication/Permissions';
 import { ApiError, apiErrorCodes } from '../ApiError';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
-import { TestTypeNameAlreadyExists } from '../../domain/model/testType/TestTypeRepository';
+import { TestTypeNameAlreadyExists } from '../../domain/model/test/testType/TestTypeRepository';
 
 export default () => {
   const route = new AsyncRouter();

@@ -100,10 +100,10 @@ export const exchangeAuthCode = new ExchangeAuthCode(
   getExistingOrCreateNewUser
 );
 
-export const getTestTypes = new GetTestTypes(testTypeRepository);
-export const createTest = new CreateTest(testRepository, testTypeRepository);
-export const getTests = new GetTests(testRepository);
-export const addResultsToTest = new AddResultsToTest(testRepository, testTypeRepository);
-
 export const createSharingCode = new CreateSharingCode(sharingCodeRepository);
 export const createAccessPass = new CreateAccessPass(accessPassRepository, sharingCodeRepository);
+
+export const getTestTypes = new GetTestTypes(testTypeRepository);
+export const getTests = new GetTests(testRepository);
+export const addResultsToTest = new AddResultsToTest(testRepository);
+export const createTest = new CreateTest(testRepository, testTypeRepository, addResultsToTest);
