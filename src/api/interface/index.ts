@@ -1,8 +1,15 @@
-export interface TestTypeCommand {
+export interface CreateTestTypeCommand {
   name: string;
   resultsSchema: JsonSchema;
   interpretationRules: InterpretationRuleDTO[];
   neededPermissionToAddResults: string;
+}
+
+export interface UpdateTestTypeCommand {
+  name?: string;
+  resultsSchema?: JsonSchema;
+  interpretationRules?: InterpretationRuleDTO[];
+  neededPermissionToAddResults?: string;
 }
 
 export interface InterpretationRuleDTO {

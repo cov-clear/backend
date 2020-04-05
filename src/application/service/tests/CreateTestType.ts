@@ -1,4 +1,4 @@
-import { TestTypeCommand } from '../../../api/interface';
+import { CreateTestTypeCommand } from '../../../api/interface';
 import { TestType } from '../../../domain/model/test/testType/TestType';
 import { TestTypeId } from '../../../domain/model/test/testType/TestTypeId';
 import { TestTypeRepository } from '../../../domain/model/test/testType/TestTypeRepository';
@@ -7,13 +7,13 @@ import { InterpretationRules } from '../../../domain/model/test/interpretation/I
 export class CreateTestType {
   constructor(private testTypeRepository: TestTypeRepository) {}
 
-  async execute(command: TestTypeCommand): Promise<TestType> {
+  async execute(command: CreateTestTypeCommand): Promise<TestType> {
     const testType = getTestType(command);
     return this.testTypeRepository.save(testType);
   }
 }
 
-function getTestType(command: TestTypeCommand) {
+function getTestType(command: CreateTestTypeCommand) {
   return new TestType(
     new TestTypeId(),
     command.name,

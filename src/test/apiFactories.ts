@@ -1,9 +1,4 @@
-import {
-  InterpretationRuleDTO,
-  TestCommand,
-  TestResultsCommand,
-  TestTypeCommand,
-} from '../api/interface';
+import { InterpretationRuleDTO, TestCommand, TestResultsCommand, CreateTestTypeCommand } from '../api/interface';
 import { aResult } from './domainFactories';
 
 import { TestTypeId } from '../domain/model/test/testType/TestTypeId';
@@ -29,7 +24,11 @@ export function anApiProfile(): ProfileDTO {
   };
 }
 
-export function aCreateTestTypeCommand(name = 'TestTypeName', permission = 'PERMISSION', schema = {}): TestTypeCommand {
+export function aCreateTestTypeCommand(
+  name = 'TestTypeName',
+  permission = 'PERMISSION',
+  schema = {}
+): CreateTestTypeCommand {
   return {
     name,
     resultsSchema: schema,
