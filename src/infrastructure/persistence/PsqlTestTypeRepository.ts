@@ -1,7 +1,7 @@
 import knex from 'knex';
-import { TestTypeNameAlreadyExists, TestTypeRepository } from '../../domain/model/testType/TestTypeRepository';
-import { TestType } from '../../domain/model/testType/TestType';
-import { TestTypeId } from '../../domain/model/testType/TestTypeId';
+import { TestTypeNameAlreadyExists, TestTypeRepository } from '../../domain/model/test/testType/TestTypeRepository';
+import { TestType } from '../../domain/model/test/testType/TestType';
+import { TestTypeId } from '../../domain/model/test/testType/TestTypeId';
 import { InterpretationRules } from '../../domain/model/test/interpretation/InterpretationRules';
 
 const TEST_TYPE_TABLE_NAME = 'test_type';
@@ -58,8 +58,8 @@ export class PsqlTestTypeRepository implements TestTypeRepository {
 
   async findById(testTypeId: TestTypeId) {
     const testTypeRow: any = await this.db(TEST_TYPE_TABLE_NAME)
-      .where('id', '=', testTypeId.value)
       .select(TEST_TYPE_COLUMNS)
+      .where('id', '=', testTypeId.value)
       .first();
 
     if (!testTypeRow) {
@@ -67,6 +67,12 @@ export class PsqlTestTypeRepository implements TestTypeRepository {
     }
 
     return mapTestTypeRowToTestType(testTypeRow);
+  }
+
+  async findAll(): Promise<Array<TestType>> {
+    const testTypeRows: TestTypeRow[] = await this.db(TEST_TYPE_TABLE_NAME).select(TEST_TYPE_COLUMNS);
+
+    return testTypeRows.map(mapTestTypeRowToTestType);
   }
 }
 

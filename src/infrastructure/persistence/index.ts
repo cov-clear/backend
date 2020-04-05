@@ -15,4 +15,4 @@ export const sharingCodeRepository = new PsqlSharingCodeRepository(database);
 export const accessPassRepository = new PsqlAccessPassRepository(database);
 export const permissionRepository = new PsqlPermissionRepository(database);
 export const roleRepository = new PsqlRoleRepository(database);
-export const testRepository = new PsqlTestRepository(database);
+export const testRepository = new PsqlTestRepository(database, testTypeRepository);

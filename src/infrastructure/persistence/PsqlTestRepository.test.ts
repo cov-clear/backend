@@ -1,6 +1,5 @@
 import database from '../../database';
 import { PsqlTestRepository } from './PsqlTestRepository';
-import { TestTypeId } from '../../domain/model/testType/TestTypeId';
 import { Test } from '../../domain/model/test/Test';
 import { TestId } from '../../domain/model/test/TestId';
 import { Results } from '../../domain/model/test/Results';
@@ -9,18 +8,18 @@ import { UserId } from '../../domain/model/user/UserId';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import { ConfidenceLevel } from '../../domain/model/test/ConfidenceLevel';
 import { aTestType } from '../../test/domainFactories';
+import { testTypeRepository } from './';
 
 describe('PsqlTestRepository', () => {
-  const psqlTestRepository = new PsqlTestRepository(database);
+  const psqlTestRepository = new PsqlTestRepository(database, testTypeRepository);
 
   beforeEach(async () => {
     await cleanupDatabase();
   });
 
   it('inserts a test without results and retrieves it by id', async () => {
-    const test = await psqlTestRepository.save(
-      new Test(new TestId(), new UserId(), new TestTypeId(), ConfidenceLevel.LOW)
-    );
+    const testType = await testTypeRepository.save(aTestType());
+    const test = await psqlTestRepository.save(new Test(new TestId(), new UserId(), testType, ConfidenceLevel.LOW));
 
     const persistedTest = await psqlTestRepository.findById(test.id);
 
@@ -32,9 +31,9 @@ describe('PsqlTestRepository', () => {
     const details = { a: 1 };
     const results = new Results(userId, details, ConfidenceLevel.LOW);
 
-    const testType = aTestType();
-    const test = new Test(new TestId(), userId, testType.id, ConfidenceLevel.HIGH);
-    test.setResults(results, testType);
+    const testType = await testTypeRepository.save(aTestType());
+    const test = new Test(new TestId(), userId, testType, ConfidenceLevel.HIGH);
+    test.setResults(results);
     await psqlTestRepository.save(test);
 
     const persistedTest = await psqlTestRepository.findById(test.id)!;
@@ -47,10 +46,10 @@ describe('PsqlTestRepository', () => {
 
   it('inserts two new tests and retrieves them by User Id', async () => {
     const userId = new UserId();
-    const testTypeId = new TestTypeId();
+    const testType = await testTypeRepository.save(aTestType());
 
-    const test1 = new Test(new TestId(), userId, testTypeId, ConfidenceLevel.LOW, new Date(Date.now() - 10000));
-    const test2 = new Test(new TestId(), userId, testTypeId, ConfidenceLevel.HIGH, new Date(Date.now()));
+    const test1 = new Test(new TestId(), userId, testType, ConfidenceLevel.LOW, new Date(Date.now() - 10000));
+    const test2 = new Test(new TestId(), userId, testType, ConfidenceLevel.HIGH, new Date(Date.now()));
 
     await psqlTestRepository.save(test1);
     await psqlTestRepository.save(test2);
@@ -66,9 +65,9 @@ describe('PsqlTestRepository', () => {
     const details = { a: 1 };
     const notes = 'notes for test results';
 
-    const testType = aTestType();
-    const test = await psqlTestRepository.save(new Test(testType.id, userId, testType.id, ConfidenceLevel.LOW));
-    test.setResults(new Results(userId, details, ConfidenceLevel.HIGH, notes), testType);
+    const testType = await testTypeRepository.save(aTestType());
+    const test = await psqlTestRepository.save(new Test(testType.id, userId, testType, ConfidenceLevel.LOW));
+    test.setResults(new Results(userId, details, ConfidenceLevel.HIGH, notes));
 
     await psqlTestRepository.save(test);
 

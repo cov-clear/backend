@@ -5,7 +5,7 @@ import { cleanupDatabase } from '../../test/cleanupDatabase';
 import { getTokenForUser } from '../../test/authentication';
 
 import { v4 as uuidv4 } from 'uuid';
-import { TestTypeId } from '../../domain/model/testType/TestTypeId';
+import { TestTypeId } from '../../domain/model/test/testType/TestTypeId';
 import { UserId } from '../../domain/model/user/UserId';
 import { AccessPass } from '../../domain/model/accessPass/AccessPass';
 
@@ -16,10 +16,10 @@ import {
   userRepository,
 } from '../../infrastructure/persistence';
 
-import { aNewUser, aTest, aTestType } from '../../test/domainFactories';
+import { aNewUser, antibodyTestType, aResult, aTest, aTestType } from '../../test/domainFactories';
 import { persistedUserWithRoleAndPermissions } from '../../test/persistedEntities';
 import { TestId } from '../../domain/model/test/TestId';
-import { TestCommand, TestResultsCommand } from '../interface';
+import { TestCommand, TestDTO, TestResultsCommand } from '../interface';
 
 describe('test endpoints', () => {
   const app = expressApp();
@@ -46,7 +46,8 @@ describe('test endpoints', () => {
 
     it('returns 200 with the existing test if user is found', async () => {
       const user = await userRepository.save(aNewUser());
-      const test = await testRepository.save(aTest(user.id));
+      const testType = await testTypeRepository.save(aTestType());
+      const test = await testRepository.save(aTest(user.id, testType));
 
       await request(app)
         .get(`/api/v1/users/${user.id.value}/tests`)
@@ -60,7 +61,8 @@ describe('test endpoints', () => {
     it('returns 200 if a user with an access pass requests another users tests', async () => {
       const actorUser = await userRepository.save(aNewUser());
       const subjectUser = await userRepository.save(aNewUser());
-      const test = await testRepository.save(aTest(subjectUser.id));
+      const testType = await testTypeRepository.save(aTestType());
+      const test = await testRepository.save(aTest(subjectUser.id, testType));
 
       const accessPass = new AccessPass(actorUser.id, subjectUser.id);
       await accessPassRepository.save(accessPass);
@@ -77,7 +79,7 @@ describe('test endpoints', () => {
     it('returns 404 if a user with an expired access pass requests another users tests', async () => {
       const actorUser = await userRepository.save(aNewUser());
       const subjectUser = await userRepository.save(aNewUser());
-      const test = await testRepository.save(aTest(subjectUser.id));
+      await testRepository.save(aTest(subjectUser.id));
 
       const accessPass = new AccessPass(actorUser.id, subjectUser.id, uuidv4(), new Date('1970-01-01'));
 
@@ -87,6 +89,34 @@ describe('test endpoints', () => {
         .get(`/api/v1/users/${subjectUser.id.value}/tests`)
         .set({ Authorization: `Bearer ${await getTokenForUser(actorUser)}` })
         .expect(404);
+    });
+
+    it('returns interpretations correctly for tests that have them', async () => {
+      const actor = await persistedUserWithRoleAndPermissions('USER', []);
+      const testType = await testTypeRepository.save(antibodyTestType());
+      await testRepository.save(
+        aTest(
+          actor.id,
+          testType,
+          aResult(actor.id, {
+            c: true,
+            igg: true,
+            igm: false,
+          })
+        )
+      );
+
+      await request(app)
+        .get(`/api/v1/users/${actor.id.value}/tests`)
+        .set({ Authorization: `Bearer ${await getTokenForUser(actor)}` })
+        .expect(200)
+        .expect((res) => {
+          const [test]: [TestDTO] = res.body;
+          const [interpretation] = test.resultsInterpretations;
+
+          expect(interpretation.name).toBeDefined();
+          expect(interpretation.theme).toBeDefined();
+        });
     });
   });
 
@@ -111,7 +141,7 @@ describe('test endpoints', () => {
       const subjectUser = await userRepository.save(aNewUser());
 
       const testType = await testTypeRepository.save(aTestType());
-      const test = await testRepository.save(aTest(subjectUser.id));
+      await testRepository.save(aTest(subjectUser.id));
 
       const accessPass = new AccessPass(actorUser.id, subjectUser.id);
       await accessPassRepository.save(accessPass);
@@ -139,8 +169,8 @@ describe('test endpoints', () => {
     });
 
     it('returns 422 if there are malformed results', async () => {
-      const user = await userRepository.save(aNewUser());
       const testType = await testTypeRepository.save(aTestType());
+      const user = await persistedUserWithRoleAndPermissions('USER', [testType.neededPermissionToAddResults]);
 
       await request(app)
         .post(`/api/v1/users/${user.id.value}/tests`)
@@ -178,17 +208,17 @@ describe('test endpoints', () => {
       const testType = await testTypeRepository.save(aTestType());
       const user = await persistedUserWithRoleAndPermissions('TESTER', [testType.neededPermissionToAddResults]);
 
-      const validTest = getValidTestCommandWithResults(testType.id);
+      const validTestCommandWithResults = getValidTestCommandWithResults(testType.id);
 
       await request(app)
         .post(`/api/v1/users/${user.id.value}/tests`)
         .set({
           Authorization: `Bearer ${await getTokenForUser(user)}`,
         })
-        .send(validTest)
+        .send(validTestCommandWithResults)
         .expect(201)
         .expect((response) => {
-          expect(response.body.testTypeId).toEqual(validTest.testTypeId);
+          expect(response.body.testType.id).toEqual(validTestCommandWithResults.testTypeId);
           expect(response.body.id).toBeDefined();
           expect(response.body.userId).toEqual(user.id.value);
           expect(response.body.creationTime).toBeDefined();
@@ -218,7 +248,7 @@ describe('test endpoints', () => {
       const testType = await testTypeRepository.save(aTestType());
       const tester = await persistedUserWithRoleAndPermissions('TESTER', []);
       const testedUser = await persistedUserWithRoleAndPermissions('USER', []);
-      const test = await testRepository.save(aTest(testedUser.id, testType.id));
+      const test = await testRepository.save(aTest(testedUser.id, testType));
 
       await request(app)
         .patch(`/api/v1/tests/${test.id.value}`)
@@ -233,7 +263,7 @@ describe('test endpoints', () => {
       const testType = await testTypeRepository.save(aTestType());
       const tester = await persistedUserWithRoleAndPermissions('TESTER', [testType.neededPermissionToAddResults]);
       const testedUser = await persistedUserWithRoleAndPermissions('USER', []);
-      const test = await testRepository.save(aTest(testedUser.id, testType.id));
+      const test = await testRepository.save(aTest(testedUser.id, testType));
 
       await request(app)
         .patch(`/api/v1/tests/${test.id.value}`)
@@ -243,7 +273,7 @@ describe('test endpoints', () => {
         .send({ results: getValidTestResultsCommand() })
         .expect(200)
         .expect((res) => {
-          expect(res.body.testerUserId).toEqual(tester.id.value);
+          expect(res.body.createdBy.userId).toEqual(tester.id.value);
           expect(res.body.details).toEqual(getValidTestResultsCommand().details);
           expect(res.body.creationTime).toBeDefined();
         });
@@ -253,7 +283,7 @@ describe('test endpoints', () => {
       const testType = await testTypeRepository.save(aTestType());
       const tester = await persistedUserWithRoleAndPermissions('TESTER', [testType.neededPermissionToAddResults]);
       const testedUser = await persistedUserWithRoleAndPermissions('USER', []);
-      const test = await testRepository.save(aTest(testedUser.id, testType.id));
+      const test = await testRepository.save(aTest(testedUser.id, testType));
       const notes =
         'The patient shows IgG levels indicating immunity to COVID-19. ' +
         'This along with regular symptom reporting the patient has done makes the patient less likely to be a carrier.';
@@ -266,7 +296,7 @@ describe('test endpoints', () => {
         .send({ results: getValidTestResultsCommand(notes) })
         .expect(200)
         .expect((res) => {
-          expect(res.body.testerUserId).toEqual(tester.id.value);
+          expect(res.body.createdBy.userId).toEqual(tester.id.value);
           expect(res.body.details).toEqual(getValidTestResultsCommand(notes).details);
           expect(res.body.creationTime).toBeDefined();
           expect(res.body.notes).toEqual(getValidTestResultsCommand(notes).notes);

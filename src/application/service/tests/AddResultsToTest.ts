@@ -1,10 +1,7 @@
 import { TestId } from '../../../domain/model/test/TestId';
-import { TestTypeId } from '../../../domain/model/testType/TestTypeId';
 import { TestRepository } from '../../../domain/model/test/TestRepository';
-import { TestTypeRepository } from '../../../domain/model/testType/TestTypeRepository';
 import { TestResultsCommand } from '../../../api/interface';
-import { ResourceNotFoundError } from '../../../domain/model/ResourceNotFoundError';
-import { TestType } from '../../../domain/model/testType/TestType';
+import { TestType } from '../../../domain/model/test/testType/TestType';
 import { User } from '../../../domain/model/user/User';
 import { AccessDeniedError } from '../../../domain/model/AccessDeniedError';
 import { DomainValidationError } from '../../../domain/model/DomainValidationError';
@@ -12,18 +9,22 @@ import { TestNotFoundError } from '../../../domain/model/test/TestNotFoundError'
 import { Results } from '../../../domain/model/test/Results';
 import { ConfidenceLevel } from '../../../domain/model/test/ConfidenceLevel';
 import { ADD_RESULTS_WITH_HIGH_CONFIDENCE } from '../../../domain/model/authentication/Permissions';
+import { Test } from '../../../domain/model/test/Test';
 
 export class AddResultsToTest {
-  constructor(private testRepository: TestRepository, private testTypeRepository: TestTypeRepository) {}
+  constructor(private testRepository: TestRepository) {}
 
   public async execute(actor: User, testId: string, resultsCommand: TestResultsCommand): Promise<Results> {
     const test = await this.getTestOrFail(testId);
-    const testType = await this.getTestTypeOrFail(test.testTypeId);
+    return this.executeForTest(actor, test, resultsCommand);
+  }
+
+  public async executeForTest(actor: User, test: Test, resultsCommand: TestResultsCommand): Promise<Results> {
     const resultsDetails = this.getResultsDetailsOrFail(resultsCommand);
 
-    await this.validateAccessAndPermissionToAddResults(actor, testType);
+    await this.validateAccessAndPermissionToAddResults(actor, test.testType);
 
-    test.setResults(this.getResults(actor, testType, resultsDetails, resultsCommand.notes), testType);
+    test.setResults(this.getResults(actor, resultsDetails, resultsCommand.notes));
 
     await this.testRepository.save(test);
 
@@ -36,14 +37,6 @@ export class AddResultsToTest {
       throw new TestNotFoundError(testId);
     }
     return test;
-  }
-
-  private async getTestTypeOrFail(testTypeId: TestTypeId) {
-    const testType = await this.testTypeRepository.findById(testTypeId);
-    if (!testType) {
-      throw new ResourceNotFoundError('testType', testTypeId.value);
-    }
-    return testType;
   }
 
   private getResultsDetailsOrFail(results: TestResultsCommand): object {
@@ -59,9 +52,9 @@ export class AddResultsToTest {
     }
   }
 
-  private getResults(actor: User, testType: TestType, resultsDetails: object, notes?: string) {
+  private getResults(actor: User, resultsDetails: object, notes?: string) {
     const confidenceLevel = this.getConfidenceLevel(actor);
-    return Results.newResults(actor.id, testType, resultsDetails, confidenceLevel, notes);
+    return Results.newResults(actor.id, resultsDetails, confidenceLevel, notes);
   }
 
   private getConfidenceLevel(actor: User) {
