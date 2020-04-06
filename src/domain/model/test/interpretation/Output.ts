@@ -3,25 +3,14 @@ import { Interpretation, InterpretationTheme } from './Interpretation';
 import { Validators } from '../../../Validators';
 
 export class OutputPattern {
-  private propertyVariables: Map<string, string>;
-
-  constructor(private namePattern: string, private theme: InterpretationTheme, propertyVariables: Map<string, object>) {
+  constructor(private namePattern: string, private theme: InterpretationTheme, private propertyVariables: object) {
     Validators.validateNotEmpty('namePattern', namePattern);
     Validators.validateNotEmpty('theme', theme);
-    this.propertyVariables = propertyVariables ? new Map(Object.entries(propertyVariables)) : new Map();
+    Validators.validateNotNullOrUndefined('propertyVariables', propertyVariables);
   }
 
   evaluate(results: Results): Interpretation {
     return new Interpretation(this.namePattern, this.theme, this.getVariables(results));
-  }
-
-  getVariables(results: Results): Map<string, string> {
-    const variables = new Map();
-    this.propertyVariables.forEach((propertyName, variableName) => {
-      const resultDetails = results.details as any;
-      variables.set(variableName, resultDetails[propertyName]);
-    });
-    return variables;
   }
 
   toSchema() {
@@ -32,7 +21,16 @@ export class OutputPattern {
     };
   }
 
-  static from(outputSchema: any) {
-    return new OutputPattern(outputSchema.namePattern, outputSchema.theme, outputSchema.propertyVariables);
+  private getVariables(results: Results): Map<string, string> {
+    const variables = new Map();
+    Object.entries(this.propertyVariables).forEach(([variableName, propertyName]) => {
+      const resultDetails = results.details as any;
+      variables.set(variableName, resultDetails[propertyName]);
+    });
+    return variables;
+  }
+
+  static fromSchema(outputSchema: any) {
+    return new OutputPattern(outputSchema.namePattern, outputSchema.theme, outputSchema.propertyVariables || {});
   }
 }

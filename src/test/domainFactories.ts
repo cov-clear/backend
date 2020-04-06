@@ -75,11 +75,12 @@ export function aTestType(
 export function aTest(
   userId = new UserId(),
   testType = aTestType(),
+  administeringUserId = new UserId(),
   results = aResult(userId),
   testId = new TestId(),
   creationTime = new Date()
 ) {
-  const test = new Test(testId, userId, testType, ConfidenceLevel.HIGH, creationTime);
+  const test = new Test(testId, userId, testType, administeringUserId, ConfidenceLevel.HIGH, creationTime);
   test.setResults(results);
   return test;
 }
@@ -100,7 +101,6 @@ export function antibodyTestType() {
 
 export function antibodyResultsSchema() {
   return {
-    $id: 'https://example.com/test.schema.json',
     $schema: 'http://json-schema.org/draft-07/schema#',
     title: 'COVID-19 Take Home Test',
     type: 'object',

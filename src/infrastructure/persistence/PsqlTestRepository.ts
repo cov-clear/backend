@@ -7,7 +7,7 @@ import { UserId } from '../../domain/model/user/UserId';
 import { Results } from '../../domain/model/test/Results';
 import { ConfidenceLevel } from '../../domain/model/test/ConfidenceLevel';
 import { TestType } from '../../domain/model/test/testType/TestType';
-import { TestTypeNameAlreadyExists, TestTypeRepository } from '../../domain/model/test/testType/TestTypeRepository';
+import { TestTypeRepository } from '../../domain/model/test/testType/TestTypeRepository';
 
 const TEST_TABLE_NAME = 'test';
 const TEST_RESULTS_TABLE_NAME = 'test_results';
@@ -17,11 +17,12 @@ const TEST_TABLE_COLUMNS = [
   `${TEST_TABLE_NAME}.user_id as userId`,
   `${TEST_TABLE_NAME}.test_type_id as testTypeId`,
   `${TEST_TABLE_NAME}.creation_time as creationTime`,
-  `${TEST_TABLE_NAME}.administration_confidence as administrationConfidence`,
-  `${TEST_RESULTS_TABLE_NAME}.creator_id as resultsCreatorId`,
+  `${TEST_TABLE_NAME}.creator_user_id as testCreatorUserId`,
+  `${TEST_TABLE_NAME}.creator_confidence as testCreatorConfidence`,
+  `${TEST_RESULTS_TABLE_NAME}.creator_user_id as resultsCreatorUserId`,
   `${TEST_RESULTS_TABLE_NAME}.details as resultsDetails`,
   `${TEST_RESULTS_TABLE_NAME}.notes as resultsNotes`,
-  `${TEST_RESULTS_TABLE_NAME}.entry_confidence as resultsEntryConfidence`,
+  `${TEST_RESULTS_TABLE_NAME}.creator_confidence as resultsCreatorConfidence`,
   `${TEST_RESULTS_TABLE_NAME}.creation_time as resultsCreationTime`,
 ];
 
@@ -77,14 +78,16 @@ export class PsqlTestRepository implements TestRepository {
         id,
         user_id,
         test_type_id,
-        administration_confidence,
+        creator_user_id,
+        creator_confidence,
         creation_time
       )
       values (
         :id,
         :user_id,
         :test_type_id,
-        :administration_confidence,
+        :creator_user_id,
+        :creator_confidence,
         :creation_time
       )
       on conflict(id) do nothing
@@ -92,8 +95,9 @@ export class PsqlTestRepository implements TestRepository {
         {
           id: test.id.value,
           user_id: test.userId.value,
+          creator_user_id: test.creatorUserId.value,
           test_type_id: test.testType.id.value,
-          administration_confidence: test.administrationConfidence,
+          creator_confidence: test.creatorConfidence,
           creation_time: test.creationTime,
         }
       )
@@ -112,8 +116,8 @@ export class PsqlTestRepository implements TestRepository {
       insert into "${TEST_RESULTS_TABLE_NAME}" (
         id,
         test_id,
-        creator_id,
-        entry_confidence,
+        creator_user_id,
+        creator_confidence,
         details,
         notes,
         creation_time
@@ -121,19 +125,24 @@ export class PsqlTestRepository implements TestRepository {
       values (
         :id,
         :test_id,
-        :creator_id,
-        :entry_confidence,
+        :creator_user_id,
+        :creator_confidence,
         :details,
         :notes,
         :creation_time
       )
-      on conflict(id) do nothing
+      on conflict(test_id) do update
+      set creator_user_id = excluded.creator_user_id,
+         creator_confidence = excluded.creator_confidence,
+         details = excluded.details,
+         notes = excluded.notes,
+         creation_time = excluded.creation_time
     `,
         {
           id: test.id.value,
           test_id: test.id.value,
-          creator_id: test.results.createdBy.value,
-          entry_confidence: test.results.entryConfidence,
+          creator_user_id: test.results.creatorUserId.value,
+          creator_confidence: test.results.creatorConfidence,
           details: JSON.stringify(test.results.details),
           notes: test.results.notes,
           creation_time: test.results.creationTime,
@@ -164,7 +173,8 @@ function createTestFromRow(testRow: any, testType?: TestType): Test {
     new TestId(testRow.id),
     new UserId(testRow.userId),
     testType,
-    ConfidenceLevel.fromString(testRow.administrationConfidence),
+    new UserId(testRow.testCreatorUserId),
+    ConfidenceLevel.fromString(testRow.testCreatorConfidence),
     testRow.creationTime
   );
   Reflect.set(test, '_results', createResultsFromRow(testRow));
@@ -174,9 +184,9 @@ function createTestFromRow(testRow: any, testType?: TestType): Test {
 function createResultsFromRow(testRow: any) {
   return testRow.resultsDetails
     ? new Results(
-        new UserId(testRow.resultsCreatorId),
+        new UserId(testRow.resultsCreatorUserId),
         testRow.resultsDetails,
-        ConfidenceLevel.fromString(testRow.resultsEntryConfidence),
+        ConfidenceLevel.fromString(testRow.resultsCreatorConfidence),
         testRow.resultsNotes,
         testRow.resultsCreationTime
       )

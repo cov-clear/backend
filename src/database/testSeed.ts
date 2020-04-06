@@ -13,8 +13,10 @@ import {
   ASSIGN_ROLE_TO_USER,
   CREATE_NEW_PERMISSION,
   CREATE_NEW_ROLE,
+  CREATE_TEST_TYPE,
   LIST_PERMISSIONS,
   LIST_ROLES,
+  UPDATE_TEST_TYPE,
 } from '../domain/model/authentication/Permissions';
 import { ADMIN, DOCTOR, USER } from '../domain/model/authentication/Roles';
 import { User } from '../domain/model/user/User';
@@ -86,6 +88,8 @@ async function createAdminRole(admin: User) {
   role.assignPermission(new Permission(CREATE_NEW_PERMISSION), admin.id);
   role.assignPermission(new Permission(LIST_ROLES), admin.id);
   role.assignPermission(new Permission(LIST_PERMISSIONS), admin.id);
+  role.assignPermission(new Permission(CREATE_TEST_TYPE), admin.id);
+  role.assignPermission(new Permission(UPDATE_TEST_TYPE), admin.id);
   return await roleRepository.save(role);
 }
 
@@ -97,6 +101,8 @@ async function createPermissions() {
   await permissionRepository.save(new Permission(CREATE_NEW_ROLE));
   await permissionRepository.save(new Permission(CREATE_NEW_PERMISSION));
   await permissionRepository.save(new Permission(ADD_TAKE_HOME_TEST_RESULT));
+  await permissionRepository.save(new Permission(CREATE_TEST_TYPE));
+  await permissionRepository.save(new Permission(UPDATE_TEST_TYPE));
 }
 
 async function createDefaultTestType() {

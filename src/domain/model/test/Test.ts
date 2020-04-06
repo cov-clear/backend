@@ -12,7 +12,8 @@ export class Test {
     readonly id: TestId,
     readonly userId: UserId,
     readonly testType: TestType,
-    readonly administrationConfidence: ConfidenceLevel,
+    readonly creatorUserId: UserId,
+    readonly creatorConfidence: ConfidenceLevel,
     readonly creationTime: Date = new Date()
   ) {}
 

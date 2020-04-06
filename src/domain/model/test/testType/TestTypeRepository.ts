@@ -1,5 +1,6 @@
 import { TestType } from './TestType';
 import { TestTypeId } from './TestTypeId';
+import { ResourceNotFoundError } from '../../ResourceNotFoundError';
 
 export interface TestTypeRepository {
   save(testType: TestType): Promise<TestType>;
@@ -12,5 +13,11 @@ export interface TestTypeRepository {
 export class TestTypeNameAlreadyExists extends Error {
   constructor(testTypeName: string) {
     super(`Test type with name ${testTypeName} already exists`);
+  }
+}
+
+export class TestTypeNotFoundError extends ResourceNotFoundError {
+  constructor(id: string) {
+    super('testType', id);
   }
 }

@@ -47,7 +47,7 @@ class InterpretationRule {
     Validators.validateNotNullOrUndefined('interpretationRule.condition', interpretationRuleSchema.condition);
 
     return new InterpretationRule(
-      OutputPattern.from(interpretationRuleSchema.output),
+      OutputPattern.fromSchema(interpretationRuleSchema.output),
       Condition.fromSchema(interpretationRuleSchema.condition)
     );
   }
