@@ -24,7 +24,7 @@ describe('UpdateTestType', () => {
 
   it('updates the test type name', async () => {
     const testType = await testTypeRepository.save(aTestType());
-    const newName = v4();
+    const newName = 'SOME_UNIQUE_NEW_NAME';
 
     await updateTestType.execute(testType.id.value, { name: newName });
 
