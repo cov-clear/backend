@@ -202,7 +202,11 @@ describe('test endpoints', () => {
           Authorization: `Bearer ${await getTokenForUser(actorUser)}`,
         })
         .send(validTest)
-        .expect(201);
+        .expect(201)
+        .expect((response) => {
+          expect(response.body.creator.userId).toEqual(actorUser.id.value);
+          expect(response.body.creator.confidence).toBeDefined();
+        });
     });
 
     it('returns 201 with the new test if user with the right permissions tries to create a test with results for themselves', async () => {
@@ -222,6 +226,8 @@ describe('test endpoints', () => {
           expect(response.body.testType.id).toEqual(validTestCommandWithResults.testTypeId);
           expect(response.body.id).toBeDefined();
           expect(response.body.userId).toEqual(user.id.value);
+          expect(response.body.creator.userId).toEqual(user.id.value);
+          expect(response.body.creator.confidence).toBeDefined();
           expect(response.body.creationTime).toBeDefined();
         });
     });
@@ -274,7 +280,8 @@ describe('test endpoints', () => {
         .send({ results: getValidTestResultsCommand() })
         .expect(200)
         .expect((res) => {
-          expect(res.body.createdBy.userId).toEqual(tester.id.value);
+          expect(res.body.creator.userId).toEqual(tester.id.value);
+          expect(res.body.creator.confidence).toBeDefined();
           expect(res.body.details).toEqual(getValidTestResultsCommand().details);
           expect(res.body.creationTime).toBeDefined();
         });
@@ -297,7 +304,8 @@ describe('test endpoints', () => {
         .send({ results: getValidTestResultsCommand(notes) })
         .expect(200)
         .expect((res) => {
-          expect(res.body.createdBy.userId).toEqual(tester.id.value);
+          expect(res.body.creator.userId).toEqual(tester.id.value);
+          expect(res.body.creator.confidence).toBeDefined();
           expect(res.body.details).toEqual(getValidTestResultsCommand(notes).details);
           expect(res.body.creationTime).toBeDefined();
           expect(res.body.notes).toEqual(getValidTestResultsCommand(notes).notes);

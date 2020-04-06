@@ -8,10 +8,10 @@ describe('transformTestTypeToDTO', () => {
 
     const testResultsDTO = transformTestResultsToDTO(testResults);
 
-    expect(testResultsDTO.createdBy.userId).toEqual(testResults.createdBy.value);
     expect(testResultsDTO.creationTime).toEqual(testResults.creationTime);
     expect(testResultsDTO.notes).toEqual(testResults.notes);
     expect(testResultsDTO.details).toEqual(testResults.details);
-    expect(testResultsDTO.entryConfidence).toEqual(testResults.entryConfidence);
+    expect(testResultsDTO.creator.userId).toEqual(testResults.creatorUserId.value);
+    expect(testResultsDTO.creator.confidence).toEqual(testResults.creatorConfidence);
   });
 });

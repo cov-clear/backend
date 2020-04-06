@@ -58,20 +58,22 @@ export interface TestDTO {
   userId: string;
   creationTime: Date;
   testType: TestTypeSimpleDTO;
-  administeredBy: {
+  creator: {
     userId: string;
+    confidence: string;
   };
-  administrationConfidence: string;
   resultsInterpretations: TestInterpretationDTO[];
   results: TestResultsDTO | null;
 }
 
 export interface TestResultsDTO {
   details: object;
-  createdBy: { userId: string };
   creationTime: Date;
   notes: string;
-  entryConfidence: string;
+  creator: {
+    userId: string;
+    confidence: string;
+  };
 }
 
 export interface TestCommand {
