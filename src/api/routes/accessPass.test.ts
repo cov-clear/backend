@@ -33,7 +33,7 @@ describe('sharing code endpoints', () => {
         .expect(404);
     });
 
-    it('returns 403 if the sharing code does not exist', async () => {
+    it('returns 422 if the sharing code does not exist', async () => {
       const user1 = aUserWithAllInformation();
       await userRepository.save(user1);
 
@@ -44,7 +44,7 @@ describe('sharing code endpoints', () => {
         .expect(422);
     });
 
-    it('returns 403 if the sharing code has expired', async () => {
+    it('returns 422 if the sharing code has expired', async () => {
       const user1 = aUserWithAllInformation();
       const user2 = aUserWithAllInformation();
 
