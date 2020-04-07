@@ -23,9 +23,11 @@ export class AccessManager {
       return false;
     }
 
-    const hasAccessPass = await this.hasAccessPassForUser(userId);
+    if (this.isLoggedInAsUser(userId)) {
+      return true;
+    }
 
-    return this.isLoggedInAsUser(userId) || hasAccessPass;
+    return this.hasAccessPassForUser(userId);
   }
 
   isLoggedInAsUser(userId: UserId): boolean {
