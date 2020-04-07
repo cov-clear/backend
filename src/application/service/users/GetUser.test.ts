@@ -5,6 +5,7 @@ import { User } from '../../../domain/model/user/User';
 import { UserId } from '../../../domain/model/user/UserId';
 import { cleanupDatabase } from '../../../test/cleanupDatabase';
 import { getUser } from '../index';
+import { UserNotFoundError } from '../../../domain/model/user/UserRepository';
 
 describe('GetUser', () => {
   beforeEach(async () => {
@@ -12,9 +13,9 @@ describe('GetUser', () => {
   });
 
   describe('byId', () => {
-    it('returns no user if one does not exist', async () => {
-      const user = await getUser.byId(new UserId().value);
-      expect(user).toBeNull();
+    it('throws error if user does not exist', async () => {
+      const userId = new UserId();
+      await expect(getUser.byId(userId.value)).rejects.toEqual(new UserNotFoundError(userId));
     });
 
     it('returns existing user', async () => {

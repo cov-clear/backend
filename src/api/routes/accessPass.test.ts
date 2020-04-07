@@ -33,7 +33,7 @@ describe('sharing code endpoints', () => {
         .expect(404);
     });
 
-    it('returns 403 if the sharing code does not exist', async () => {
+    it('returns 422 if the sharing code does not exist', async () => {
       const user1 = aUserWithAllInformation();
       await userRepository.save(user1);
 
@@ -41,10 +41,10 @@ describe('sharing code endpoints', () => {
         .post(`/api/v1/users/${user1.id.value}/access-passes`)
         .send({ code: uuidv4() })
         .set({ Authorization: `Bearer ${await getTokenForUser(user1)}` })
-        .expect(403);
+        .expect(422);
     });
 
-    it('returns 403 if the sharing code has expired', async () => {
+    it('returns 422 if the sharing code has expired', async () => {
       const user1 = aUserWithAllInformation();
       const user2 = aUserWithAllInformation();
 
@@ -58,7 +58,7 @@ describe('sharing code endpoints', () => {
         .post(`/api/v1/users/${user1.id.value}/access-passes`)
         .send({ code: sharingCode.code })
         .set({ Authorization: `Bearer ${await getTokenForUser(user1)}` })
-        .expect(403);
+        .expect(422);
     });
 
     it('returns 200 with the sharing code if user is found', async () => {
