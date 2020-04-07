@@ -29,9 +29,8 @@ export default () => {
   });
 
   route.post('/permissions', hasPermission(CREATE_NEW_PERMISSION), async (req: AuthenticatedRequest, res: Response) => {
-    const { name } = req.body;
-
     try {
+      const { name } = req.body;
       const permission = await createPermission.execute(name, getAuthenticationOrFail(req).user);
       res.status(201).json(mapPermissionToApiPermission(permission));
     } catch (error) {
@@ -43,10 +42,9 @@ export default () => {
     '/roles/:roleName/permissions',
     hasPermission(ASSIGN_PERMISSION_TO_ROLE),
     async (req: AuthenticatedRequest, res: Response) => {
-      const { roleName } = req.params;
-      const { name: permissionName } = req.body;
-
       try {
+        const { roleName } = req.params;
+        const { name: permissionName } = req.body;
         const permission = await assignPermissionToRole.execute(
           permissionName,
           roleName,
