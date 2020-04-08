@@ -3,12 +3,12 @@ import { createTestType, getTestTypes, updateTestType } from '../../../applicati
 import { AuthenticatedRequest, getAuthenticationOrFail } from '../../../api/AuthenticatedRequest';
 
 import { isAuthenticated } from '../../middleware/isAuthenticated';
-import { CreateTestTypeCommand, UpdateTestTypeCommand } from '../../../api/interface';
 import { Body, Get, HttpCode, JsonController, Param, Patch, Post, Req, UseAfter, UseBefore } from 'routing-controllers';
 import { hasPermission } from '../../middleware/hasPermission';
 import { CREATE_TEST_TYPE, UPDATE_TEST_TYPE } from '../../../domain/model/authentication/Permissions';
 import { transformTestTypeToDTO } from '../../transformers/tests/transformTestTypeToDTO';
 import { TestTypeErrorHandler } from './TestTypeErrorHandler';
+import { CreateTestTypeCommand, UpdateTestTypeCommand } from '../../commands/testTypes';
 
 @JsonController('/v1/test-types')
 @UseBefore(isAuthenticated)

@@ -5,7 +5,6 @@ import { UserId } from '../../../domain/model/user/UserId';
 
 import { isAuthenticated } from '../../middleware/isAuthenticated';
 import { ApiError, apiErrorCodes } from '../../../api/ApiError';
-import { TestCommand, TestResultsCommand } from '../../../api/interface';
 import { transformTestToDTO } from '../../transformers/tests/transfromTestToDTO';
 import { transformTestResultsToDTO } from '../../transformers/tests/transformTestResultsToDTO';
 import { Authentication } from '../../../domain/model/authentication/Authentication';
@@ -23,6 +22,7 @@ import {
   UseBefore,
 } from 'routing-controllers';
 import { TestErrorHandler } from './TestErrorHandler';
+import { TestCommand, TestResultsCommand } from '../../commands/tests';
 
 @JsonController('/v1')
 @UseBefore(isAuthenticated)

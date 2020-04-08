@@ -1,8 +1,8 @@
 import { Test } from '../../../domain/model/test/Test';
-import { TestDTO } from '../../../api/interface';
 import { transformTestResultsToDTO } from './transformTestResultsToDTO';
 import { transformTestInterpretationToDTO } from './transformTestInterpretationToDTO';
 import { transformTestTypeToSimpleDTO } from './transformTestTypeToSimpleDTO';
+import { TestDTO } from '../../dtos/tests';
 
 export function transformTestToDTO(test: Test): TestDTO {
   return {

@@ -1,8 +1,8 @@
-import { CreateTestTypeCommand } from '../../../api/interface';
 import { TestType } from '../../../domain/model/test/testType/TestType';
 import { TestTypeId } from '../../../domain/model/test/testType/TestTypeId';
 import { TestTypeRepository } from '../../../domain/model/test/testType/TestTypeRepository';
 import { InterpretationRules } from '../../../domain/model/test/interpretation/InterpretationRules';
+import { CreateTestTypeCommand } from '../../../presentation/commands/testTypes';
 
 export class CreateTestType {
   constructor(private testTypeRepository: TestTypeRepository) {}

@@ -18,8 +18,9 @@ import {
 import { aNewUser, antibodyTestType, aResult, aTest, aTestType } from '../../../test/domainFactories';
 import { persistedUserWithRoleAndPermissions } from '../../../test/persistedEntities';
 import { TestId } from '../../../domain/model/test/TestId';
-import { TestCommand, TestDTO, TestResultsCommand } from '../../../api/interface';
 import { Application } from '../../Application';
+import { TestDTO } from '../../dtos/tests';
+import { TestCommand, TestResultsCommand } from '../../commands/tests';
 
 describe('TestController', () => {
   const app = new Application().getExpressApp();

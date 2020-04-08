@@ -12,7 +12,7 @@ import { apiErrorCodes } from '../../../api/ApiError';
 import { aCreateTestTypeCommand } from '../../../test/apiFactories';
 import { Application } from '../../Application';
 import { InterpretationTheme } from '../../../domain/model/test/interpretation/Interpretation';
-import { CreateTestTypeCommand } from '../../../api/interface';
+import { CreateTestTypeCommand } from '../../commands/testTypes';
 
 describe('test type endpoints', () => {
   const app = new Application().getExpressApp();

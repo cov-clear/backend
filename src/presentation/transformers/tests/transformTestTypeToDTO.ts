@@ -1,5 +1,5 @@
 import { TestType } from '../../../domain/model/test/testType/TestType';
-import { TestTypeDTO } from '../../../api/interface';
+import { TestTypeDTO } from '../../dtos/testTypes';
 
 export function transformTestTypeToDTO(testType: TestType): TestTypeDTO {
   return {

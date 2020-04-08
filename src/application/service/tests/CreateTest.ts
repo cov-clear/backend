@@ -4,13 +4,13 @@ import { TestId } from '../../../domain/model/test/TestId';
 import { TestTypeId } from '../../../domain/model/test/testType/TestTypeId';
 import { TestRepository } from '../../../domain/model/test/TestRepository';
 import { TestTypeRepository } from '../../../domain/model/test/testType/TestTypeRepository';
-import { TestCommand } from '../../../api/interface';
 import { DomainValidationError } from '../../../domain/model/DomainValidationError';
 import { ResourceNotFoundError } from '../../../domain/model/ResourceNotFoundError';
 import { User } from '../../../domain/model/user/User';
 import { ConfidenceLevel } from '../../../domain/model/test/ConfidenceLevel';
 import { ADMINISTER_TEST_WITH_HIGH_CONFIDENCE } from '../../../domain/model/authentication/Permissions';
 import { AddResultsToTest } from './AddResultsToTest';
+import { TestCommand } from '../../../presentation/commands/tests';
 
 export class CreateTest {
   constructor(
