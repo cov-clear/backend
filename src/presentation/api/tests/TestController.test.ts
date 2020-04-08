@@ -1,27 +1,27 @@
 import request from 'supertest';
-import database from '../../database';
-import { cleanupDatabase } from '../../test/cleanupDatabase';
-import { getTokenForUser } from '../../test/authentication';
+import database from '../../../database';
+import { cleanupDatabase } from '../../../test/cleanupDatabase';
+import { getTokenForUser } from '../../../test/authentication';
 
 import { v4 as uuidv4 } from 'uuid';
-import { TestTypeId } from '../../domain/model/test/testType/TestTypeId';
-import { UserId } from '../../domain/model/user/UserId';
-import { AccessPass } from '../../domain/model/accessPass/AccessPass';
+import { TestTypeId } from '../../../domain/model/test/testType/TestTypeId';
+import { UserId } from '../../../domain/model/user/UserId';
+import { AccessPass } from '../../../domain/model/accessPass/AccessPass';
 
 import {
   accessPassRepository,
   testRepository,
   testTypeRepository,
   userRepository,
-} from '../../infrastructure/persistence';
+} from '../../../infrastructure/persistence';
 
-import { aNewUser, antibodyTestType, aResult, aTest, aTestType } from '../../test/domainFactories';
-import { persistedUserWithRoleAndPermissions } from '../../test/persistedEntities';
-import { TestId } from '../../domain/model/test/TestId';
-import { TestCommand, TestDTO, TestResultsCommand } from '../interface';
-import { Application } from '../../presentation/Application';
+import { aNewUser, antibodyTestType, aResult, aTest, aTestType } from '../../../test/domainFactories';
+import { persistedUserWithRoleAndPermissions } from '../../../test/persistedEntities';
+import { TestId } from '../../../domain/model/test/TestId';
+import { TestCommand, TestDTO, TestResultsCommand } from '../../../api/interface';
+import { Application } from '../../Application';
 
-describe('test endpoints', () => {
+describe('TestController', () => {
   const app = new Application().getExpressApp();
 
   beforeEach(async () => {

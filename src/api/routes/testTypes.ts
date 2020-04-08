@@ -7,7 +7,7 @@ import { CREATE_TEST_TYPE, UPDATE_TEST_TYPE } from '../../domain/model/authentic
 import { ApiError, apiErrorCodes } from '../ApiError';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
 import { TestTypeNameAlreadyExists } from '../../domain/model/test/testType/TestTypeRepository';
-import { transformTestTypeToDTO } from '../transformers/test/transformTestTypeToDTO';
+import { transformTestTypeToDTO } from '../../presentation/transformers/tests/transformTestTypeToDTO';
 import { UpdateTestTypeCommand } from '../interface';
 
 export default () => {

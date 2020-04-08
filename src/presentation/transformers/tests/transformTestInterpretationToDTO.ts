@@ -1,5 +1,5 @@
 import { Interpretation } from '../../../domain/model/test/interpretation/Interpretation';
-import { TestInterpretationDTO } from '../../interface';
+import { TestInterpretationDTO } from '../../../api/interface';
 
 export function transformTestInterpretationToDTO(interpretation: Interpretation): TestInterpretationDTO {
   let name = interpretation.name;
