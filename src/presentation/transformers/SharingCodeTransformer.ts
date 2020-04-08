@@ -1,5 +1,5 @@
 import { SharingCode } from '../../domain/model/sharingCode/SharingCode';
-import { SharingCodeDTO } from '../dtos/access-sharing';
+import { SharingCodeDTO } from '../dtos/accessSharing';
 
 export class SharingCodeTransformer {
   public toSharingCodeDTO(sharingCode: SharingCode): SharingCodeDTO {
