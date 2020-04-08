@@ -1,18 +1,18 @@
 import request from 'supertest';
-import database from '../../database';
-import { cleanupDatabase } from '../../test/cleanupDatabase';
+import database from '../../../database';
+import { cleanupDatabase } from '../../../test/cleanupDatabase';
 
-import { testTypeRepository } from '../../infrastructure/persistence';
+import { testTypeRepository } from '../../../infrastructure/persistence';
 
-import { persistedUserWithRoleAndPermissions } from '../../test/persistedEntities';
-import { aTestType } from '../../test/domainFactories';
-import { getTokenForUser } from '../../test/authentication';
-import { CREATE_TEST_TYPE, UPDATE_TEST_TYPE } from '../../domain/model/authentication/Permissions';
-import { apiErrorCodes } from '../ApiError';
-import { aCreateTestTypeCommand } from '../../test/apiFactories';
-import { Application } from '../../presentation/Application';
-import { InterpretationTheme } from '../../domain/model/test/interpretation/Interpretation';
-import { CreateTestTypeCommand } from '../interface';
+import { persistedUserWithRoleAndPermissions } from '../../../test/persistedEntities';
+import { aTestType } from '../../../test/domainFactories';
+import { getTokenForUser } from '../../../test/authentication';
+import { CREATE_TEST_TYPE, UPDATE_TEST_TYPE } from '../../../domain/model/authentication/Permissions';
+import { apiErrorCodes } from '../../../api/ApiError';
+import { aCreateTestTypeCommand } from '../../../test/apiFactories';
+import { Application } from '../../Application';
+import { InterpretationTheme } from '../../../domain/model/test/interpretation/Interpretation';
+import { CreateTestTypeCommand } from '../../../api/interface';
 
 describe('test type endpoints', () => {
   const app = new Application().getExpressApp();

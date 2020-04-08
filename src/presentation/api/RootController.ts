@@ -13,10 +13,10 @@ import countries from '../../api/routes/countries';
 import permissions from '../../api/routes/permissions';
 import roles from '../../api/routes/roles';
 import sharingCode from '../../api/routes/sharingCode';
-import testTypes from '../../api/routes/testTypes';
 import { ExpressErrorMiddlewareInterface, Middleware, useExpressServer } from 'routing-controllers';
 import { UserController } from './users/user';
 import { TestController } from './tests/TestController';
+import { TestTypeController } from './tests/TestTypeController';
 
 export class RootController implements ApiController {
   public routes(): Router {
@@ -27,11 +27,10 @@ export class RootController implements ApiController {
       .use('/v1', countries())
       .use('/v1', permissions())
       .use('/v1', roles())
-      .use('/v1', sharingCode())
-      .use('/v1', testTypes());
+      .use('/v1', sharingCode());
 
     useExpressServer(expressApp, {
-      controllers: [AdminController, UserController, TestController],
+      controllers: [AdminController, UserController, TestController, TestTypeController],
       defaultErrorHandler: false,
       middlewares: [ErrorHandlingMiddleware],
     });

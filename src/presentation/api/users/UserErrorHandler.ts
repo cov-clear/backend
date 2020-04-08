@@ -18,7 +18,7 @@ export class UserErrorHandler implements ExpressErrorMiddlewareInterface {
       return next(new ApiError(422, `${error.resourceName}.not-found`));
     }
     if (error instanceof DomainValidationError) {
-      return next(new ApiError(422, `user.invalid.${error.field}`, error.reason));
+      return next(new ApiError(422, `invalid.${error.field}`, error.reason));
     }
     return next(error);
   }
