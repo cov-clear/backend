@@ -1,5 +1,5 @@
 import { ExpressErrorMiddlewareInterface, Middleware } from 'routing-controllers';
-import { ApiError } from '../../../api/ApiError';
+import { ApiError } from '../../dtos/ApiError';
 import { DomainValidationError } from '../../../domain/model/DomainValidationError';
 import { AccessPassFailedError } from '../../../application/service/access-sharing/CreateAccessPass';
 

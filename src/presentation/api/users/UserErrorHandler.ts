@@ -1,6 +1,6 @@
 import { ExpressErrorMiddlewareInterface, Middleware } from 'routing-controllers';
 import { UserNotFoundError } from '../../../domain/model/user/UserRepository';
-import { ApiError, apiErrorCodes } from '../../../api/ApiError';
+import { ApiError, apiErrorCodes } from '../../dtos/ApiError';
 import { AccessDeniedError } from '../../../domain/model/AccessDeniedError';
 import { ResourceNotFoundError } from '../../../domain/model/ResourceNotFoundError';
 import { DomainValidationError } from '../../../domain/model/DomainValidationError';

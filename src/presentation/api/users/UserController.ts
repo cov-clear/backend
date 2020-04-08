@@ -5,7 +5,7 @@ import { UserId } from '../../../domain/model/user/UserId';
 import { isAuthenticated } from '../../middleware/isAuthenticated';
 import { AuthenticatedRequest, getAuthenticationOrFail } from '../../../api/AuthenticatedRequest';
 
-import { ApiError, apiErrorCodes } from '../../../api/ApiError';
+import { ApiError, apiErrorCodes } from '../../dtos/ApiError';
 import { UpdateUserCommand } from '../../commands/users';
 import { Authentication } from '../../../domain/model/authentication/Authentication';
 import { Body, Get, JsonController, Param, Patch, Req, UseAfter, UseBefore } from 'routing-controllers';

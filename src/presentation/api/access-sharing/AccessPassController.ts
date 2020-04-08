@@ -1,6 +1,6 @@
 import { AuthenticatedRequest, getAuthenticationOrFail } from '../../../api/AuthenticatedRequest';
 import { accessManagerFactory, createAccessPass } from '../../../application/service';
-import { ApiError, apiErrorCodes } from '../../../api/ApiError';
+import { ApiError, apiErrorCodes } from '../../dtos/ApiError';
 import { UserId } from '../../../domain/model/user/UserId';
 import { Authentication } from '../../../domain/model/authentication/Authentication';
 import { BodyParam, JsonController, Param, Post, Req, UseAfter, UseBefore } from 'routing-controllers';

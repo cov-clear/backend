@@ -3,7 +3,7 @@ import AsyncRouter from '../AsyncRouter';
 import { assignRoleToUser, createRole, getRoles } from '../../application/service';
 import { AuthenticatedRequest, getAuthenticationOrFail } from '../AuthenticatedRequest';
 import { AccessDeniedError } from '../../domain/model/AccessDeniedError';
-import { ApiError, apiErrorCodes } from '../ApiError';
+import { ApiError, apiErrorCodes } from '../../presentation/dtos/ApiError';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
 import { UserNotFoundError } from '../../domain/model/user/UserRepository';
 import { RoleNotFoundError } from '../../domain/model/authentication/RoleRepository';

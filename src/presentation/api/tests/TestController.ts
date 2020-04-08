@@ -4,7 +4,7 @@ import { AuthenticatedRequest, getAuthenticationOrFail } from '../../../api/Auth
 import { UserId } from '../../../domain/model/user/UserId';
 
 import { isAuthenticated } from '../../middleware/isAuthenticated';
-import { ApiError, apiErrorCodes } from '../../../api/ApiError';
+import { ApiError, apiErrorCodes } from '../../dtos/ApiError';
 import { transformTestToDTO } from '../../transformers/tests/transfromTestToDTO';
 import { transformTestResultsToDTO } from '../../transformers/tests/transformTestResultsToDTO';
 import { Authentication } from '../../../domain/model/authentication/Authentication';

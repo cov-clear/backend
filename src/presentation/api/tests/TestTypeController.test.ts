@@ -8,7 +8,7 @@ import { persistedUserWithRoleAndPermissions } from '../../../test/persistedEnti
 import { aTestType } from '../../../test/domainFactories';
 import { getTokenForUser } from '../../../test/authentication';
 import { CREATE_TEST_TYPE, UPDATE_TEST_TYPE } from '../../../domain/model/authentication/Permissions';
-import { apiErrorCodes } from '../../../api/ApiError';
+import { apiErrorCodes } from '../../dtos/ApiError';
 import { aCreateTestTypeCommand } from '../../../test/apiFactories';
 import { Application } from '../../Application';
 import { InterpretationTheme } from '../../../domain/model/test/interpretation/Interpretation';

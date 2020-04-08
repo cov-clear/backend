@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import AsyncRouter from '../AsyncRouter';
 import { createMagicLink, exchangeAuthCode } from '../../application/service';
 import { AuthorisationFailedError } from '../../application/service/authentication/ExchangeAuthCode';
-import { ApiError, apiErrorCodes } from '../ApiError';
+import { ApiError, apiErrorCodes } from '../../presentation/dtos/ApiError';
 import { AccessDeniedError } from '../../domain/model/AccessDeniedError';
 import { ResourceNotFoundError } from '../../domain/model/ResourceNotFoundError';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';

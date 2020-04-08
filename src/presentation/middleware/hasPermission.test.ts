@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { hasPermission } from './hasPermission';
-import { ApiError, apiErrorCodes } from '../../api/ApiError';
+import { ApiError, apiErrorCodes } from '../dtos/ApiError';
 import { Authentication } from '../../domain/model/authentication/Authentication';
 import { aNewUser } from '../../test/domainFactories';
 import { AuthenticatedRequest } from '../../api/AuthenticatedRequest';

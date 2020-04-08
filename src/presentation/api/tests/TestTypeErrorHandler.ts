@@ -1,5 +1,5 @@
 import { ExpressErrorMiddlewareInterface, Middleware } from 'routing-controllers';
-import { ApiError, apiErrorCodes } from '../../../api/ApiError';
+import { ApiError, apiErrorCodes } from '../../dtos/ApiError';
 import { DomainValidationError } from '../../../domain/model/DomainValidationError';
 import { TestTypeNameAlreadyExists } from '../../../domain/model/test/testType/TestTypeRepository';
 
