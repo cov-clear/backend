@@ -9,7 +9,7 @@ import { UserNotFoundError } from '../../domain/model/user/UserRepository';
 import { RoleNotFoundError } from '../../domain/model/authentication/RoleRepository';
 import { Role } from '../../domain/model/authentication/Role';
 import { Role as ApiRole } from '../interface';
-import { hasPermission } from '../middleware/hasPermission';
+import { hasPermission } from '../../presentation/middleware/hasPermission';
 import { ASSIGN_ROLE_TO_USER, CREATE_NEW_ROLE, LIST_ROLES } from '../../domain/model/authentication/Permissions';
 
 export default () => {

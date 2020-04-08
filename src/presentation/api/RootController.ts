@@ -2,7 +2,7 @@ import express, { Router } from 'express';
 
 import * as config from '../../config';
 import logger from '../../infrastructure/logging/logger';
-import { attachAuthenticationToRequest } from '../../api/middleware/attachAuthenticationToRequest';
+import { attachAuthenticationToRequest } from '../middleware/attachAuthenticationToRequest';
 import { wrapAsyncFunction } from '../../api/AsyncRouter';
 
 import accessPass from '../../api/routes/accessPass';
@@ -15,8 +15,8 @@ import roles from '../../api/routes/roles';
 import sharingCode from '../../api/routes/sharingCode';
 import test from '../../api/routes/test';
 import testTypes from '../../api/routes/testTypes';
-import user from '../../api/routes/user';
 import { ExpressErrorMiddlewareInterface, Middleware, useExpressServer } from 'routing-controllers';
+import { UserController } from './users/user';
 
 export class RootController implements ApiController {
   public routes(): Router {
@@ -29,11 +29,10 @@ export class RootController implements ApiController {
       .use('/v1', roles())
       .use('/v1', sharingCode())
       .use('/v1', test())
-      .use('/v1', testTypes())
-      .use('/v1/users', user());
+      .use('/v1', testTypes());
 
     useExpressServer(expressApp, {
-      controllers: [AdminController],
+      controllers: [AdminController, UserController],
       defaultErrorHandler: false,
       middlewares: [ErrorHandlingMiddleware],
     });

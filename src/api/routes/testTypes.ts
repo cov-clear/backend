@@ -2,7 +2,7 @@ import AsyncRouter from '../AsyncRouter';
 import { Request, Response } from 'express';
 import { createTestType, getTestTypes, updateTestType } from '../../application/service';
 import { getAuthenticationOrFail } from '../AuthenticatedRequest';
-import { hasPermission } from '../middleware/hasPermission';
+import { hasPermission } from '../../presentation/middleware/hasPermission';
 import { CREATE_TEST_TYPE, UPDATE_TEST_TYPE } from '../../domain/model/authentication/Permissions';
 import { ApiError, apiErrorCodes } from '../ApiError';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';

@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 import logger from '../../infrastructure/logging/logger';
 import { userRepository } from '../../infrastructure/persistence';
 import { UserId } from '../../domain/model/user/UserId';
-import { AuthenticatedRequest } from '../AuthenticatedRequest';
+import { AuthenticatedRequest } from '../../api/AuthenticatedRequest';
 import { Authentication } from '../../domain/model/authentication/Authentication';
 
 const jwtSecret: string = config.get('jwt.secret');

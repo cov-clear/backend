@@ -6,7 +6,7 @@ import { accessManagerFactory, addResultsToTest, createTest, getTests } from '..
 import { AuthenticatedRequest, getAuthenticationOrFail } from '../AuthenticatedRequest';
 import { UserId } from '../../domain/model/user/UserId';
 
-import { isAuthenticated } from '../middleware/isAuthenticated';
+import { isAuthenticated } from '../../presentation/middleware/isAuthenticated';
 import { ApiError, apiErrorCodes } from '../ApiError';
 import { DomainValidationError } from '../../domain/model/DomainValidationError';
 import { ResourceNotFoundError } from '../../domain/model/ResourceNotFoundError';
