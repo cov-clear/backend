@@ -9,7 +9,6 @@ import accessPass from '../../api/routes/accessPass';
 import { ApiController } from './ApiController';
 import { AdminController } from './AdminController';
 import auth from '../../api/routes/auth';
-import countries from '../../api/routes/countries';
 import permissions from '../../api/routes/permissions';
 import roles from '../../api/routes/roles';
 import sharingCode from '../../api/routes/sharingCode';
@@ -17,6 +16,7 @@ import { ExpressErrorMiddlewareInterface, Middleware, useExpressServer } from 'r
 import { UserController } from './users/UserController';
 import { TestController } from './tests/TestController';
 import { TestTypeController } from './tests/TestTypeController';
+import { CountryController } from './users/CountryController';
 
 export class RootController implements ApiController {
   public routes(): Router {
@@ -24,13 +24,12 @@ export class RootController implements ApiController {
       .use('', wrapAsyncFunction(attachAuthenticationToRequest))
       .use('/v1', accessPass())
       .use('/v1', auth())
-      .use('/v1', countries())
       .use('/v1', permissions())
       .use('/v1', roles())
       .use('/v1', sharingCode());
 
     useExpressServer(expressApp, {
-      controllers: [AdminController, UserController, TestController, TestTypeController],
+      controllers: [AdminController, UserController, TestController, TestTypeController, CountryController],
       defaultErrorHandler: false,
       middlewares: [ErrorHandlingMiddleware],
     });

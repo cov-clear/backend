@@ -1,10 +1,10 @@
 import request from 'supertest';
-import { cleanupDatabase } from '../../test/cleanupDatabase';
-import database from '../../database';
-import { getTokenForUser } from '../../test/authentication';
-import { userRepository } from '../../infrastructure/persistence';
-import { aNewUser } from '../../test/domainFactories';
-import { Application } from '../../presentation/Application';
+import { cleanupDatabase } from '../../../test/cleanupDatabase';
+import database from '../../../database';
+import { getTokenForUser } from '../../../test/authentication';
+import { userRepository } from '../../../infrastructure/persistence';
+import { aNewUser } from '../../../test/domainFactories';
+import { Application } from '../../Application';
 
 describe('GET /countries', () => {
   const app = new Application().getExpressApp();
