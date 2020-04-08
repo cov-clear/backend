@@ -1,15 +1,15 @@
 import request from 'supertest';
-import database from '../../database';
-import { cleanupDatabase } from '../../test/cleanupDatabase';
+import database from '../../../database';
+import { cleanupDatabase } from '../../../test/cleanupDatabase';
 
-import { sharingCodeRepository, userRepository } from '../../infrastructure/persistence';
+import { sharingCodeRepository, userRepository } from '../../../infrastructure/persistence';
 
-import { SharingCode } from '../../domain/model/sharingCode/SharingCode';
-import { getTokenForUser } from '../../test/authentication';
+import { SharingCode } from '../../../domain/model/sharingCode/SharingCode';
+import { getTokenForUser } from '../../../test/authentication';
 
 import { v4 as uuidv4 } from 'uuid';
-import { aUserWithAllInformation } from '../../test/domainFactories';
-import { Application } from '../../presentation/Application';
+import { aUserWithAllInformation } from '../../../test/domainFactories';
+import { Application } from '../../Application';
 
 describe('sharing code endpoints', () => {
   const app = new Application().getExpressApp();

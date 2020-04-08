@@ -5,31 +5,37 @@ import logger from '../../infrastructure/logging/logger';
 import { attachAuthenticationToRequest } from '../middleware/attachAuthenticationToRequest';
 import { wrapAsyncFunction } from '../../api/AsyncRouter';
 
-import accessPass from '../../api/routes/accessPass';
 import { ApiController } from './ApiController';
 import { AdminController } from './admin/AdminController';
 import auth from '../../api/routes/auth';
 import permissions from '../../api/routes/permissions';
 import roles from '../../api/routes/roles';
-import sharingCode from '../../api/routes/sharingCode';
 import { ExpressErrorMiddlewareInterface, Middleware, useExpressServer } from 'routing-controllers';
 import { UserController } from './users/UserController';
 import { TestController } from './tests/TestController';
 import { TestTypeController } from './tests/TestTypeController';
 import { CountryController } from './users/CountryController';
+import { AccessPassController } from './access-sharing/AccessPassController';
+import { SharingCodeController } from './access-sharing/SharingCodeController';
 
 export class RootController implements ApiController {
   public routes(): Router {
     const expressApp = express()
       .use('', wrapAsyncFunction(attachAuthenticationToRequest))
-      .use('/v1', accessPass())
       .use('/v1', auth())
       .use('/v1', permissions())
-      .use('/v1', roles())
-      .use('/v1', sharingCode());
+      .use('/v1', roles());
 
     useExpressServer(expressApp, {
-      controllers: [AdminController, UserController, TestController, TestTypeController, CountryController],
+      controllers: [
+        AdminController,
+        UserController,
+        TestController,
+        TestTypeController,
+        CountryController,
+        AccessPassController,
+        SharingCodeController,
+      ],
       defaultErrorHandler: false,
       middlewares: [ErrorHandlingMiddleware],
     });

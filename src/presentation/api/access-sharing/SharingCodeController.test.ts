@@ -1,16 +1,16 @@
 import request from 'supertest';
-import database from '../../database';
-import { cleanupDatabase } from '../../test/cleanupDatabase';
+import database from '../../../database';
+import { cleanupDatabase } from '../../../test/cleanupDatabase';
 
-import { userRepository } from '../../infrastructure/persistence';
+import { userRepository } from '../../../infrastructure/persistence';
 
-import { UserId } from '../../domain/model/user/UserId';
-import { User } from '../../domain/model/user/User';
-import { Email } from '../../domain/model/user/Email';
-import { getTokenForUser } from '../../test/authentication';
-import { Application } from '../../presentation/Application';
+import { UserId } from '../../../domain/model/user/UserId';
+import { User } from '../../../domain/model/user/User';
+import { Email } from '../../../domain/model/user/Email';
+import { getTokenForUser } from '../../../test/authentication';
+import { Application } from '../../Application';
 
-describe('sharing code endpoints', () => {
+describe('SharingCodeController', () => {
   const app = new Application().getExpressApp();
 
   beforeEach(async () => {
