@@ -10,7 +10,7 @@ import { User } from '../../../domain/model/user/User';
 import { ConfidenceLevel } from '../../../domain/model/test/ConfidenceLevel';
 import { ADMINISTER_TEST_WITH_HIGH_CONFIDENCE } from '../../../domain/model/authentication/Permissions';
 import { AddResultsToTest } from './AddResultsToTest';
-import { TestCommand } from '../../../presentation/commands/tests';
+import { TestCommand } from '../../../presentation/commands/tests/TestCommand';
 
 export class CreateTest {
   constructor(

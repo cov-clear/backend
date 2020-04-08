@@ -1,10 +1,12 @@
 import { aResult } from './domainFactories';
 
 import { TestTypeId } from '../domain/model/test/testType/TestTypeId';
-import { AddressDTO, ProfileDTO } from '../presentation/dtos/users';
-import { TestCommand, TestResultsCommand } from '../presentation/commands/tests';
-import { CreateTestTypeCommand } from '../presentation/commands/testTypes';
-import { InterpretationRuleDTO } from '../presentation/dtos/testTypes';
+import { InterpretationRuleDTO } from '../presentation/dtos/tests/InterpretationRuleDTO';
+import { ProfileDTO } from '../presentation/dtos/users/ProfileDTO';
+import { AddressDTO } from '../presentation/dtos/users/AddressDTO';
+import { CreateTestTypeCommand } from '../presentation/commands/tests/CreateTestTypeCommand';
+import { TestResultsCommand } from '../presentation/commands/tests/TestResultsCommand';
+import { TestCommand } from '../presentation/commands/tests/TestCommand';
 
 export function anApiAddress(): AddressDTO {
   return {

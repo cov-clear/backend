@@ -1,7 +1,9 @@
 import { User } from '../../domain/model/user/User';
 import { Address } from '../../domain/model/user/Address';
 import { Profile } from '../../domain/model/user/Profile';
-import { UserDTO, ProfileDTO, AddressDTO } from '../dtos/users';
+import { UserDTO } from '../dtos/users/UserDTO';
+import { ProfileDTO } from '../dtos/users/ProfileDTO';
+import { AddressDTO } from '../dtos/users/AddressDTO';
 
 export class UserTransformer {
   public toUserDTO(user: User): UserDTO {

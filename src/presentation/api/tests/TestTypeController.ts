@@ -16,8 +16,9 @@ import { hasPermission } from '../../middleware/hasPermission';
 import { CREATE_TEST_TYPE, UPDATE_TEST_TYPE } from '../../../domain/model/authentication/Permissions';
 import { transformTestTypeToDTO } from '../../transformers/tests/transformTestTypeToDTO';
 import { TestTypeErrorHandler } from './TestTypeErrorHandler';
-import { CreateTestTypeCommand, UpdateTestTypeCommand } from '../../commands/testTypes';
 import { User } from '../../../domain/model/user/User';
+import { UpdateTestTypeCommand } from '../../commands/tests/UpdateTestTypeCommand';
+import { CreateTestTypeCommand } from '../../commands/tests/CreateTestTypeCommand';
 
 @Authorized()
 @JsonController('/v1/test-types')

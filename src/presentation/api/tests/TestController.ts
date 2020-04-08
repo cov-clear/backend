@@ -17,8 +17,9 @@ import {
   UseAfter,
 } from 'routing-controllers';
 import { TestErrorHandler } from './TestErrorHandler';
-import { TestCommand, TestResultsCommand } from '../../commands/tests';
 import { User } from '../../../domain/model/user/User';
+import { TestResultsCommand } from '../../commands/tests/TestResultsCommand';
+import { TestCommand } from '../../commands/tests/TestCommand';
 
 @Authorized()
 @JsonController('/v1')

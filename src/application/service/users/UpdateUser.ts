@@ -1,12 +1,13 @@
 import { Address } from '../../../domain/model/user/Address';
-import { UpdateUserCommand } from '../../../presentation/commands/users';
-import { AddressDTO, ProfileDTO } from '../../../presentation/dtos/users';
 import { Country } from '../../../domain/model/user/Country';
 import { DateOfBirth } from '../../../domain/model/user/DateOfBirth';
 import { Profile } from '../../../domain/model/user/Profile';
 import { Sex } from '../../../domain/model/user/Sex';
 import { UserId } from '../../../domain/model/user/UserId';
 import { UserRepository, UserNotFoundError } from '../../../domain/model/user/UserRepository';
+import { ProfileDTO } from '../../../presentation/dtos/users/ProfileDTO';
+import { AddressDTO } from '../../../presentation/dtos/users/AddressDTO';
+import { UpdateUserCommand } from '../../../presentation/commands/users/UpdateUserCommand';
 
 export class UpdateUser {
   constructor(private userRepository: UserRepository) {}

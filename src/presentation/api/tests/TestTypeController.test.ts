@@ -11,8 +11,8 @@ import { CREATE_TEST_TYPE, UPDATE_TEST_TYPE } from '../../../domain/model/authen
 import { apiErrorCodes } from '../../dtos/ApiError';
 import { aCreateTestTypeCommand } from '../../../test/apiFactories';
 import { InterpretationTheme } from '../../../domain/model/test/interpretation/Interpretation';
-import { CreateTestTypeCommand } from '../../commands/testTypes';
 import { RootController } from '../RootController';
+import { CreateTestTypeCommand } from '../../commands/tests/CreateTestTypeCommand';
 
 describe('test type endpoints', () => {
   const app = new RootController().expressApp();

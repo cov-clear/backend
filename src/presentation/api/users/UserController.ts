@@ -3,10 +3,10 @@ import { UserTransformer } from '../../transformers/UserTransformer';
 import { UserId } from '../../../domain/model/user/UserId';
 
 import { ApiError, apiErrorCodes } from '../../dtos/ApiError';
-import { UpdateUserCommand } from '../../commands/users';
 import { Authorized, Body, CurrentUser, Get, JsonController, Param, Patch, UseAfter } from 'routing-controllers';
 import { UserErrorHandler } from './UserErrorHandler';
 import { User } from '../../../domain/model/user/User';
+import { UpdateUserCommand } from '../../commands/users/UpdateUserCommand';
 
 @Authorized()
 @JsonController('/v1/users')

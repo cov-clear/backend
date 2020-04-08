@@ -4,8 +4,8 @@ import { bulkCreateUsers } from '../../../application/service';
 import { UserTransformer } from '../../transformers/UserTransformer';
 import { hasPermission } from '../../middleware/hasPermission';
 import { BULK_CREATE_USERS } from '../../../domain/model/authentication/Permissions';
-import { UserDTO } from '../../dtos/users';
-import { CreateUserCommand } from '../../commands/users';
+import { UserDTO } from '../../dtos/users/UserDTO';
+import { CreateUserCommand } from '../../commands/admin/CreateUserCommand';
 
 @JsonController('/v1/admin')
 export class AdminController {

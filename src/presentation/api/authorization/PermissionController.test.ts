@@ -13,8 +13,8 @@ import {
 import { persistedUserWithRoleAndPermissions } from '../../../test/persistedEntities';
 import { Role } from '../../../domain/model/authentication/Role';
 import { Permission } from '../../../domain/model/authentication/Permission';
-import { PermissionDTO } from '../../dtos/authorization';
 import { RootController } from '../RootController';
+import { PermissionDTO } from '../../dtos/authorization/PermissionDTO';
 
 describe('roles endpoints', () => {
   const app = new RootController().expressApp();

@@ -9,7 +9,7 @@ import { Results } from '../../../domain/model/test/Results';
 import { ConfidenceLevel } from '../../../domain/model/test/ConfidenceLevel';
 import { ADD_RESULTS_WITH_HIGH_CONFIDENCE } from '../../../domain/model/authentication/Permissions';
 import { Test } from '../../../domain/model/test/Test';
-import { TestResultsCommand } from '../../../presentation/commands/tests';
+import { TestResultsCommand } from '../../../presentation/commands/tests/TestResultsCommand';
 
 export class AddResultsToTest {
   constructor(private testRepository: TestRepository) {}

@@ -1,5 +1,5 @@
 import { Results } from '../../../domain/model/test/Results';
-import { TestResultsDTO } from '../../dtos/tests';
+import { TestResultsDTO } from '../../dtos/tests/TestResultDTO';
 
 export function transformTestResultsToDTO(results: Results): TestResultsDTO {
   return {
