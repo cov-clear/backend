@@ -1,5 +1,5 @@
 import { accessManagerFactory, getUser, updateUser } from '../../../application/service';
-import { UserTransformer } from '../../transformers/users';
+import { UserTransformer } from '../../transformers/UserTransformer';
 import { UserId } from '../../../domain/model/user/UserId';
 
 import { isAuthenticated } from '../../middleware/isAuthenticated';
