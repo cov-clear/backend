@@ -19,10 +19,9 @@ export default () => {
     '/users/:id/roles',
     hasPermission(ASSIGN_ROLE_TO_USER),
     async (req: AuthenticatedRequest, res: Response) => {
-      const { id } = req.params;
-      const { name } = req.body;
-
       try {
+        const { id } = req.params;
+        const { name } = req.body;
         const role = await assignRoleToUser.execute(name, id, getAuthenticationOrFail(req).user);
         res.status(200).json(mapRoleToApiRole(role));
       } catch (error) {
@@ -32,9 +31,8 @@ export default () => {
   );
 
   route.post('/roles', hasPermission(CREATE_NEW_ROLE), async (req: AuthenticatedRequest, res: Response) => {
-    const { name } = req.body;
-
     try {
+      const { name } = req.body;
       const role = await createRole.execute(name, getAuthenticationOrFail(req).user);
       res.status(201).json(mapRoleToApiRole(role));
     } catch (error) {
