@@ -25,14 +25,24 @@ describe('auth endpoints', () => {
           expect(response.body.active).toBeDefined();
         });
     });
+
+    it('returns proper error code if email is not a valid email', async () => {
+      await request(app)
+        .post('/api/v1/auth/magic-links')
+        .send({ email: '.213@invalid.com' })
+        .expect(422)
+        .expect((response) => {
+          expect(response.body.code).toBeDefined();
+        });
+    });
   });
 
   describe('POST /auth/login', () => {
-    it('returns 403 if the code does not exist', async () => {
+    it('returns 422 if the code does not exist', async () => {
       await request(app)
         .post('/api/v1/auth/login')
         .send({ method: 'magic-link', email: 'some@email.com', authCode: v4() })
-        .expect(403)
+        .expect(422)
         .expect((res) => {
           expect(res.body.code).toEqual(AuthorisationFailureReason.AUTH_CODE_NOT_FOUND);
         });

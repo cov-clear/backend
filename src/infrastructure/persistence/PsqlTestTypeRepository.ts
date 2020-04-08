@@ -25,7 +25,11 @@ export class PsqlTestTypeRepository implements TestTypeRepository {
             (id, name, results_schema, needed_permission_to_add_results, results_interpretation_rules)
         values
             (:id, :name, :results_schema, :needed_permission_to_add_results, :results_interpretation_rules)
-        on conflict (id) do nothing
+        on conflict (id) do update
+            set "name" = excluded.name,
+                results_schema = excluded.results_schema,
+                needed_permission_to_add_results = excluded.needed_permission_to_add_results,
+                results_interpretation_rules = excluded.results_interpretation_rules
       `,
           {
             id: testType.id.value,

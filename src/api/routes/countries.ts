@@ -1,7 +1,7 @@
 import AsyncRouter from '../AsyncRouter';
 import { Request, Response } from 'express';
 import { getCountries } from '../../application/service';
-import { isAuthenticated } from '../middleware/isAuthenticated';
+import { isAuthenticated } from '../../presentation/middleware/isAuthenticated';
 
 export default () => {
   const route = new AsyncRouter();

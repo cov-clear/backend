@@ -23,7 +23,7 @@ describe('AddResultsToTests', () => {
 
     const results = await addResultsToTest.execute(actor, test.id.value, aTestResultsCommand());
 
-    expect(results.entryConfidence).toEqual(ConfidenceLevel.LOW);
+    expect(results.creatorConfidence).toEqual(ConfidenceLevel.LOW);
   });
 
   it('adds results with HIGH confidence if the actor has the necessary permission', async () => {
@@ -37,7 +37,7 @@ describe('AddResultsToTests', () => {
 
     const results = await addResultsToTest.execute(actor, test.id.value, aTestResultsCommand());
 
-    expect(results.entryConfidence).toEqual(ConfidenceLevel.HIGH);
+    expect(results.creatorConfidence).toEqual(ConfidenceLevel.HIGH);
   });
 });
 

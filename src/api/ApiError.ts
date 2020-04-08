@@ -1,6 +1,8 @@
-export class ApiError extends Error {
-  constructor(public status: number = 500, public code: string, public message: string = code) {
-    super(`${status} - ${code} - ${message}`);
+import { HttpError } from 'routing-controllers';
+
+export class ApiError extends HttpError {
+  constructor(public httpCode: number = 500, public code: string, public message: string = code) {
+    super(httpCode, `${httpCode} - ${code} - ${message}`);
   }
 }
 

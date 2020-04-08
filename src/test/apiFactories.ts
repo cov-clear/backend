@@ -1,8 +1,8 @@
+import { InterpretationRuleDTO, TestCommand, TestResultsCommand, CreateTestTypeCommand } from '../api/interface';
 import { aResult } from './domainFactories';
-import { CreateTestTypeCommand, TestCommand, TestResultsCommand } from '../api/interface';
 
-import { AddressDTO, ProfileDTO } from '../presentation/dtos/users';
 import { TestTypeId } from '../domain/model/test/testType/TestTypeId';
+import { AddressDTO, ProfileDTO } from '../presentation/dtos/users';
 
 export function anApiAddress(): AddressDTO {
   return {
@@ -33,6 +33,7 @@ export function aCreateTestTypeCommand(
     name,
     resultsSchema: schema,
     neededPermissionToAddResults: permission,
+    interpretationRules: [anInterpretationRuleDTO()],
   };
 }
 
@@ -45,5 +46,18 @@ export function aCreateTestCommand(testTypeId = new TestTypeId()): TestCommand {
 export function aTestResultsCommand(): TestResultsCommand {
   return {
     details: aResult().details,
+  };
+}
+
+export function anInterpretationRuleDTO(): InterpretationRuleDTO {
+  return {
+    output: {
+      namePattern: 'Some pattern {{var}}',
+      theme: 'NEGATIVE',
+      propertyVariables: {
+        var: 'b',
+      },
+    },
+    condition: { type: 'object' },
   };
 }

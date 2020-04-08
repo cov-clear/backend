@@ -5,10 +5,10 @@ import { InterpretationRules } from '../interpretation/InterpretationRules';
 export class TestType {
   constructor(
     readonly id: TestTypeId,
-    readonly name: string,
-    readonly resultsSchema: object,
-    readonly neededPermissionToAddResults: string,
-    readonly interpretationRules: InterpretationRules = InterpretationRules.fromSchema([])
+    public name: string,
+    public resultsSchema: object,
+    public neededPermissionToAddResults: string,
+    public interpretationRules: InterpretationRules = InterpretationRules.fromSchema([])
   ) {
     Validators.validateNotEmpty('name', name);
     Validators.validateNotEmpty('neededPermissionToAddResults', neededPermissionToAddResults);

@@ -1,27 +1,20 @@
-import { Response, Router } from 'express';
+import { Body, HttpCode, JsonController, Post, UseBefore } from 'routing-controllers';
 
-import AsyncRouter from '../../api/AsyncRouter';
-import { ApiController } from './ApiController';
-import { isAuthenticated } from '../../api/middleware/isAuthenticated';
-import { AuthenticatedRequest } from '../../api/AuthenticatedRequest';
-
-import { bulkCreateUsers } from '../../application/service/index';
-import { CreateUserCommand } from '../commands/users';
+import { bulkCreateUsers } from '../../application/service';
 import { UserTransformer } from '../transformers/users';
-import { hasPermission } from '../../api/middleware/hasPermission';
+import { hasPermission } from '../middleware/hasPermission';
 import { BULK_CREATE_USERS } from '../../domain/model/authentication/Permissions';
+import { UserDTO } from '../dtos/users';
+import { CreateUserCommand } from '../commands/users';
 
-export class AdminController implements ApiController {
-  public routes(): Router {
-    const route = new AsyncRouter();
-
-    route.post('/users', hasPermission(BULK_CREATE_USERS), async (req: AuthenticatedRequest, res: Response) => {
-      const command = req.body as CreateUserCommand[];
-      const users = await bulkCreateUsers.execute(command);
-
-      res.status(200).json(users.map((u) => new UserTransformer().toUserDTO(u)));
-    });
-
-    return route.middleware();
+@JsonController('/v1/admin')
+export class AdminController {
+  @Post('/users')
+  @HttpCode(201)
+  @UseBefore(hasPermission(BULK_CREATE_USERS))
+  async createBulkUsers(@Body() createUserCommands: CreateUserCommand[]): Promise<Array<UserDTO>> {
+    const users = await bulkCreateUsers.execute(createUserCommands);
+    const transformer = new UserTransformer();
+    return users.map((user) => transformer.toUserDTO(user));
   }
 }

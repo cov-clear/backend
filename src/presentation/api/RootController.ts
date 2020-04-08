@@ -1,9 +1,8 @@
-import express, { Request, Response, Router } from 'express';
+import express, { Router } from 'express';
 
 import * as config from '../../config';
 import logger from '../../infrastructure/logging/logger';
-import { ApiError, apiErrorCodes } from '../../api/ApiError';
-import { attachAuthenticationToRequest } from '../../api/middleware/attachAuthenticationToRequest';
+import { attachAuthenticationToRequest } from '../middleware/attachAuthenticationToRequest';
 import { wrapAsyncFunction } from '../../api/AsyncRouter';
 
 import accessPass from '../../api/routes/accessPass';
@@ -16,50 +15,51 @@ import roles from '../../api/routes/roles';
 import sharingCode from '../../api/routes/sharingCode';
 import test from '../../api/routes/test';
 import testTypes from '../../api/routes/testTypes';
-import user from '../../api/routes/user';
+import { ExpressErrorMiddlewareInterface, Middleware, useExpressServer } from 'routing-controllers';
+import { UserController } from './users/user';
 
 export class RootController implements ApiController {
   public routes(): Router {
-    return express()
+    const expressApp = express()
       .use('', wrapAsyncFunction(attachAuthenticationToRequest))
       .use('/v1', accessPass())
-      .use('/v1/admin', new AdminController().routes())
       .use('/v1', auth())
       .use('/v1', countries())
       .use('/v1', permissions())
       .use('/v1', roles())
       .use('/v1', sharingCode())
       .use('/v1', test())
-      .use('/v1', testTypes())
-      .use('/v1/users', user())
-      .use(this.notFoundHandling())
-      .use(this.errorHandling());
+      .use('/v1', testTypes());
+
+    useExpressServer(expressApp, {
+      controllers: [AdminController, UserController],
+      defaultErrorHandler: false,
+      middlewares: [ErrorHandlingMiddleware],
+    });
+
+    return expressApp;
   }
+}
 
-  private notFoundHandling() {
-    return (_: Request, __: Response, next: (...things: any[]) => any) => {
-      next(new ApiError(404, apiErrorCodes.RESOURCE_NOT_FOUND, 'Not Found'));
-    };
-  }
+@Middleware({ type: 'after' })
+export class ErrorHandlingMiddleware implements ExpressErrorMiddlewareInterface {
+  error(err: any, req: any, res: any, next: (err?: any) => any): void {
+    if (res.headersSent) {
+      return next(err);
+    }
+    const httpCode = ((err as any).httpCode as number) || 500;
+    const code = ((err as any).code as string) || 'unexpected.error';
 
-  private errorHandling() {
-    return (err: Error, _: Request, res: Response, next: (...things: any[]) => any) => {
-      if (res.headersSent) {
-        return next(err);
-      }
-      const status = ((err as any).status as number) || 500;
-      const code = ((err as any).code as string) || 'unexpected.error';
+    if (httpCode >= 500) {
+      logger.error('Internal Error', err);
+    }
 
-      if (status >= 500) {
-        logger.error('Internal Error', err);
-      }
+    const body: any = { code };
+    if (config.isDevelopment) {
+      body.stack = err.stack;
+    }
 
-      const body: any = { code };
-      if (config.isDevelopment) {
-        body.stack = err.stack;
-      }
-      res.status(status);
-      res.json(body);
-    };
+    res.status(httpCode);
+    res.json(body);
   }
 }

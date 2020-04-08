@@ -3,9 +3,9 @@ import { ConfidenceLevel } from './ConfidenceLevel';
 
 export class Results {
   constructor(
-    readonly createdBy: UserId,
+    readonly creatorUserId: UserId,
     readonly details: object,
-    readonly entryConfidence: ConfidenceLevel,
+    readonly creatorConfidence: ConfidenceLevel,
     readonly notes: string = '',
     readonly creationTime: Date = new Date()
   ) {}

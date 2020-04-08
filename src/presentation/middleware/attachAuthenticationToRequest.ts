@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 import logger from '../../infrastructure/logging/logger';
 import { userRepository } from '../../infrastructure/persistence';
 import { UserId } from '../../domain/model/user/UserId';
-import { AuthenticatedRequest } from '../AuthenticatedRequest';
+import { AuthenticatedRequest } from '../../api/AuthenticatedRequest';
 import { Authentication } from '../../domain/model/authentication/Authentication';
 
 const jwtSecret: string = config.get('jwt.secret');
@@ -17,7 +17,11 @@ function getTokenFromHeader(req: Request) {
   return null;
 }
 
-export async function attachAuthenticationToRequest(req: AuthenticatedRequest, res: Response, next: () => any) {
+export async function attachAuthenticationToRequest(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: (err?: any) => any
+) {
   try {
     const token = getTokenFromHeader(req);
     if (!token) {
@@ -34,6 +38,6 @@ export async function attachAuthenticationToRequest(req: AuthenticatedRequest, r
     return next();
   } catch (tokenError) {
     logger.error(`Failed to authenticate`, tokenError);
-    next();
+    next(tokenError);
   }
 }

@@ -23,7 +23,7 @@ describe('CreateTest', () => {
 
     const test = await createTest.execute(actor, testedSubject.id.value, aCreateTestCommand(testType.id));
 
-    expect(test.administrationConfidence).toEqual(ConfidenceLevel.LOW);
+    expect(test.creatorConfidence).toEqual(ConfidenceLevel.LOW);
   });
 
   it('creates a test with HIGH confidence if the actor has the necessary permission', async () => {
@@ -33,7 +33,7 @@ describe('CreateTest', () => {
 
     const test = await createTest.execute(actor, testedSubject.id.value, aCreateTestCommand(testType.id));
 
-    expect(test.administrationConfidence).toEqual(ConfidenceLevel.HIGH);
+    expect(test.creatorConfidence).toEqual(ConfidenceLevel.HIGH);
   });
 });
 
