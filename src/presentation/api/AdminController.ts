@@ -2,7 +2,7 @@ import { Body, HttpCode, JsonController, Post, UseBefore } from 'routing-control
 
 import { bulkCreateUsers } from '../../application/service';
 import { UserTransformer } from '../transformers/users';
-import { hasPermission } from '../../api/middleware/hasPermission';
+import { hasPermission } from '../middleware/hasPermission';
 import { BULK_CREATE_USERS } from '../../domain/model/authentication/Permissions';
 import { UserDTO } from '../dtos/users';
 import { CreateUserCommand } from '../commands/users';

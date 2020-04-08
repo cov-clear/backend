@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import { hasPermission } from './hasPermission';
-import { ApiError, apiErrorCodes } from '../ApiError';
+import { ApiError, apiErrorCodes } from '../../api/ApiError';
 import { Authentication } from '../../domain/model/authentication/Authentication';
 import { aNewUser } from '../../test/domainFactories';
-import { AuthenticatedRequest } from '../AuthenticatedRequest';
+import { AuthenticatedRequest } from '../../api/AuthenticatedRequest';
 
 describe('hasPermission middleware', () => {
   it('throws error if the caller is not authenticated', async () => {

@@ -8,7 +8,7 @@ import { DomainValidationError } from '../../domain/model/DomainValidationError'
 import { RoleNotFoundError } from '../../domain/model/authentication/RoleRepository';
 import { Permission as ApiPermission } from '../interface';
 import { Permission } from '../../domain/model/authentication/Permission';
-import { hasPermission } from '../middleware/hasPermission';
+import { hasPermission } from '../../presentation/middleware/hasPermission';
 import {
   ASSIGN_PERMISSION_TO_ROLE,
   CREATE_NEW_PERMISSION,

@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import AsyncRouter from '../AsyncRouter';
 import { accessManagerFactory, createSharingCode } from '../../application/service';
-import { isAuthenticated } from '../middleware/isAuthenticated';
+import { isAuthenticated } from '../../presentation/middleware/isAuthenticated';
 import { AuthenticatedRequest, getAuthenticationOrFail } from '../AuthenticatedRequest';
 import { UserId } from '../../domain/model/user/UserId';
 import { ApiError, apiErrorCodes } from '../ApiError';
