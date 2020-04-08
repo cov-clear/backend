@@ -13,11 +13,11 @@ import {
 import { persistedUserWithRoleAndPermissions } from '../../../test/persistedEntities';
 import { Role } from '../../../domain/model/authentication/Role';
 import { Permission } from '../../../domain/model/authentication/Permission';
-import { Application } from '../../Application';
 import { PermissionDTO } from '../../dtos/authorization';
+import { RootController } from '../RootController';
 
 describe('roles endpoints', () => {
-  const app = new Application().getExpressApp();
+  const app = new RootController().expressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();

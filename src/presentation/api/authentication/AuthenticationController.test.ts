@@ -4,10 +4,10 @@ import { createMagicLink } from '../../../application/service';
 import database from '../../../database';
 import { cleanupDatabase } from '../../../test/cleanupDatabase';
 import { AuthorisationFailureReason } from '../../../application/service/authentication/ExchangeAuthCode';
-import { Application } from '../../Application';
+import { RootController } from '../RootController';
 
 describe('auth endpoints', () => {
-  const app = new Application().getExpressApp();
+  const app = new RootController().expressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();

@@ -1,15 +1,27 @@
 import { assignPermissionToRole, createPermission, getPermissions } from '../../../application/service';
-import { AuthenticatedRequest, getAuthenticationOrFail } from '../../../api/AuthenticatedRequest';
 import { hasPermission } from '../../middleware/hasPermission';
 import {
   ASSIGN_PERMISSION_TO_ROLE,
   CREATE_NEW_PERMISSION,
   LIST_PERMISSIONS,
 } from '../../../domain/model/authentication/Permissions';
-import { BodyParam, Get, HttpCode, JsonController, Param, Post, Req, UseAfter, UseBefore } from 'routing-controllers';
+import {
+  Authorized,
+  BodyParam,
+  CurrentUser,
+  Get,
+  HttpCode,
+  JsonController,
+  Param,
+  Post,
+  UseAfter,
+  UseBefore,
+} from 'routing-controllers';
 import { PermissionErrorHandler } from './PermissionErrorHandler';
 import { PermissionTransformer } from '../../transformers/PermissionTransformer';
+import { User } from '../../../domain/model/user/User';
 
+@Authorized()
 @JsonController('/v1')
 @UseAfter(PermissionErrorHandler)
 export class PermissionController {
@@ -29,10 +41,8 @@ export class PermissionController {
   @Post('/permissions')
   @HttpCode(201)
   @UseBefore(hasPermission(CREATE_NEW_PERMISSION))
-  async createNew(@BodyParam('name') name: string, @Req() req: AuthenticatedRequest) {
-    const authentication = getAuthenticationOrFail(req);
-
-    const permission = await this.createPermission.execute(name, authentication.user);
+  async createNew(@BodyParam('name') name: string, @CurrentUser({ required: true }) actor: User) {
+    const permission = await this.createPermission.execute(name, actor);
 
     return this.permissionTransformer.toPermissionDTO(permission);
   }
@@ -42,11 +52,9 @@ export class PermissionController {
   async assignToRole(
     @BodyParam('name') permissionName: string,
     @Param('roleName') roleName: string,
-    @Req() req: AuthenticatedRequest
+    @CurrentUser({ required: true }) actor: User
   ) {
-    const authentication = getAuthenticationOrFail(req);
-
-    const permission = await this.assignPermissionToRole.execute(permissionName, roleName, authentication.user);
+    const permission = await this.assignPermissionToRole.execute(permissionName, roleName, actor);
 
     return this.permissionTransformer.toPermissionDTO(permission);
   }

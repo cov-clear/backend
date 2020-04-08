@@ -3,7 +3,6 @@ import { hasPermission } from './hasPermission';
 import { ApiError, apiErrorCodes } from '../dtos/ApiError';
 import { Authentication } from '../../domain/model/authentication/Authentication';
 import { aNewUser } from '../../test/domainFactories';
-import { AuthenticatedRequest } from '../../api/AuthenticatedRequest';
 
 describe('hasPermission middleware', () => {
   it('throws error if the caller is not authenticated', async () => {
@@ -17,7 +16,7 @@ describe('hasPermission middleware', () => {
   it('throws error if the caller does not have the required permission', async () => {
     const authentication = new Authentication(aNewUser(), ['USER'], ['PERMISSION_ONE']);
     const requiredPermission = 'PERMISSION_TWO';
-    const request = { authentication } as AuthenticatedRequest;
+    const request = { authentication };
     const response = {} as Response;
     const next = jest.fn();
     await hasPermission(requiredPermission)(request, response, next);
@@ -27,7 +26,7 @@ describe('hasPermission middleware', () => {
   it('allows the request through if the call has the required permission', async () => {
     const requiredPermission = 'PERMISSION_TWO';
     const authentication = new Authentication(aNewUser(), ['USER'], [requiredPermission]);
-    const request = { authentication } as AuthenticatedRequest;
+    const request = { authentication };
     const response = {} as Response;
     const next = jest.fn();
 

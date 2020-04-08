@@ -5,10 +5,10 @@ import { getTokenForUser } from '../../../test/authentication';
 import { ADMIN, USER } from '../../../domain/model/authentication/Roles';
 import { BULK_CREATE_USERS } from '../../../domain/model/authentication/Permissions';
 import { persistedUserWithRoleAndPermissions } from '../../../test/persistedEntities';
-import { Application } from '../../Application';
+import { RootController } from '../RootController';
 
 describe('admin endpoints', () => {
-  const app = new Application().getExpressApp();
+  const app = new RootController().expressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();

@@ -8,10 +8,10 @@ import { UserId } from '../../../domain/model/user/UserId';
 import { User } from '../../../domain/model/user/User';
 import { Email } from '../../../domain/model/user/Email';
 import { getTokenForUser } from '../../../test/authentication';
-import { Application } from '../../Application';
+import { RootController } from '../RootController';
 
 describe('SharingCodeController', () => {
-  const app = new Application().getExpressApp();
+  const app = new RootController().expressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();

@@ -8,11 +8,11 @@ import { ADMIN, USER } from '../../../domain/model/authentication/Roles';
 import { ASSIGN_ROLE_TO_USER, CREATE_NEW_ROLE, LIST_ROLES } from '../../../domain/model/authentication/Permissions';
 import { persistedUserWithRoleAndPermissions } from '../../../test/persistedEntities';
 import { Role } from '../../../domain/model/authentication/Role';
-import { Application } from '../../Application';
 import { RoleDTO } from '../../dtos/authorization';
+import { RootController } from '../RootController';
 
 describe('roles endpoints', () => {
-  const app = new Application().getExpressApp();
+  const app = new RootController().expressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();

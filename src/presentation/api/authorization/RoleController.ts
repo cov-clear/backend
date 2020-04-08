@@ -1,11 +1,23 @@
 import { assignRoleToUser, createRole, getRoles } from '../../../application/service';
-import { AuthenticatedRequest, getAuthenticationOrFail } from '../../../api/AuthenticatedRequest';
 import { hasPermission } from '../../middleware/hasPermission';
 import { ASSIGN_ROLE_TO_USER, CREATE_NEW_ROLE, LIST_ROLES } from '../../../domain/model/authentication/Permissions';
-import { BodyParam, Get, HttpCode, JsonController, Param, Post, Req, UseAfter, UseBefore } from 'routing-controllers';
+import {
+  Authorized,
+  BodyParam,
+  CurrentUser,
+  Get,
+  HttpCode,
+  JsonController,
+  Param,
+  Post,
+  UseAfter,
+  UseBefore,
+} from 'routing-controllers';
 import { RoleErrorHandler } from './RoleErrorHandler';
 import { RoleTransformer } from '../../transformers/RoleTransformer';
+import { User } from '../../../domain/model/user/User';
 
+@Authorized()
 @JsonController('/v1')
 @UseAfter(RoleErrorHandler)
 export class RoleController {
@@ -25,10 +37,8 @@ export class RoleController {
   @Post('/roles')
   @HttpCode(201)
   @UseBefore(hasPermission(CREATE_NEW_ROLE))
-  async createNew(@BodyParam('name') name: string, @Req() req: AuthenticatedRequest) {
-    const authentication = getAuthenticationOrFail(req);
-
-    const role = await this.createRole.execute(name, authentication.user);
+  async createNew(@BodyParam('name') name: string, @CurrentUser({ required: true }) actor: User) {
+    const role = await this.createRole.execute(name, actor);
 
     return this.roleTransformer.toRoleDTO(role);
   }
@@ -38,11 +48,9 @@ export class RoleController {
   async assignToRole(
     @BodyParam('name') roleName: string,
     @Param('userId') userIdValue: string,
-    @Req() req: AuthenticatedRequest
+    @CurrentUser({ required: true }) actor: User
   ) {
-    const authentication = getAuthenticationOrFail(req);
-
-    const role = await this.assignRoleToUser.execute(roleName, userIdValue, authentication.user);
+    const role = await this.assignRoleToUser.execute(roleName, userIdValue, actor);
 
     return this.roleTransformer.toRoleDTO(role);
   }

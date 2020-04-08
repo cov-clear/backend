@@ -9,10 +9,10 @@ import { getTokenForUser } from '../../../test/authentication';
 
 import { v4 as uuidv4 } from 'uuid';
 import { aUserWithAllInformation } from '../../../test/domainFactories';
-import { Application } from '../../Application';
+import { RootController } from '../RootController';
 
 describe('sharing code endpoints', () => {
-  const app = new Application().getExpressApp();
+  const app = new RootController().expressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();

@@ -18,12 +18,12 @@ import {
 import { aNewUser, antibodyTestType, aResult, aTest, aTestType } from '../../../test/domainFactories';
 import { persistedUserWithRoleAndPermissions } from '../../../test/persistedEntities';
 import { TestId } from '../../../domain/model/test/TestId';
-import { Application } from '../../Application';
 import { TestDTO } from '../../dtos/tests';
 import { TestCommand, TestResultsCommand } from '../../commands/tests';
+import { RootController } from '../RootController';
 
 describe('TestController', () => {
-  const app = new Application().getExpressApp();
+  const app = new RootController().expressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();

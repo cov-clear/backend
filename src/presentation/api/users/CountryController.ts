@@ -1,9 +1,8 @@
 import { getCountries } from '../../../application/service';
-import { isAuthenticated } from '../../middleware/isAuthenticated';
-import { Get, JsonController, UseBefore } from 'routing-controllers';
+import { Authorized, Get, JsonController } from 'routing-controllers';
 
+@Authorized()
 @JsonController('/v1')
-@UseBefore(isAuthenticated)
 export class CountryController {
   private getCountries = getCountries;
 

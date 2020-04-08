@@ -10,10 +10,10 @@ import { AccessPass } from '../../../domain/model/accessPass/AccessPass';
 import { anAddress, aNewUser, aUserWithAllInformation } from '../../../test/domainFactories';
 import { getTokenForUser } from '../../../test/authentication';
 import { anApiAddress, anApiProfile } from '../../../test/apiFactories';
-import { Application } from '../../Application';
+import { RootController } from '../RootController';
 
 describe('user endpoints', () => {
-  const app = new Application().getExpressApp();
+  const app = new RootController().expressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();

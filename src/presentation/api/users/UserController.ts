@@ -2,27 +2,24 @@ import { accessManagerFactory, getUser, updateUser } from '../../../application/
 import { UserTransformer } from '../../transformers/UserTransformer';
 import { UserId } from '../../../domain/model/user/UserId';
 
-import { isAuthenticated } from '../../middleware/isAuthenticated';
-import { AuthenticatedRequest, getAuthenticationOrFail } from '../../../api/AuthenticatedRequest';
-
 import { ApiError, apiErrorCodes } from '../../dtos/ApiError';
 import { UpdateUserCommand } from '../../commands/users';
-import { Authentication } from '../../../domain/model/authentication/Authentication';
-import { Body, Get, JsonController, Param, Patch, Req, UseAfter, UseBefore } from 'routing-controllers';
+import { Authorized, Body, CurrentUser, Get, JsonController, Param, Patch, UseAfter } from 'routing-controllers';
 import { UserErrorHandler } from './UserErrorHandler';
+import { User } from '../../../domain/model/user/User';
 
+@Authorized()
 @JsonController('/v1/users')
-@UseBefore(isAuthenticated)
 @UseAfter(UserErrorHandler)
 export class UserController {
   private userTransformer = new UserTransformer();
   private accessManagerFactory = accessManagerFactory;
 
   @Get('/:id')
-  async getById(@Param('id') idValue: string, @Req() req: AuthenticatedRequest) {
+  async getById(@Param('id') idValue: string, @CurrentUser({ required: true }) actor: User) {
     const id = new UserId(idValue);
 
-    await this.validateCanGetUser(getAuthenticationOrFail(req), id);
+    await this.validateCanGetUser(actor, id);
 
     const user = await getUser.byId(idValue);
 
@@ -33,18 +30,18 @@ export class UserController {
   async updateProfileAndAddress(
     @Param('id') idValue: string,
     @Body() updateUserCommand: UpdateUserCommand,
-    @Req() req: AuthenticatedRequest
+    @CurrentUser({ required: true }) actor: User
   ) {
     const userId = new UserId(idValue);
 
-    await this.validateCanUpdateUser(getAuthenticationOrFail(req), userId);
+    await this.validateCanUpdateUser(actor, userId);
 
     const user = await updateUser.execute(idValue, updateUserCommand);
     return this.userTransformer.toUserDTO(user);
   }
 
-  private async validateCanUpdateUser(authentication: Authentication, userIdToBeAccessed: UserId) {
-    const accessManager = this.accessManagerFactory.forAuthentication(authentication);
+  private async validateCanUpdateUser(actor: User, userIdToBeAccessed: UserId) {
+    const accessManager = this.accessManagerFactory.forAuthenticatedUser(actor);
 
     if (accessManager.isLoggedInAsUser(userIdToBeAccessed)) {
       return;
@@ -57,10 +54,8 @@ export class UserController {
     throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
   }
 
-  private async validateCanGetUser(authentication: Authentication, userIdToBeAccessed: UserId) {
-    const canAccessUser = await this.accessManagerFactory
-      .forAuthentication(authentication)
-      .canAccessUser(userIdToBeAccessed);
+  private async validateCanGetUser(actor: User, userIdToBeAccessed: UserId) {
+    const canAccessUser = await this.accessManagerFactory.forAuthenticatedUser(actor).canAccessUser(userIdToBeAccessed);
 
     if (!canAccessUser) {
       throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);

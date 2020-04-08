@@ -4,10 +4,10 @@ import database from '../../../database';
 import { getTokenForUser } from '../../../test/authentication';
 import { userRepository } from '../../../infrastructure/persistence';
 import { aNewUser } from '../../../test/domainFactories';
-import { Application } from '../../Application';
+import { RootController } from '../RootController';
 
 describe('GET /countries', () => {
-  const app = new Application().getExpressApp();
+  const app = new RootController().expressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();
