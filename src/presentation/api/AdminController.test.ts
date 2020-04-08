@@ -5,7 +5,7 @@ import { getTokenForUser } from '../../test/authentication';
 import { ADMIN, USER } from '../../domain/model/authentication/Roles';
 import { BULK_CREATE_USERS } from '../../domain/model/authentication/Permissions';
 import { persistedUserWithRoleAndPermissions } from '../../test/persistedEntities';
-import { Application } from '../../presentation/Application';
+import { Application } from '../Application';
 
 describe('admin endpoints', () => {
   const app = new Application().getExpressApp();
@@ -24,7 +24,7 @@ describe('admin endpoints', () => {
           Authorization: `Bearer ${await getTokenForUser(authenticatedUser)}`,
         })
         .send([{ email: 'mail@example.com', roles: [USER] }])
-        .expect(200)
+        .expect(201)
         .expect((res) => {
           expect(res.body[0].email).toEqual('mail@example.com');
         });

@@ -52,7 +52,7 @@ describe('sharing code endpoints', () => {
       await userRepository.save(user2);
 
       const sharingCode = new SharingCode(user2.id, uuidv4(), new Date('1970-01-01'));
-      sharingCodeRepository.save(sharingCode);
+      await sharingCodeRepository.save(sharingCode);
 
       await request(app)
         .post(`/api/v1/users/${user1.id.value}/access-passes`)
