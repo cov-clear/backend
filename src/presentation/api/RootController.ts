@@ -14,7 +14,7 @@ import permissions from '../../api/routes/permissions';
 import roles from '../../api/routes/roles';
 import sharingCode from '../../api/routes/sharingCode';
 import { ExpressErrorMiddlewareInterface, Middleware, useExpressServer } from 'routing-controllers';
-import { UserController } from './users/user';
+import { UserController } from './users/UserController';
 import { TestController } from './tests/TestController';
 import { TestTypeController } from './tests/TestTypeController';
 
