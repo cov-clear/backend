@@ -5,7 +5,6 @@ import database from '../../database';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import { AuthorisationFailureReason } from '../../application/service/authentication/ExchangeAuthCode';
 import { Application } from '../../presentation/Application';
-import { apiErrorCodes } from '../ApiError';
 
 describe('auth endpoints', () => {
   const app = new Application().getExpressApp();

@@ -17,7 +17,11 @@ function getTokenFromHeader(req: Request) {
   return null;
 }
 
-export async function attachAuthenticationToRequest(req: AuthenticatedRequest, res: Response, next: () => any) {
+export async function attachAuthenticationToRequest(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: (err?: any) => any
+) {
   try {
     const token = getTokenFromHeader(req);
     if (!token) {
@@ -34,6 +38,6 @@ export async function attachAuthenticationToRequest(req: AuthenticatedRequest, r
     return next();
   } catch (tokenError) {
     logger.error(`Failed to authenticate`, tokenError);
-    next();
+    next(tokenError);
   }
 }
