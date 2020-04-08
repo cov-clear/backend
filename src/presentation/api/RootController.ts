@@ -17,6 +17,7 @@ import sharingCode from '../../api/routes/sharingCode';
 import test from '../../api/routes/test';
 import testTypes from '../../api/routes/testTypes';
 import user from '../../api/routes/user';
+import reports from '../../api/routes/reports';
 
 export class RootController implements ApiController {
   public routes(): Router {
@@ -32,6 +33,7 @@ export class RootController implements ApiController {
       .use('/v1', test())
       .use('/v1', testTypes())
       .use('/v1/users', user())
+      .use('/v1', reports())
       .use(this.notFoundHandling())
       .use(this.errorHandling());
   }

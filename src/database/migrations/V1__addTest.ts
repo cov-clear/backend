@@ -4,14 +4,16 @@ const TEST_TABLE = 'test';
 const TEST_RESULTS_TABLE = 'test_results';
 
 export async function up(db: knex) {
-  await db.schema.createTable(TEST_TABLE, (table) => {
-    table.uuid('id').primary();
-    table.uuid('user_id').notNullable();
-    table.uuid('creator_user_id').notNullable();
-    table.string('creator_confidence');
-    table.uuid('test_type_id').notNullable();
-    table.timestamp('creation_time').notNullable().index();
-  });
+  await db.schema
+    .createTable(TEST_TABLE, (table) => {
+      table.uuid('id').primary();
+      table.uuid('user_id').notNullable();
+      table.uuid('creator_user_id').notNullable();
+      table.string('creator_confidence');
+      table.uuid('test_type_id').notNullable();
+      table.timestamp('creation_time').notNullable().index();
+    })
+    .raw('CREATE INDEX IDX_TEST on "test" (test_type_id)');
 
   await db.schema
     .createTable(TEST_RESULTS_TABLE, (table) => {

@@ -3,6 +3,7 @@ import { TestId } from '../../../domain/model/test/TestId';
 import { TestRepository } from '../../../domain/model/test/TestRepository';
 import { UserId } from '../../../domain/model/user/UserId';
 import { TestNotFoundError } from '../../../domain/model/test/TestNotFoundError';
+import { TestTypeId } from '../../../domain/model/test/testType/TestTypeId';
 
 export class GetTests {
   constructor(private testRepository: TestRepository) {}
@@ -17,5 +18,9 @@ export class GetTests {
       throw new TestNotFoundError(id);
     }
     return test;
+  }
+
+  async getAll(testTypeId: TestTypeId): Promise<Array<Test>> {
+    return this.testRepository.getAll(testTypeId);
   }
 }

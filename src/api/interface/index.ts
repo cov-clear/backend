@@ -85,3 +85,15 @@ export interface TestResultsCommand {
   details: object;
   notes?: string;
 }
+
+export interface ReportDTO {
+  id: string;
+  userId: string;
+  testTypeName: string;
+  testCreationTime: Date;
+  testCreatorConfidence: string;
+  resultsDetails: object | null;
+  resultsNotes: string | null;
+  resultsCreatorConfidence: string | null;
+  resultsCreationTime: Date | null;
+}

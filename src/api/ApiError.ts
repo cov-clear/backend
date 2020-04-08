@@ -13,6 +13,7 @@ export const apiErrorCodes = {
   PERMISSION_NOT_FOUND: 'permission.not-found',
   RESOURCE_NOT_FOUND: 'resource.not-found',
   TEST_NOT_FOUND: 'test.not-found',
+  TEST_TYPE_NOT_FOUND: 'test-type.not-found',
 
   TEST_TYPE_NAME_CONFLICT: 'test-type.name-already-exists',
 };
