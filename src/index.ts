@@ -1,6 +1,7 @@
 import * as config from './config';
 import logger from './infrastructure/logging/logger';
 import { Application } from './presentation/Application';
+import 'reflect-metadata';
 
 async function main() {
   const app = await new Application().createAndRun();
