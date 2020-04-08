@@ -1,15 +1,15 @@
 import request from 'supertest';
-import { cleanupDatabase } from '../../test/cleanupDatabase';
-import database from '../../database';
-import { getTokenForUser } from '../../test/authentication';
-import { roleRepository, userRepository } from '../../infrastructure/persistence';
-import { aNewUser } from '../../test/domainFactories';
-import { ADMIN, USER } from '../../domain/model/authentication/Roles';
-import { ASSIGN_ROLE_TO_USER, CREATE_NEW_ROLE, LIST_ROLES } from '../../domain/model/authentication/Permissions';
-import { persistedUserWithRoleAndPermissions } from '../../test/persistedEntities';
-import { Role } from '../../domain/model/authentication/Role';
-import { Role as ApiRole } from '../interface';
-import { Application } from '../../presentation/Application';
+import { cleanupDatabase } from '../../../test/cleanupDatabase';
+import database from '../../../database';
+import { getTokenForUser } from '../../../test/authentication';
+import { roleRepository, userRepository } from '../../../infrastructure/persistence';
+import { aNewUser } from '../../../test/domainFactories';
+import { ADMIN, USER } from '../../../domain/model/authentication/Roles';
+import { ASSIGN_ROLE_TO_USER, CREATE_NEW_ROLE, LIST_ROLES } from '../../../domain/model/authentication/Permissions';
+import { persistedUserWithRoleAndPermissions } from '../../../test/persistedEntities';
+import { Role } from '../../../domain/model/authentication/Role';
+import { Application } from '../../Application';
+import { RoleDTO } from '../../dtos/authorization';
 
 describe('roles endpoints', () => {
   const app = new Application().getExpressApp();
@@ -90,7 +90,7 @@ describe('roles endpoints', () => {
         .expect(200)
         .expect((res) => {
           expect(Array.isArray(res.body)).toBe(true);
-          const roles = res.body as ApiRole[];
+          const roles = res.body as RoleDTO[];
           expect(roles.find(({ name }) => name === ADMIN)?.name).toEqual(ADMIN);
           expect(roles.find(({ name }) => name === ADMIN)?.permissions).toEqual([LIST_ROLES]);
         });

@@ -7,8 +7,6 @@ import { wrapAsyncFunction } from '../../api/AsyncRouter';
 
 import { ApiController } from './ApiController';
 import { AdminController } from './admin/AdminController';
-import permissions from '../../api/routes/permissions';
-import roles from '../../api/routes/roles';
 import { ExpressErrorMiddlewareInterface, Middleware, useExpressServer } from 'routing-controllers';
 import { UserController } from './users/UserController';
 import { TestController } from './tests/TestController';
@@ -17,24 +15,25 @@ import { CountryController } from './users/CountryController';
 import { AccessPassController } from './access-sharing/AccessPassController';
 import { SharingCodeController } from './access-sharing/SharingCodeController';
 import { AuthenticationController } from './authentication/AuthenticationController';
+import { PermissionController } from './authorization/PermissionController';
+import { RoleController } from './authorization/RoleController';
 
 export class RootController implements ApiController {
   public routes(): Router {
-    const expressApp = express()
-      .use('', wrapAsyncFunction(attachAuthenticationToRequest))
-      .use('/v1', permissions())
-      .use('/v1', roles());
+    const expressApp = express().use('', wrapAsyncFunction(attachAuthenticationToRequest));
 
     useExpressServer(expressApp, {
       controllers: [
+        AccessPassController,
         AdminController,
         AuthenticationController,
-        UserController,
+        CountryController,
+        PermissionController,
+        RoleController,
+        SharingCodeController,
         TestController,
         TestTypeController,
-        CountryController,
-        AccessPassController,
-        SharingCodeController,
+        UserController,
       ],
       defaultErrorHandler: false,
       middlewares: [ErrorHandlingMiddleware],

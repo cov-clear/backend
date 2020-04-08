@@ -1,20 +1,20 @@
 import request from 'supertest';
-import { cleanupDatabase } from '../../test/cleanupDatabase';
-import database from '../../database';
-import { getTokenForUser } from '../../test/authentication';
-import { permissionRepository, roleRepository } from '../../infrastructure/persistence';
-import { ADMIN, DOCTOR, USER } from '../../domain/model/authentication/Roles';
+import { cleanupDatabase } from '../../../test/cleanupDatabase';
+import database from '../../../database';
+import { getTokenForUser } from '../../../test/authentication';
+import { permissionRepository, roleRepository } from '../../../infrastructure/persistence';
+import { ADMIN, DOCTOR, USER } from '../../../domain/model/authentication/Roles';
 import {
   ASSIGN_PERMISSION_TO_ROLE,
   ASSIGN_ROLE_TO_USER,
   CREATE_NEW_PERMISSION,
   LIST_PERMISSIONS,
-} from '../../domain/model/authentication/Permissions';
-import { persistedUserWithRoleAndPermissions } from '../../test/persistedEntities';
-import { Role } from '../../domain/model/authentication/Role';
-import { Permission as ApiPermission } from '../interface';
-import { Permission } from '../../domain/model/authentication/Permission';
-import { Application } from '../../presentation/Application';
+} from '../../../domain/model/authentication/Permissions';
+import { persistedUserWithRoleAndPermissions } from '../../../test/persistedEntities';
+import { Role } from '../../../domain/model/authentication/Role';
+import { Permission } from '../../../domain/model/authentication/Permission';
+import { Application } from '../../Application';
+import { PermissionDTO } from '../../dtos/authorization';
 
 describe('roles endpoints', () => {
   const app = new Application().getExpressApp();
@@ -96,7 +96,7 @@ describe('roles endpoints', () => {
         .expect(200)
         .expect((res) => {
           expect(Array.isArray(res.body)).toBe(true);
-          const permissions = res.body as ApiPermission[];
+          const permissions = res.body as PermissionDTO[];
           expect(permissions.find(({ name }) => name === permission.name)).toBeDefined();
         });
     });

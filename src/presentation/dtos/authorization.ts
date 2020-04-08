@@ -1,8 +1,8 @@
-export interface Role {
+export interface RoleDTO {
   name: string;
   permissions: string[];
 }
 
-export interface Permission {
+export interface PermissionDTO {
   name: string;
 }
