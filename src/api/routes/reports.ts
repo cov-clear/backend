@@ -16,7 +16,7 @@ import { TestNotFoundError } from '../../domain/model/test/TestNotFoundError';
 import { transformTestToDTO } from '../transformers/test/transfromTestToDTO';
 import { transformTestResultsToDTO } from '../transformers/test/transformTestResultsToDTO';
 import { transformTestToReportDTO } from '../transformers/test/transformTestToReportDTO';
-import { v4 } from 'Uuid';
+import { v4 } from 'uuid';
 
 export default () => {
   const route = new AsyncRouter();
