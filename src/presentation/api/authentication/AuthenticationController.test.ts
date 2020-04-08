@@ -1,10 +1,10 @@
 import request from 'supertest';
 import { v4 } from 'uuid';
-import { createMagicLink } from '../../application/service';
-import database from '../../database';
-import { cleanupDatabase } from '../../test/cleanupDatabase';
-import { AuthorisationFailureReason } from '../../application/service/authentication/ExchangeAuthCode';
-import { Application } from '../../presentation/Application';
+import { createMagicLink } from '../../../application/service';
+import database from '../../../database';
+import { cleanupDatabase } from '../../../test/cleanupDatabase';
+import { AuthorisationFailureReason } from '../../../application/service/authentication/ExchangeAuthCode';
+import { Application } from '../../Application';
 
 describe('auth endpoints', () => {
   const app = new Application().getExpressApp();

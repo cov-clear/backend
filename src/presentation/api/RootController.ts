@@ -7,7 +7,6 @@ import { wrapAsyncFunction } from '../../api/AsyncRouter';
 
 import { ApiController } from './ApiController';
 import { AdminController } from './admin/AdminController';
-import auth from '../../api/routes/auth';
 import permissions from '../../api/routes/permissions';
 import roles from '../../api/routes/roles';
 import { ExpressErrorMiddlewareInterface, Middleware, useExpressServer } from 'routing-controllers';
@@ -17,18 +16,19 @@ import { TestTypeController } from './tests/TestTypeController';
 import { CountryController } from './users/CountryController';
 import { AccessPassController } from './access-sharing/AccessPassController';
 import { SharingCodeController } from './access-sharing/SharingCodeController';
+import { AuthenticationController } from './authentication/AuthenticationController';
 
 export class RootController implements ApiController {
   public routes(): Router {
     const expressApp = express()
       .use('', wrapAsyncFunction(attachAuthenticationToRequest))
-      .use('/v1', auth())
       .use('/v1', permissions())
       .use('/v1', roles());
 
     useExpressServer(expressApp, {
       controllers: [
         AdminController,
+        AuthenticationController,
         UserController,
         TestController,
         TestTypeController,
