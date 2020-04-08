@@ -7,7 +7,7 @@ import { wrapAsyncFunction } from '../../api/AsyncRouter';
 
 import accessPass from '../../api/routes/accessPass';
 import { ApiController } from './ApiController';
-import { AdminController } from './AdminController';
+import { AdminController } from './admin/AdminController';
 import auth from '../../api/routes/auth';
 import permissions from '../../api/routes/permissions';
 import roles from '../../api/routes/roles';

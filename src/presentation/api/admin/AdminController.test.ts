@@ -1,11 +1,11 @@
 import request from 'supertest';
-import { cleanupDatabase } from '../../test/cleanupDatabase';
-import database from '../../database';
-import { getTokenForUser } from '../../test/authentication';
-import { ADMIN, USER } from '../../domain/model/authentication/Roles';
-import { BULK_CREATE_USERS } from '../../domain/model/authentication/Permissions';
-import { persistedUserWithRoleAndPermissions } from '../../test/persistedEntities';
-import { Application } from '../Application';
+import { cleanupDatabase } from '../../../test/cleanupDatabase';
+import database from '../../../database';
+import { getTokenForUser } from '../../../test/authentication';
+import { ADMIN, USER } from '../../../domain/model/authentication/Roles';
+import { BULK_CREATE_USERS } from '../../../domain/model/authentication/Permissions';
+import { persistedUserWithRoleAndPermissions } from '../../../test/persistedEntities';
+import { Application } from '../../Application';
 
 describe('admin endpoints', () => {
   const app = new Application().getExpressApp();
