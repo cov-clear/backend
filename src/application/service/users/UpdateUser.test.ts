@@ -6,7 +6,7 @@ import { anApiAddress, anApiProfile } from '../../../test/apiFactories';
 import { userRepository } from '../../../infrastructure/persistence';
 import { aNewUser } from '../../../test/domainFactories';
 import { UserNotFoundError } from '../../../domain/model/user/UserRepository';
-import { UpdateUserCommand } from '../../../presentation/commands/users';
+import { UpdateUserCommand } from '../../../presentation/commands/users/UpdateUserCommand';
 
 describe('UpdateUser', () => {
   beforeEach(async () => {

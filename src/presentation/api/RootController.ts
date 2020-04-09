@@ -1,65 +1,53 @@
-import express, { Router } from 'express';
-
-import * as config from '../../config';
-import logger from '../../infrastructure/logging/logger';
+import express, { Application } from 'express';
 import { attachAuthenticationToRequest } from '../middleware/attachAuthenticationToRequest';
-import { wrapAsyncFunction } from '../../api/AsyncRouter';
 
-import accessPass from '../../api/routes/accessPass';
-import { ApiController } from './ApiController';
-import { AdminController } from './AdminController';
-import auth from '../../api/routes/auth';
-import countries from '../../api/routes/countries';
-import permissions from '../../api/routes/permissions';
-import roles from '../../api/routes/roles';
-import sharingCode from '../../api/routes/sharingCode';
-import test from '../../api/routes/test';
-import testTypes from '../../api/routes/testTypes';
-import { ExpressErrorMiddlewareInterface, Middleware, useExpressServer } from 'routing-controllers';
-import { UserController } from './users/user';
+import { AdminController } from './admin/AdminController';
+import { useExpressServer } from 'routing-controllers';
+import { UserController } from './users/UserController';
+import { TestController } from './tests/TestController';
+import { TestTypeController } from './tests/TestTypeController';
+import { CountryController } from './users/CountryController';
+import { AccessPassController } from './access-sharing/AccessPassController';
+import { SharingCodeController } from './access-sharing/SharingCodeController';
+import { AuthenticationController } from './authentication/AuthenticationController';
+import { PermissionController } from './authorization/PermissionController';
+import { RoleController } from './authorization/RoleController';
+import { ErrorHandlingMiddleware } from '../middleware/ErrorHandlingMiddleware';
+import { AuthorizationChecker } from '../middleware/AuthorizationChecker';
+import { CurrentUserChecker } from '../middleware/CurrentUserChecker';
+import { rollbarClient } from '../../infrastructure/logging/Rollbar';
+import securityHeaders from 'helmet';
+import logger from '../../infrastructure/logging/logger';
 
-export class RootController implements ApiController {
-  public routes(): Router {
-    const expressApp = express()
-      .use('', wrapAsyncFunction(attachAuthenticationToRequest))
-      .use('/v1', accessPass())
-      .use('/v1', auth())
-      .use('/v1', countries())
-      .use('/v1', permissions())
-      .use('/v1', roles())
-      .use('/v1', sharingCode())
-      .use('/v1', test())
-      .use('/v1', testTypes());
+export class RootController {
+  public expressApp(): Application {
+    const authorizationChecker = new AuthorizationChecker();
+    const currentUserChecker = new CurrentUserChecker();
+
+    const expressApp = express().use(securityHeaders()).use(logger.expressPlugin()).use(attachAuthenticationToRequest);
 
     useExpressServer(expressApp, {
-      controllers: [AdminController, UserController],
+      routePrefix: '/api',
+      controllers: [
+        AccessPassController,
+        AdminController,
+        AuthenticationController,
+        CountryController,
+        PermissionController,
+        RoleController,
+        SharingCodeController,
+        TestController,
+        TestTypeController,
+        UserController,
+      ],
       defaultErrorHandler: false,
       middlewares: [ErrorHandlingMiddleware],
+      authorizationChecker: authorizationChecker.hasValidToken.bind(authorizationChecker),
+      currentUserChecker: currentUserChecker.getUser.bind(currentUserChecker),
     });
 
+    expressApp.use(rollbarClient.errorHandler());
+
     return expressApp;
-  }
-}
-
-@Middleware({ type: 'after' })
-export class ErrorHandlingMiddleware implements ExpressErrorMiddlewareInterface {
-  error(err: any, req: any, res: any, next: (err?: any) => any): void {
-    if (res.headersSent) {
-      return next(err);
-    }
-    const httpCode = ((err as any).httpCode as number) || 500;
-    const code = ((err as any).code as string) || 'unexpected.error';
-
-    if (httpCode >= 500) {
-      logger.error('Internal Error', err);
-    }
-
-    const body: any = { code };
-    if (config.isDevelopment) {
-      body.stack = err.stack;
-    }
-
-    res.status(httpCode);
-    res.json(body);
   }
 }

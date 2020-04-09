@@ -1,8 +1,8 @@
-import { UpdateTestTypeCommand } from '../../../api/interface';
 import { TestType } from '../../../domain/model/test/testType/TestType';
 import { TestTypeNotFoundError, TestTypeRepository } from '../../../domain/model/test/testType/TestTypeRepository';
 import { TestTypeId } from '../../../domain/model/test/testType/TestTypeId';
 import { InterpretationRules } from '../../../domain/model/test/interpretation/InterpretationRules';
+import { UpdateTestTypeCommand } from '../../../presentation/commands/tests/UpdateTestTypeCommand';
 
 export class UpdateTestType {
   constructor(private testTypeRepository: TestTypeRepository) {}

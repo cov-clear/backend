@@ -1,6 +1,6 @@
 import { ExpressErrorMiddlewareInterface, Middleware } from 'routing-controllers';
 import { UserNotFoundError } from '../../../domain/model/user/UserRepository';
-import { ApiError, apiErrorCodes } from '../../../api/ApiError';
+import { ApiError, apiErrorCodes } from '../../dtos/ApiError';
 import { AccessDeniedError } from '../../../domain/model/AccessDeniedError';
 import { ResourceNotFoundError } from '../../../domain/model/ResourceNotFoundError';
 import { DomainValidationError } from '../../../domain/model/DomainValidationError';
@@ -18,7 +18,7 @@ export class UserErrorHandler implements ExpressErrorMiddlewareInterface {
       return next(new ApiError(422, `${error.resourceName}.not-found`));
     }
     if (error instanceof DomainValidationError) {
-      return next(new ApiError(422, `user.invalid.${error.field}`, error.reason));
+      return next(new ApiError(422, `invalid.${error.field}`, error.reason));
     }
     return next(error);
   }

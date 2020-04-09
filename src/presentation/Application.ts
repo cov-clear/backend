@@ -1,27 +1,18 @@
-import bodyParser from 'body-parser';
-import express from 'express';
-import securityHeaders from 'helmet';
 import { migrateLatest, rollbackDatabase } from '../database';
 import { createSeedDataForTestingPeriod } from '../database/testSeed';
 import { RootController } from './api/RootController';
 import logger from '../infrastructure/logging/logger';
-import { rollbarClient } from '../infrastructure/logging/Rollbar';
 
 export class Application {
   public getExpressApp() {
-    return express()
-      .use(securityHeaders())
-      .use(bodyParser.json())
-      .use(logger.expressPlugin())
-      .use('/api', new RootController().routes())
-      .use(rollbarClient.errorHandler());
+    return;
   }
 
   public async createAndRun() {
     await this.migrateDatabase();
     logger.info('DB connected and migrated');
 
-    return this.getExpressApp.bind(this)();
+    return new RootController().expressApp();
   }
 
   private async migrateDatabase() {

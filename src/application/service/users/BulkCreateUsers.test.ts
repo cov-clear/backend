@@ -4,8 +4,8 @@ import { BulkCreateUsers } from './BulkCreateUsers';
 import { cleanupDatabase } from '../../../test/cleanupDatabase';
 import { anEmail, aNewUser } from '../../../test/domainFactories';
 import { USER, DOCTOR } from '../../../domain/model/authentication/Roles';
-import { CreateUserCommand } from '../../../presentation/commands/users';
 import { Role } from '../../../domain/model/authentication/Role';
+import { CreateUserCommand } from '../../../presentation/commands/admin/CreateUserCommand';
 
 describe('BulkCreateUsers', () => {
   const bulkCreateUsers = new BulkCreateUsers(userRepository, roleRepository);

@@ -1,6 +1,5 @@
 import { TestId } from '../../../domain/model/test/TestId';
 import { TestRepository } from '../../../domain/model/test/TestRepository';
-import { TestResultsCommand } from '../../../api/interface';
 import { TestType } from '../../../domain/model/test/testType/TestType';
 import { User } from '../../../domain/model/user/User';
 import { AccessDeniedError } from '../../../domain/model/AccessDeniedError';
@@ -10,6 +9,7 @@ import { Results } from '../../../domain/model/test/Results';
 import { ConfidenceLevel } from '../../../domain/model/test/ConfidenceLevel';
 import { ADD_RESULTS_WITH_HIGH_CONFIDENCE } from '../../../domain/model/authentication/Permissions';
 import { Test } from '../../../domain/model/test/Test';
+import { TestResultsCommand } from '../../../presentation/commands/tests/TestResultsCommand';
 
 export class AddResultsToTest {
   constructor(private testRepository: TestRepository) {}
