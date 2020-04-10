@@ -21,9 +21,6 @@ export class Application {
       await rollbackDatabase();
 
       await migrateLatest();
-
-      //TODO: Remove before rolling out to production
-      await createSeedDataForTestingPeriod();
     } catch (error) {
       logger.error('Failed to apply migrations', error);
       process.exit(1);
