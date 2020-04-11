@@ -25,6 +25,7 @@ export class PsqlPermissionRepository implements PermissionRepository {
         `
       insert into permission (name, creation_time)
       values (:name, :creation_time)
+      on conflict do nothing
     `,
         {
           name: permission.name,

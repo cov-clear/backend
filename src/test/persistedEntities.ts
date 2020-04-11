@@ -1,11 +1,10 @@
 import { aNewUser, aRoleWithPermissions } from './domainFactories';
-import { ADMIN } from '../domain/model/authentication/Roles';
 import { Permission } from '../domain/model/authentication/Permission';
 import { permissionRepository, roleRepository, userRepository } from '../infrastructure/persistence';
 
 export async function persistedUserWithRoleAndPermissions(roleName: string, permissionNames: string[]) {
   const role = aRoleWithPermissions(
-    ADMIN,
+    roleName,
     permissionNames.map((permissionName) => new Permission(permissionName))
   );
   const admin = aNewUser();

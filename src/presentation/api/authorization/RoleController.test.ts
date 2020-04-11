@@ -2,7 +2,7 @@ import request from 'supertest';
 import { cleanupDatabase } from '../../../test/cleanupDatabase';
 import database from '../../../database';
 import { getTokenForUser } from '../../../test/authentication';
-import { roleRepository, userRepository } from '../../../infrastructure/persistence';
+import { permissionRepository, roleRepository, userRepository } from '../../../infrastructure/persistence';
 import { aNewUser } from '../../../test/domainFactories';
 import { ADMIN, USER } from '../../../domain/model/authentication/Roles';
 import { ASSIGN_ROLE_TO_USER, CREATE_NEW_ROLE, LIST_ROLES } from '../../../domain/model/authentication/Permissions';
@@ -10,6 +10,7 @@ import { persistedUserWithRoleAndPermissions } from '../../../test/persistedEnti
 import { Role } from '../../../domain/model/authentication/Role';
 import { RootController } from '../RootController';
 import { RoleDTO } from '../../dtos/authorization/RoleDTO';
+import { Permission } from '../../../domain/model/authentication/Permission';
 
 describe('roles endpoints', () => {
   const app = new RootController().expressApp();
@@ -79,8 +80,12 @@ describe('roles endpoints', () => {
     });
 
     it('gets all the existing roles', async () => {
-      const role = await roleRepository.save(new Role('SOME_ROLE'));
       const authenticatedUser = await persistedUserWithRoleAndPermissions(ADMIN, [LIST_ROLES]);
+
+      const permission = await permissionRepository.save(new Permission('SOME_NEW_PERMISSION'));
+      const role = new Role('SOME_NEW_ROLE');
+      role.assignPermission(permission, authenticatedUser.id);
+      await roleRepository.save(role);
 
       await request(app)
         .get(`/api/v1/roles`)
@@ -91,8 +96,8 @@ describe('roles endpoints', () => {
         .expect((res) => {
           expect(Array.isArray(res.body)).toBe(true);
           const roles = res.body as RoleDTO[];
-          expect(roles.find(({ name }) => name === ADMIN)?.name).toEqual(ADMIN);
-          expect(roles.find(({ name }) => name === ADMIN)?.permissions).toEqual([LIST_ROLES]);
+          expect(roles.find(({ name }) => name === role.name)?.name).toEqual(role.name);
+          expect(roles.find(({ name }) => name === role.name)?.permissions).toEqual([permission.name]);
         });
     });
   });

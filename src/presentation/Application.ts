@@ -1,4 +1,4 @@
-import { migrateLatest, rollbackDatabase } from '../database';
+import { migrateLatest } from '../database';
 import { RootController } from './api/RootController';
 import logger from '../infrastructure/logging/logger';
 
@@ -12,9 +12,6 @@ export class Application {
 
   private async migrateDatabase() {
     try {
-      //TODO: Remove before rolling out to production
-      await rollbackDatabase();
-
       await migrateLatest();
     } catch (error) {
       logger.error('Failed to apply migrations', error);
