@@ -1,13 +1,8 @@
 import { migrateLatest, rollbackDatabase } from '../database';
-import { createSeedDataForTestingPeriod } from '../database/testSeed';
 import { RootController } from './api/RootController';
 import logger from '../infrastructure/logging/logger';
 
 export class Application {
-  public getExpressApp() {
-    return;
-  }
-
   public async createAndRun() {
     await this.migrateDatabase();
     logger.info('DB connected and migrated');
