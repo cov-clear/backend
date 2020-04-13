@@ -91,7 +91,11 @@ export const getUser = new GetUser(userRepository);
 
 export const updateUser = new UpdateUser(userRepository);
 
-export const getExistingOrCreateNewUser = new GetExistingOrCreateNewUser(userRepository, roleRepository);
+export const getExistingOrCreateNewUser = new GetExistingOrCreateNewUser(
+  userRepository,
+  roleRepository,
+  config.get('app.setupModeEnabled')
+);
 
 export const bulkCreateUsers = new BulkCreateUsers(userRepository, roleRepository);
 

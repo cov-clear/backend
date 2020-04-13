@@ -13,3 +13,6 @@ port: PORT
 
 rollbar:
   token: ROLLBAR_TOKEN
+
+app:
+  setupModeEnabled: APP_SETUP_MODE_ENABLED
