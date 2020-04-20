@@ -1,0 +1,89 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cov-clear-backend
+  namespace: [[env]]-cov-clear-backend
+  labels:
+    app: cov-clear-backend
+    environment: [[env]]
+spec:
+  replicas: 3
+  minReadySeconds: 10
+  revisionHistoryLimit: 5
+  progressDeadlineSeconds: 120
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 34%
+  selector:
+    matchLabels:
+      app: cov-clear-backend
+  template:
+    metadata:
+      labels:
+        app: cov-clear-backend
+        environment: [[env]]
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: backend 
+          image: covclear/backend:[[docker_tag]]
+          ports:
+            - name: http
+              protocol: TCP
+              containerPort: 1337
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: AWS_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: cov-clear-backend
+                  key: AWS_REGION
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: cov-clear-backend
+                  key: AWS_ACCESS_KEY_ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: cov-clear-backend
+                  key: AWS_SECRET_ACCESS_KEY
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: cov-clear-backend
+                  key: DATABASE_URL
+            - name: ROLLBAR_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: cov-clear-backend
+                  key: ROLLBAR_TOKEN
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 2
+            httpGet:
+              path: /health
+              port: http
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 2
+            httpGet:
+              path: /health
+              port: http
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 2048Mi
+            limits:
+              cpu: 1000m
+              memory: 2048Mi
+          securityContext:
+            runAsUser: 1000 # node in the base NodeJS image
