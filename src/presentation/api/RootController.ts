@@ -12,6 +12,7 @@ import { SharingCodeController } from './access-sharing/SharingCodeController';
 import { AuthenticationController } from './authentication/AuthenticationController';
 import { PermissionController } from './authorization/PermissionController';
 import { RoleController } from './authorization/RoleController';
+import { HealthController } from './HealthController';
 import { ErrorHandlingMiddleware } from '../middleware/ErrorHandlingMiddleware';
 import { AuthorizationChecker } from '../middleware/AuthorizationChecker';
 import { CurrentUserChecker } from '../middleware/CurrentUserChecker';
@@ -29,6 +30,7 @@ export class RootController {
     useExpressServer(expressApp, {
       routePrefix: '/api',
       controllers: [
+        HealthController,
         AccessPassController,
         AdminController,
         AuthenticationController,
