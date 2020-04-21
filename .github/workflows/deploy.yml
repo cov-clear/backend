@@ -16,7 +16,8 @@ jobs:
           repository: covclear/backend
           tag_with_ref: true
           tag_with_sha: true
-  deploy:
+          add_git_labels: true
+  deploy-heroku:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
@@ -27,3 +28,26 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: 'cov-clear'
           heroku_email: 'igalarzab@gmail.com'
+  deploy-eks:
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: eu-west-1
+      EKS_CLUSTER_NAME: cov-clear-prod
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Setup kubeconfig
+        run: aws eks --region $AWS_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
+      - name: Deploy new version
+        env:
+          K8S_YAML_DIR: ./manifests
+          IMAGE_TAG: sha-$(git rev-parse --short ${{ github.sha }})
+        run: |
+          cd $K8S_YAML_DIR
+          ./render_manifests.sh prod $IMAGE_TAG | kubectl apply -f -
