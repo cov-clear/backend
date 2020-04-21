@@ -22,6 +22,7 @@ describe('auth endpoints', () => {
         .expect((response) => {
           expect(response.body.code).toBeDefined();
           expect(response.body.creationTime).toBeDefined();
+          expect(response.body.expirationTime).toBeDefined();
           expect(response.body.active).toBeDefined();
         });
     });
@@ -34,6 +35,29 @@ describe('auth endpoints', () => {
         .expect((response) => {
           expect(response.body.code).toBeDefined();
         });
+    });
+
+    describe('for production', () => {
+      let originalEnv: any;
+
+      beforeEach(async () => {
+        originalEnv = process.env.NODE_ENV;
+        process.env.NODE_ENV = 'production';
+      });
+
+      afterEach(() => {
+        process.env.NODE_ENV = originalEnv;
+      });
+
+      it('does not send the code back in the response', async () => {
+        await request(app)
+          .post('/api/v1/auth/magic-links')
+          .send({ email: 'kostas@gmail.com' })
+          .expect(200)
+          .expect((response) => {
+            expect(response.body.code).not.toBeDefined();
+          });
+      });
     });
   });
 
