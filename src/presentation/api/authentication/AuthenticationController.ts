@@ -1,23 +1,29 @@
 import { createMagicLink, exchangeAuthCode } from '../../../application/service';
 import { BodyParam, JsonController, Post, UseAfter } from 'routing-controllers';
 import { AuthenticationErrorHandler } from './AuthenticationErrorHandler';
+import * as config from '../../../config';
 
 @JsonController('/v1/auth')
 @UseAfter(AuthenticationErrorHandler)
 export class AuthenticationController {
   private createMagicLink = createMagicLink;
   private exchangeAuthCode = exchangeAuthCode;
+  private config = config;
 
   @Post('/magic-links')
   async createNewMagicLink(@BodyParam('email') emailValue: string) {
     const magicLink = await this.createMagicLink.execute(emailValue);
 
-    //TODO: Remove before prod launch
-    return {
-      code: magicLink.code.value,
+    const response: any = {
       creationTime: magicLink.creationTime,
+      expirationTime: magicLink.expirationTime(),
       active: magicLink.active,
     };
+
+    if (config.isDevelopment()) {
+      response.code = magicLink.code.value;
+    }
+    return response;
   }
 
   @Post('/login')
