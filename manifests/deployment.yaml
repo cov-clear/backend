@@ -68,7 +68,7 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 2
             httpGet:
-              path: /health
+              path: /api/v1/health
               port: http
           readinessProbe:
             failureThreshold: 3
@@ -76,7 +76,7 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 2
             httpGet:
-              path: /health
+              path: /api/v1/health
               port: http
           resources:
             requests:
