@@ -3,13 +3,13 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: cov-clear-backend
-  namespace: [[env]]-cov-clear-backend
+  name: backend
+  namespace: [[env]]
   labels:
-    app: cov-clear-backend
+    app: backend
     environment: [[env]]
 spec:
   maxUnavailable: 30%
   selector:
     matchLabels:
-      app: cov-clear-backend
+      app: backend

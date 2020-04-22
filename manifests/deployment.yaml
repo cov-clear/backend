@@ -3,30 +3,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cov-clear-backend
-  namespace: [[env]]-cov-clear-backend
+  name: backend
+  namespace: [[env]]
   labels:
-    app: cov-clear-backend
+    app: backend
     environment: [[env]]
 spec:
-  replicas: 3
+  replicas: 2
   minReadySeconds: 10
   revisionHistoryLimit: 5
-  progressDeadlineSeconds: 120
+  progressDeadlineSeconds: 60
   strategy:
     rollingUpdate:
       maxUnavailable: 0
       maxSurge: 34%
   selector:
     matchLabels:
-      app: cov-clear-backend
+      app: backend
   template:
     metadata:
       labels:
-        app: cov-clear-backend
+        app: backend
         environment: [[env]]
     spec:
-      terminationGracePeriodSeconds: 60
+      terminationGracePeriodSeconds: 30
+      serviceAccountName: backend
       containers:
         - name: backend 
           image: covclear/backend:[[docker_tag]]
@@ -37,34 +38,19 @@ spec:
           env:
             - name: NODE_ENV
               value: production
-            - name: AWS_REGION
-              valueFrom:
-                secretKeyRef:
-                  name: cov-clear-backend
-                  key: AWS_REGION
-            - name: AWS_ACCESS_KEY_ID
-              valueFrom:
-                secretKeyRef:
-                  name: cov-clear-backend
-                  key: AWS_ACCESS_KEY_ID
-            - name: AWS_SECRET_ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: cov-clear-backend
-                  key: AWS_SECRET_ACCESS_KEY
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
-                  name: cov-clear-backend
+                  name: backend 
                   key: DATABASE_URL
             - name: ROLLBAR_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: cov-clear-backend
+                  name: backend
                   key: ROLLBAR_TOKEN
           livenessProbe:
             failureThreshold: 3
-            initialDelaySeconds: 30
+            initialDelaySeconds: 10
             periodSeconds: 10
             timeoutSeconds: 2
             httpGet:
@@ -72,7 +58,7 @@ spec:
               port: http
           readinessProbe:
             failureThreshold: 3
-            initialDelaySeconds: 30
+            initialDelaySeconds: 10
             periodSeconds: 10
             timeoutSeconds: 2
             httpGet:
@@ -80,10 +66,10 @@ spec:
               port: http
           resources:
             requests:
-              cpu: 1000m
-              memory: 2048Mi
+              cpu: 500m
+              memory: 1024Mi
             limits:
-              cpu: 1000m
-              memory: 2048Mi
+              cpu: 500m
+              memory: 1024Mi
           securityContext:
             runAsUser: 1000 # node in the base NodeJS image

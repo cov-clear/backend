@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: [[env]]-cov-clear-backend
+  name: [[env]]
   labels:
-    app: cov-clear-backend
+    app: cov-clear
     environment: [[env]]
