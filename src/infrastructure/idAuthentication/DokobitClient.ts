@@ -1,45 +1,24 @@
-interface Profile {}
-
-class AuthenticationSessionToken {}
-
-interface AuthenticationSession {
-  token: AuthenticationSessionToken;
-  redirectUrl: string;
-}
-
-interface Authentication {
-  identity: Profile;
-  countryCode: string;
-}
-
-interface AuthenticationProvider {
-  createSession(): Promise<AuthenticationSession>;
-  authenticate(token: AuthenticationSessionToken): Promise<Authentication>;
-}
-
 import http, { AxiosInstance } from 'axios';
 import * as config from '../../config';
 
-interface DokobitAuthenticationRequest {
+export interface DokobitAuthenticationRequest {
   returnUrl: string;
   countryCode?: string;
 }
 
-interface DokobitAuthenticationResponse {
-  status: string;
+export interface DokobitAuthenticationResponse {
   sessionToken: string;
   url: string;
 }
 
-interface DokobitSessionStatus {
-  status: string;
+export interface DokobitSessionStatus {
   code: string;
   name: string;
   surname: string;
   countryCode: string;
 }
 
-class DokobitClient {
+export class DokobitClient {
   private http: AxiosInstance;
 
   constructor() {
@@ -58,7 +37,6 @@ class DokobitClient {
     });
 
     return {
-      status: response.data.status,
       sessionToken: response.data.session_token,
       url: response.data.url,
     };
@@ -68,27 +46,10 @@ class DokobitClient {
     const response = await this.http.get(`/api/authentication/${sessionToken}/status`);
 
     return {
-      status: response.data.status,
       code: response.data.code,
       name: response.data.name,
       surname: response.data.surname,
       countryCode: response.data.country_code,
     };
   }
-}
-
-class DokobitAuthenticationProvider implements AuthenticationProvider {
-  constructor(private client: DokobitClient) {}
-
-  async createSession(): Promise<AuthenticationSession> {
-    const returnUrl = `${config.get('frontend.baseUrl')}/`;
-    const session = await this.client.createSession({ returnUrl });
-    // check if oki
-    return {
-      token: session.sessionToken,
-      redirectUrl: session.url,
-    };
-  }
-
-  authenticate(token: AuthenticationSessionToken): Promise<Authentication>;
 }
