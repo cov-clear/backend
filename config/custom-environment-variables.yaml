@@ -9,6 +9,10 @@ emailNotifier:
     apiKey: MAILGUN_API_KEY
     domain: MAILGUN_DOMAIN
 
+authentication:
+  dokobit:
+    accessToken: DOKOBIT_ACCESS_TOKEN
+
 jwt:
   secret: JWT_SECRET
 
