@@ -70,21 +70,6 @@ export class PsqlTestRepository implements TestRepository {
     return testRows.map((testRow) => createTestFromRow(testRow, testTypesById.get(testRow.testTypeId)));
   }
 
-  async getAll(testTypeId: TestTypeId) {
-    const testTypesById = await this.getTestTypesMapById();
-    let testRows: Array<any>;
-
-    testRows = await this.getAllTestsQueryBuilder()
-      .where(`${TEST_TABLE_NAME}.test_type_id`, '=', testTypeId.value)
-      .orderBy(`${TEST_TABLE_NAME}.creation_time`, 'desc');
-
-    if (!testRows) {
-      return [];
-    }
-
-    return testRows.map((testRow) => createTestFromRow(testRow, testTypesById.get(testRow.testTypeId)));
-  }
-
   private async saveTest(test: Test) {
     return await this.db
       .raw(

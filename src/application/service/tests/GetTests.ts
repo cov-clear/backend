@@ -19,8 +19,4 @@ export class GetTests {
     }
     return test;
   }
-
-  async getAll(testTypeId: TestTypeId): Promise<Array<Test>> {
-    return this.testRepository.getAll(testTypeId);
-  }
 }

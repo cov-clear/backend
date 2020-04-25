@@ -18,7 +18,9 @@ import {
   testTypeRepository,
   userRepository,
   testRepository,
+  reportRepository,
 } from '../../infrastructure/persistence';
+
 import { GetUser } from './users/GetUser';
 import { UpdateUser } from './users/UpdateUser';
 import { GetCountries } from './users/GetCountries';
@@ -31,6 +33,7 @@ import { MailGunEmailNotifier } from '../../infrastructure/notifications/MailGun
 import { AWSEmailNotifier } from '../../infrastructure/notifications/AWSEmailNotifier';
 import { CreateTest } from './tests/CreateTest';
 import { GetTests } from './tests/GetTests';
+import { GetReports } from './reports/GetReports';
 import { AssignRoleToUser } from './authorization/AssignRoleToUser';
 
 import { AccessManagerFactory } from '../../domain/model/authentication/AccessManager';
@@ -109,3 +112,4 @@ export const updateTestType = new UpdateTestType(testTypeRepository);
 export const getTests = new GetTests(testRepository);
 export const addResultsToTest = new AddResultsToTest(testRepository);
 export const createTest = new CreateTest(testRepository, testTypeRepository, addResultsToTest);
+export const getReports = new GetReports(reportRepository);

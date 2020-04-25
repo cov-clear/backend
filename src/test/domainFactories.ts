@@ -18,6 +18,7 @@ import { ConfidenceLevel } from '../domain/model/test/ConfidenceLevel';
 import { InterpretationRules } from '../domain/model/test/interpretation/InterpretationRules';
 import { InterpretationTheme } from '../domain/model/test/interpretation/Interpretation';
 import { ADD_TAKE_HOME_TEST_RESULT } from '../domain/model/authentication/Permissions';
+import { ReportTestResult } from '../domain/model/reports/ReportTestResult';
 
 export function aNewUser() {
   return new User(new UserId(), anEmail());
@@ -198,4 +199,31 @@ export function antibodyTestTypeInterpretationRules() {
       },
     },
   ]);
+}
+
+export function aReportTestResult(
+  testType = aTestType(),
+  id = new TestId(),
+  userId = new UserId(),
+  testCreationTime = new Date(),
+  resultsDetails = {
+    type: 'object',
+    properties: {
+      c: { type: 'boolean', title: 'C' },
+      igg: { type: 'boolean', title: 'IgG' },
+      igm: { type: 'boolean', title: 'IgM' },
+    },
+  },
+  resultsCreationTime = new Date()
+) {
+  return new ReportTestResult(
+    id,
+    userId,
+    testType,
+    ConfidenceLevel.LOW,
+    testCreationTime,
+    resultsDetails,
+    ConfidenceLevel.LOW,
+    resultsCreationTime
+  );
 }
