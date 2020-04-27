@@ -20,7 +20,6 @@ export class DokobitAuthenticationProvider implements AuthenticationProvider {
     try {
       session = await this.client.createSession({
         returnUrl,
-        countryCode: ESTONIA_CODE,
       });
     } catch (error) {
       throw new AuthenticationError(error.message);

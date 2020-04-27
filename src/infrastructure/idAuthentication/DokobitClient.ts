@@ -3,7 +3,6 @@ import * as config from '../../config';
 
 export interface DokobitAuthenticationRequest {
   returnUrl: string;
-  countryCode?: string;
 }
 
 export interface DokobitAuthenticationResponse {
