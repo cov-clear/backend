@@ -1,6 +1,9 @@
 db:
   connectionUrl: DATABASE_URL
 
+frontend:
+  baseUrl: FRONTEND_BASE_URL
+
 emailNotifier:
   mailGunConfig:
     apiKey: MAILGUN_API_KEY

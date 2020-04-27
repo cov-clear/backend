@@ -40,8 +40,8 @@ spec:
               value: production
             - name: AWS_REGION
               value: eu-west-1
-            - name: APP_DOMAIN
-              value: [[domain]]
+            - name: FRONTEND_BASE_URL
+              value: https://[[domain]]
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
