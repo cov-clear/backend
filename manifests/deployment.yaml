@@ -10,7 +10,7 @@ metadata:
     environment: [[env]]
 spec:
   replicas: 2
-  minReadySeconds: 10
+  minReadySeconds: 5
   revisionHistoryLimit: 5
   progressDeadlineSeconds: 60
   strategy:
@@ -38,6 +38,10 @@ spec:
           env:
             - name: NODE_ENV
               value: production
+            - name: AWS_REGION
+              value: eu-west-1
+            - name: APP_DOMAIN
+              value: [[domain]]
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:

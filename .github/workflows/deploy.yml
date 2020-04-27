@@ -44,10 +44,21 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
       - name: Setup kubeconfig
         run: aws eks --region $AWS_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
-      - name: Deploy new version
+      - name: Deploy new UK version
         env:
           K8S_YAML_DIR: ./manifests
           IMAGE_TAG: sha-$(git rev-parse --short ${{ github.sha }})
+          ROLE_ARN: arn:aws:iam::310398818202:role\\/cov-clear-uk-backend
+          COUNTRY: uk
         run: |
           cd $K8S_YAML_DIR
-          ./render_manifests.sh prod $IMAGE_TAG | kubectl apply -f -
+          ./render_manifests.sh $COUNTRY $IMAGE_TAG $COUNTRY.cov-clear.com $ROLE_ARN | kc apply -f -
+      - name: Deploy new EE version
+        env:
+          K8S_YAML_DIR: ./manifests
+          IMAGE_TAG: sha-$(git rev-parse --short ${{ github.sha }})
+          ROLE_ARN: arn:aws:iam::310398818202:role\\/cov-clear-ee-backend
+          COUNTRY: ee
+        run: |
+          cd $K8S_YAML_DIR
+          ./render_manifests.sh $COUNTRY $IMAGE_TAG $COUNTRY.cov-clear.com $ROLE_ARN | kc apply -f -

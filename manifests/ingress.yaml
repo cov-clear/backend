@@ -21,7 +21,7 @@ spec:
     - host: [[domain]]
       http:
         paths:
-          - path: /api/*
+          - path: /*
             backend:
               serviceName: ssl-redirect
               servicePort: use-annotation
