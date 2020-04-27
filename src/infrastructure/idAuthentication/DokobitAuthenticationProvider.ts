@@ -8,6 +8,8 @@ import {
 } from '../../domain/model/idAuthentication/models';
 import { DokobitClient } from './DokobitClient';
 
+const ESTONIA_CODE = 'et';
+
 export class DokobitAuthenticationProvider implements AuthenticationProvider {
   constructor(private client = new DokobitClient()) {}
 
@@ -18,8 +20,8 @@ export class DokobitAuthenticationProvider implements AuthenticationProvider {
     try {
       session = await this.client.createSession({
         returnUrl,
-        countryCode: 'et',
-      }); // TODO: Move country code to config
+        countryCode: ESTONIA_CODE,
+      });
     } catch (error) {
       throw new AuthenticationError(error.message);
     }
@@ -38,14 +40,14 @@ export class DokobitAuthenticationProvider implements AuthenticationProvider {
       throw new AuthenticationError(error.message);
     }
 
-    if (sessionStatus.countryCode !== 'et') {
+    if (sessionStatus.countryCode !== ESTONIA_CODE) {
       throw new AuthenticationError(`Country not supported: ${sessionStatus.countryCode}`);
     }
 
     return {
       code: sessionStatus.code,
-      firstName: sessionStatus.firstName,
-      lastName: sessionStatus.lastName,
+      firstName: sessionStatus.name,
+      lastName: sessionStatus.surname,
     };
   }
 }
