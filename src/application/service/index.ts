@@ -3,6 +3,7 @@ import mailgun from 'mailgun-js';
 import AWS from 'aws-sdk';
 
 import { Email } from '../../domain/model/user/Email';
+import { CreateAuthenticationSession } from './authentication/CreateAuthenticationSession';
 import { GenerateAuthToken } from './authentication/GenerateAuthToken';
 import { ExchangeAuthCode } from './authentication/ExchangeAuthCode';
 import { CreateNewMagicLink } from './authentication/CreateNewMagicLink';
@@ -20,6 +21,7 @@ import {
   testRepository,
   reportRepository,
 } from '../../infrastructure/persistence';
+import { DokobitAuthenticationProvider } from '../../infrastructure/idAuthentication/DokobitAuthenticationProvider';
 import { GetUser } from './users/GetUser';
 import { UpdateUser } from './users/UpdateUser';
 import { GetCountries } from './users/GetCountries';
@@ -61,6 +63,8 @@ switch (config.get('emailNotifier.type')) {
     emailNotifier = new AWSEmailNotifier(new AWS.SES({ apiVersion: '2010-12-01' }));
 }
 
+const authenticationProvider = new DokobitAuthenticationProvider();
+
 export const accessManagerFactory = new AccessManagerFactory(accessPassRepository);
 
 export const assignPermissionToRole = new AssignPermissionToRole(roleRepository, permissionRepository);
@@ -101,6 +105,7 @@ export const getExistingOrCreateNewUser = new GetExistingOrCreateNewUser(
 
 export const bulkCreateUsers = new BulkCreateUsers(userRepository, roleRepository);
 
+export const createAuthenticationSession = new CreateAuthenticationSession(authenticationProvider);
 export const exchangeAuthCode = new ExchangeAuthCode(
   magicLinkRepository,
   generateAuthToken,

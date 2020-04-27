@@ -1,23 +1,14 @@
-import { createMagicLink, exchangeAuthCode } from '../../../application/service';
+import { createMagicLink, exchangeAuthCode, createAuthenticationSession } from '../../../application/service';
 import { BodyParam, JsonController, Post, UseAfter } from 'routing-controllers';
 import { AuthenticationErrorHandler } from './AuthenticationErrorHandler';
 import * as config from '../../../config';
-
-interface AuthenticationSession {
-  token: string;
-  url: string;
-}
-
-interface CreateAuthenticationSession {
-  execute(): Promise<AuthenticationSession>;
-}
 
 @JsonController('/v1/auth')
 @UseAfter(AuthenticationErrorHandler)
 export class AuthenticationController {
   private createMagicLink = createMagicLink;
   private exchangeAuthCode = exchangeAuthCode;
-  private createAuthenticationSession: CreateAuthenticationSession;
+  private createAuthenticationSession = createAuthenticationSession;
 
   @Post('/magic-links')
   async createNewMagicLink(@BodyParam('email') emailValue: string) {
@@ -38,10 +29,7 @@ export class AuthenticationController {
   @Post('/sessions')
   async createNewAuthenticationSession() {
     const authSession = await this.createAuthenticationSession.execute();
-    return {
-      token: authSession.token,
-      url: authSession.url,
-    };
+    return { redirectUrl: authSession.redirectUrl };
   }
 
   @Post('/login')

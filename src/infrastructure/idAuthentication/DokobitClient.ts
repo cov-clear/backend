@@ -24,18 +24,17 @@ export class DokobitClient {
   constructor() {
     this.http = http.create({
       baseURL: config.get('authentication.dokobit.baseUrl'),
-      params: {
-        access_token: config.get('authentication.dokobit.accessToken'),
-      },
     });
   }
 
   async createSession(request: DokobitAuthenticationRequest): Promise<DokobitAuthenticationResponse> {
-    const response = await this.http.post('/api/authentication/create', {
-      return_url: request.returnUrl,
-      country_code: request.countryCode,
-    });
-
+    const response = await this.http.post(
+      '/api/authentication/create',
+      {
+        return_url: request.returnUrl,
+      },
+      this.authenticatedParams()
+    );
     return {
       sessionToken: response.data.session_token,
       url: response.data.url,
@@ -43,13 +42,21 @@ export class DokobitClient {
   }
 
   async getSessionStatus(sessionToken: string): Promise<DokobitSessionStatus> {
-    const response = await this.http.get(`/api/authentication/${sessionToken}/status`);
+    const response = await this.http.get(`/api/authentication/${sessionToken}/status`, this.authenticatedParams());
 
     return {
       code: response.data.code,
       name: response.data.name,
       surname: response.data.surname,
       countryCode: response.data.country_code,
+    };
+  }
+
+  private authenticatedParams() {
+    return {
+      params: {
+        access_token: config.get('authentication.dokobit.accessToken'),
+      },
     };
   }
 }
