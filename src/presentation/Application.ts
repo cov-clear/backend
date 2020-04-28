@@ -1,13 +1,12 @@
 import { migrateLatest } from '../database';
-import { RootController } from './api/RootController';
+// import { RootController } from './api/RootController';
 import logger from '../infrastructure/logging/logger';
 
 export class Application {
   public async createAndRun() {
     await this.migrateDatabase();
     logger.info('DB connected and migrated');
-
-    return new RootController().expressApp();
+    // return new RootController().expressApp();
   }
 
   private async migrateDatabase() {

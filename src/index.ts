@@ -6,15 +6,15 @@ import 'reflect-metadata';
 async function main() {
   const app = await new Application().createAndRun();
 
-  app.listen(config.get('port'), (err: any) => {
-    if (err) {
-      logger.error(err);
-      process.exit(1);
-      return;
-    }
+  // app.listen(config.get('port'), (err: any) => {
+  //   if (err) {
+  //     logger.error(err);
+  //     process.exit(1);
+  //     return;
+  //   }
 
-    logger.info(`App listening on ${config.get('port')}`);
-  });
+  //   logger.info(`App listening on ${config.get('port')}`);
+  // });
 }
 
 main();

@@ -6,6 +6,7 @@ import { Email } from '../../domain/model/user/Email';
 import { CreateAuthenticationSession } from './authentication/CreateAuthenticationSession';
 import { GenerateAuthToken } from './authentication/GenerateAuthToken';
 import { ExchangeAuthCode } from './authentication/ExchangeAuthCode';
+import { Authenticate } from './authentication/Authenticate';
 import { CreateNewMagicLink } from './authentication/CreateNewMagicLink';
 import * as config from '../../config';
 import { GetExistingOrCreateNewUser } from './users/GetExistingOrCreateNewUser';
@@ -111,6 +112,7 @@ export const exchangeAuthCode = new ExchangeAuthCode(
   generateAuthToken,
   getExistingOrCreateNewUser
 );
+export const authenticate = new Authenticate(exchangeAuthCode);
 
 export const createSharingCode = new CreateSharingCode(sharingCodeRepository);
 export const createAccessPass = new CreateAccessPass(accessPassRepository, sharingCodeRepository);
