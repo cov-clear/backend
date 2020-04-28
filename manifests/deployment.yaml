@@ -26,7 +26,7 @@ spec:
         app: backend
         environment: [[env]]
     spec:
-      terminationGracePeriodSeconds: 30
+      terminationGracePeriodSeconds: 10
       serviceAccountName: backend
       containers:
         - name: backend 
@@ -54,16 +54,14 @@ spec:
                   key: ROLLBAR_TOKEN
           livenessProbe:
             failureThreshold: 3
-            initialDelaySeconds: 10
-            periodSeconds: 10
+            periodSeconds: 5
             timeoutSeconds: 2
             httpGet:
               path: /api/v1/health
               port: http
           readinessProbe:
             failureThreshold: 3
-            initialDelaySeconds: 10
-            periodSeconds: 10
+            periodSeconds: 5
             timeoutSeconds: 2
             httpGet:
               path: /api/v1/health
