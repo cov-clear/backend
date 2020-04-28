@@ -12,7 +12,11 @@ export class SharingCodeController {
   private createSharingCode = createSharingCode;
 
   @Post('')
-  async createNewAccessPass(@Param('userId') userIdValue: string, @CurrentUser({ required: true }) actor: User) {
+  async createNewAccessPass(
+    @Param('userId') userIdValue: string,
+    @Param('duration') duration: number,
+    @CurrentUser({ required: true }) actor: User
+  ) {
     await this.ensureIsLoggedInAsUser(actor, new UserId(userIdValue));
 
     const sharingCode = await this.createSharingCode.withUserId(userIdValue);

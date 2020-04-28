@@ -5,7 +5,12 @@ import { UserId } from '../user/UserId';
 const SHARING_CODE_LIFETIME_MSEC = 5 * 60 * 1_000;
 
 export class SharingCode {
-  constructor(readonly userId: UserId, readonly code: string = uuidv4(), readonly creationTime: Date = new Date()) {}
+  constructor(
+    readonly userId: UserId,
+    readonly duration: number = 15,
+    readonly code: string = uuidv4(),
+    readonly creationTime: Date = new Date()
+  ) {}
 
   public isExpired(): boolean {
     return Date.now() > this.expirationTime().getTime();

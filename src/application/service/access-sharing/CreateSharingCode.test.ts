@@ -11,7 +11,7 @@ describe('CreateSharingCode', () => {
   });
 
   it('creates a new sharing code with a userId', async () => {
-    const persistedSharingCode: SharingCode = await createSharingCode.withUserId(uuidv4());
+    const persistedSharingCode: SharingCode = await createSharingCode.withUserId(uuidv4(), 20);
 
     const sharingCode = await sharingCodeRepository.findByCode(persistedSharingCode.code);
 
