@@ -1,3 +1,4 @@
+import nock from 'nock';
 import request from 'supertest';
 import { v4 } from 'uuid';
 import { createMagicLink } from '../../../application/service';
@@ -58,6 +59,22 @@ describe('auth endpoints', () => {
             expect(response.body.code).not.toBeDefined();
           });
       });
+    });
+  });
+
+  describe('POST /auth/sessions', () => {
+    it('creates a Dokobit session', async () => {
+      nock('https://id-sandbox.dokobit.com')
+        .post('/api/authentication/create', { return_url: /\/authenticate/i })
+        .query({ access_token: 'dummy' })
+        .reply(200, { session_token: 'some session token', url: 'example.com/dokobit-redirect' });
+
+      await request(app)
+        .post('/api/v1/auth/sessions')
+        .expect(200)
+        .expect((response) => {
+          expect(response.body.redirectUrl).toBe('example.com/dokobit-redirect');
+        });
     });
   });
 
