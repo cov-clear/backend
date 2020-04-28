@@ -8,7 +8,6 @@ import * as config from '../../../config';
 export class AuthenticationController {
   private createMagicLink = createMagicLink;
   private exchangeAuthCode = exchangeAuthCode;
-  private config = config;
 
   @Post('/magic-links')
   async createNewMagicLink(@BodyParam('email') emailValue: string) {

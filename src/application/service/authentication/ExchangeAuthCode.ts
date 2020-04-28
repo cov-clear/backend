@@ -3,6 +3,7 @@ import { GetExistingOrCreateNewUser } from '../users/GetExistingOrCreateNewUser'
 import { MagicLinkCode } from '../../../domain/model/magiclink/MagicLink';
 import { MagicLinkRepository } from '../../../domain/model/magiclink/MagicLinkRepository';
 
+// TODO: Rename to be magic link specific
 export class ExchangeAuthCode {
   constructor(
     private magicLinkRepository: MagicLinkRepository,
@@ -41,6 +42,7 @@ export class AuthorisationFailedError extends Error {
   }
 }
 
+// TODO: Should rename?
 export enum AuthorisationFailureReason {
   AUTH_CODE_NOT_FOUND = 'AUTH_CODE_NOT_FOUND',
   AUTH_CODE_EXPIRED = 'AUTH_CODE_EXPIRED',

@@ -14,6 +14,7 @@ import { createRoleWithAssignedPermissions } from './PsqlRoleRepository';
 import { AssignmentId } from '../../domain/model/authentication/AssignmentAction';
 import { AssignmentActionType } from '../../domain/model/authentication/AssignmentActionType';
 import { Role } from '../../domain/model/authentication/Role';
+import { AuthenticationDetails } from '../../domain/model/user/AuthenticationDetails';
 
 const USER_TABLE_NAME = 'user';
 
@@ -81,6 +82,10 @@ export class PsqlUserRepository implements UserRepository {
       return null;
     }
     return this.extractUserAndPopulateRoles(userRow);
+  }
+
+  async findByAuthenticationDetails(authenticationDetails: AuthenticationDetails): Promise<User | null> {
+    // TODO
   }
 
   private async saveRoleAssignment(roleAssignment: RoleAssignmentAction) {
