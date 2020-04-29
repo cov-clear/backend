@@ -5,7 +5,7 @@ export enum AuthenticationMethod {
 
 export namespace AuthenticationMethod {
   export function fromString(key: string): AuthenticationMethod {
-    const method = AuthenticationMethod[key];
+    const method = AuthenticationMethod[key as AuthenticationMethod];
 
     if (!method) {
       throw Error(`[${key}] is not a valid AuthenticationMethod key`);

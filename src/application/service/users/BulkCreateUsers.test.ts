@@ -39,12 +39,12 @@ describe('BulkCreateUsers', () => {
 
   it('it adds the new roles for an user if it already exists', async () => {
     const existingUser = await userRepository.save(aNewUser());
-    const command = [{ email: existingUser.email.value, roles: [DOCTOR] }] as CreateUserCommand[];
+    const command = [{ email: existingUser.email?.value, roles: [DOCTOR] }] as CreateUserCommand[];
 
     const resultUsers = await bulkCreateUsers.execute(command);
     expect(resultUsers.length).toEqual(1);
 
-    const updatedExistingUser = await userRepository.findByEmail(existingUser.email);
+    const updatedExistingUser = await userRepository.findByEmail(existingUser.email!);
 
     expect(updatedExistingUser!.roles.length).toEqual(existingUser.roles.length + 1);
     expect(updatedExistingUser!.roles.sort()).toEqual([DOCTOR]);
