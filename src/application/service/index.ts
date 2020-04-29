@@ -18,6 +18,7 @@ import {
   testTypeRepository,
   userRepository,
   testRepository,
+  reportRepository,
 } from '../../infrastructure/persistence';
 import { GetUser } from './users/GetUser';
 import { UpdateUser } from './users/UpdateUser';
@@ -43,6 +44,7 @@ import { GetPermissions } from './authorization/GetPermissions';
 import { CreateTestType } from './tests/CreateTestType';
 import { AddResultsToTest } from './tests/AddResultsToTest';
 import { UpdateTestType } from './tests/UpdateTestType';
+import { GetReports } from './reports/GetReports';
 
 let emailNotifier = new LoggingEmailNotifier();
 
@@ -113,3 +115,4 @@ export const updateTestType = new UpdateTestType(testTypeRepository);
 export const getTests = new GetTests(testRepository);
 export const addResultsToTest = new AddResultsToTest(testRepository);
 export const createTest = new CreateTest(testRepository, testTypeRepository, addResultsToTest);
+export const getReports = new GetReports(reportRepository);
