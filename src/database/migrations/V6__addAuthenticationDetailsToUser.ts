@@ -26,6 +26,7 @@ export async function down(db: knex) {
     .update({
       email: db.ref('authentication_value'),
     });
+  await db('user').where({ email: null }).delete();
   await db.schema.alterTable('user', (table) => {
     table.string('email').notNullable().unique().alter();
     table.dropColumns('authentication_method', 'authentication_value');

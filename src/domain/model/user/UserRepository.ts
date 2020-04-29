@@ -9,8 +9,6 @@ export interface UserRepository {
 
   findByUserId(userId: UserId): Promise<User | null>;
 
-  findByEmail(email: Email): Promise<User | null>;
-
   findByAuthenticationDetails(authenticationDetails: AuthenticationDetails): Promise<User | null>;
 }
 

@@ -70,9 +70,12 @@ export class PsqlUserRepository implements UserRepository {
     Reflect.set(user.roleAssignments, 'newAssignmentActions', []);
   }
 
-  async findByEmail(email: Email): Promise<User | null> {
+  async findByAuthenticationDetails({ method, value }: AuthenticationDetails): Promise<User | null> {
     const userRow: any = await this.db(USER_TABLE_NAME)
-      .where('email', '=', email.value)
+      .where({
+        authentication_method: method,
+        authentication_value: value.value,
+      })
       .select(USER_TABLE_COLUMNS)
       .first();
 

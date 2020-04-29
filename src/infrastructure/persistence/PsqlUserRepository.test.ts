@@ -2,7 +2,6 @@ import database from '../../database';
 import { PsqlUserRepository } from './PsqlUserRepository';
 import { UserId } from '../../domain/model/user/UserId';
 import { User } from '../../domain/model/user/User';
-import { Email } from '../../domain/model/user/Email';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
 import {
   anAddress,
@@ -44,8 +43,23 @@ describe('PsqlUserRepository', () => {
   it('inserts new and retrieves a user by email', async () => {
     const user = await psqlUserRepository.save(User.create(magicLinkAuthenticationDetails('kostas2@example.com')));
 
-    const persistedUser = await psqlUserRepository.findByEmail(new Email('kostas2@example.com'));
-    expect(persistedUser?.email).toEqual(user.email);
+    const persistedUser = await psqlUserRepository.findByAuthenticationDetails(
+      magicLinkAuthenticationDetails('kostas2@example.com')
+    );
+
+    expect(persistedUser?.id).toEqual(user.id);
+  });
+
+  it('inserts new and retrieves a user by estonian id', async () => {
+    const user = await psqlUserRepository.save(
+      User.create(new AuthenticationDetails(AuthenticationMethod.ESTONIAN_ID, new AuthenticationValue('32123')))
+    );
+
+    const persistedUser = await psqlUserRepository.findByAuthenticationDetails(
+      new AuthenticationDetails(AuthenticationMethod.ESTONIAN_ID, new AuthenticationValue('32123'))
+    );
+
+    expect(persistedUser?.id).toEqual(user.id);
   });
 
   it('updates profile if user already exists', async () => {

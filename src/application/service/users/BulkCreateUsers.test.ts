@@ -6,6 +6,10 @@ import { anEmail, aNewUser } from '../../../test/domainFactories';
 import { USER, DOCTOR } from '../../../domain/model/authentication/Roles';
 import { Role } from '../../../domain/model/authentication/Role';
 import { CreateUserCommand } from '../../../presentation/commands/admin/CreateUserCommand';
+import { AuthenticationDetails } from '../../../domain/model/user/AuthenticationDetails';
+import { AuthenticationMethod } from '../../../domain/model/user/AuthenticationMethod';
+import { AuthenticationValue } from '../../../domain/model/user/AuthenticationValue';
+import { Email } from '../../../domain/model/user/Email';
 
 describe('BulkCreateUsers', () => {
   const bulkCreateUsers = new BulkCreateUsers(userRepository, roleRepository);
@@ -30,10 +34,10 @@ describe('BulkCreateUsers', () => {
     expect(resultUsers).toBeDefined();
     expect(resultUsers.length).toEqual(2);
 
-    const user1 = await userRepository.findByEmail(email1);
+    const user1 = await findByEmail(email1);
     expect(user1!.roles.sort()).toEqual(roles1.sort());
 
-    const user2 = await userRepository.findByEmail(email2);
+    const user2 = await findByEmail(email2);
     expect(user2!.roles.sort()).toEqual(roles2.sort());
   });
 
@@ -44,12 +48,18 @@ describe('BulkCreateUsers', () => {
     const resultUsers = await bulkCreateUsers.execute(command);
     expect(resultUsers.length).toEqual(1);
 
-    const updatedExistingUser = await userRepository.findByEmail(existingUser.email!);
+    const updatedExistingUser = await findByEmail(existingUser.email!);
 
     expect(updatedExistingUser!.roles.length).toEqual(existingUser.roles.length + 1);
     expect(updatedExistingUser!.roles.sort()).toEqual([DOCTOR]);
   });
 });
+
+function findByEmail(email: Email) {
+  return userRepository.findByAuthenticationDetails(
+    new AuthenticationDetails(AuthenticationMethod.MAGIC_LINK, new AuthenticationValue(email.value))
+  );
+}
 
 afterAll(() => {
   return database.destroy();
