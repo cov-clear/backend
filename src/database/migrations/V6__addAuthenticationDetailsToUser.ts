@@ -21,5 +21,13 @@ export async function up(db: knex) {
 }
 
 export async function down(db: knex) {
-  await db.schema.dropTable('user');
+  await db('user')
+    .where({ authentication_method: 'MAGIC_LINK' })
+    .update({
+      email: db.ref('authentication_value'),
+    });
+  await db.schema.alterTable('user', (table) => {
+    table.string('email').notNullable().unique().alter();
+    table.dropColumns('authentication_method', 'authentication_value');
+  });
 }
