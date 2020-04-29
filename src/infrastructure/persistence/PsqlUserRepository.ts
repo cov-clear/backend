@@ -6,7 +6,6 @@ import { UserId } from '../../domain/model/user/UserId';
 import { Address } from '../../domain/model/user/Address';
 import { Profile } from '../../domain/model/user/Profile';
 import { Sex } from '../../domain/model/user/Sex';
-import database from '../../database';
 import { Country } from '../../domain/model/user/Country';
 import { DateOfBirth } from '../../domain/model/user/DateOfBirth';
 import { RoleAssignmentAction } from '../../domain/model/authentication/RoleAssignmentAction';
