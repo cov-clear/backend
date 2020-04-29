@@ -30,11 +30,7 @@ describe('reports endpoints', () => {
         .set({
           Authorization: `Bearer ${await getTokenForUser(authenticatedUser)}`,
         })
-        .expect(200)
-        .expect((res) => {
-          //          expect(res.body[0].).toEqual('mail@example.com');
-          console.log('****** ' + JSON.stringify(res.body));
-        });
+        .expect(200);
     });
 
     it('returns 403 if authenticated user does not have the required permission', async () => {

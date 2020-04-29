@@ -20,7 +20,7 @@ describe('PsqlReportRepository', () => {
     await cleanupDatabase();
   });
 
-  it('inserts a test without results and gets report', async () => {
+  it('Gets report for a test without result details', async () => {
     const testType = await testTypeRepository.save(aTestType());
     const test = await psqlTestRepository.save(
       new Test(new TestId(), new UserId(), testType, new UserId(), ConfidenceLevel.LOW)
@@ -34,7 +34,7 @@ describe('PsqlReportRepository', () => {
     expect(reportTestResults[0].resultsDetails).toBeNull();
   });
 
-  it('inserts 2 tests with results and gets report', async () => {
+  it('Gets report for multiple tests', async () => {
     const userId = new UserId();
     const testType = await testTypeRepository.save(aTestType());
 

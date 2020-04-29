@@ -206,14 +206,7 @@ export function aReportTestResult(
   id = new TestId(),
   userId = new UserId(),
   testCreationTime = new Date(),
-  resultsDetails = {
-    type: 'object',
-    properties: {
-      c: { type: 'boolean', title: 'C' },
-      igg: { type: 'boolean', title: 'IgG' },
-      igm: { type: 'boolean', title: 'IgM' },
-    },
-  },
+  resultsDetails = { c: true, igg: true, igm: true },
   resultsCreationTime = new Date()
 ) {
   return new ReportTestResult(

@@ -5,7 +5,7 @@ import { ReportTestResult } from '../../../domain/model/reports/ReportTestResult
 export class GetReports {
   constructor(private reportRepository: ReportRepository) {}
 
-  async getTestResults(testTypeId: TestTypeId): Promise<Array<ReportTestResult>> {
+  async getTestResultsByTestTypeTestId(testTypeId: TestTypeId): Promise<Array<ReportTestResult>> {
     return this.reportRepository.getTestResults(testTypeId);
   }
 }
