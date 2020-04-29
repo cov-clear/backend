@@ -52,6 +52,11 @@ spec:
                 secretKeyRef:
                   name: backend
                   key: ROLLBAR_TOKEN
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: backend
+                  key: JWT_SECRET
           livenessProbe:
             failureThreshold: 3
             periodSeconds: 5
