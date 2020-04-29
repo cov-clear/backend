@@ -4,10 +4,20 @@ import { UserId } from '../../domain/model/user/UserId';
 import { User } from '../../domain/model/user/User';
 import { Email } from '../../domain/model/user/Email';
 import { cleanupDatabase } from '../../test/cleanupDatabase';
-import { anAddress, aNewUser, aPermission, aProfile, aRoleWithPermissions } from '../../test/domainFactories';
+import {
+  anAddress,
+  aNewUser,
+  aPermission,
+  aProfile,
+  aRoleWithPermissions,
+  magicLinkAuthenticationDetails,
+} from '../../test/domainFactories';
 import { Role } from '../../domain/model/authentication/Role';
 import { permissionRepository, roleRepository } from './index';
 import { Permission } from '../../domain/model/authentication/Permission';
+import { AuthenticationDetails } from '../../domain/model/user/AuthenticationDetails';
+import { AuthenticationMethod } from '../../domain/model/user/AuthenticationMethod';
+import { AuthenticationValue } from '../../domain/model/user/AuthenticationValue';
 
 describe('PsqlUserRepository', () => {
   const psqlUserRepository = new PsqlUserRepository(database);
@@ -17,12 +27,14 @@ describe('PsqlUserRepository', () => {
   });
 
   it('inserts new and retrieves a user by id', async () => {
-    const user = await psqlUserRepository.save(new User(new UserId(), new Email('kostas1@example.com')));
+    const user = await psqlUserRepository.save(User.create(magicLinkAuthenticationDetails('kostas1@example.com')));
 
     const persistedUser = await psqlUserRepository.findByUserId(user.id);
 
     expect(persistedUser?.id).toEqual(user.id);
     expect(persistedUser?.email).toEqual(user.email);
+    expect(persistedUser?.authenticationDetails.value.value).toBe('kostas1@example.com');
+    expect(persistedUser?.authenticationDetails.method).toBe(AuthenticationMethod.MAGIC_LINK);
     expect(persistedUser?.profile).toEqual(user.profile);
     expect(persistedUser?.address).toEqual(user.address);
     expect(persistedUser?.creationTime).toEqual(user.creationTime);
@@ -30,15 +42,14 @@ describe('PsqlUserRepository', () => {
   });
 
   it('inserts new and retrieves a user by email', async () => {
-    const user = await psqlUserRepository.save(new User(new UserId(), new Email('kostas2@example.com')));
+    const user = await psqlUserRepository.save(User.create(magicLinkAuthenticationDetails('kostas2@example.com')));
 
-    const persistedUser = await psqlUserRepository.findByEmail(user.email);
-
+    const persistedUser = await psqlUserRepository.findByEmail(new Email('kostas2@example.com'));
     expect(persistedUser?.email).toEqual(user.email);
   });
 
   it('updates profile if user already exists', async () => {
-    const user = await psqlUserRepository.save(new User(new UserId(), new Email('kostas3@example.com')));
+    const user = await psqlUserRepository.save(User.create(magicLinkAuthenticationDetails()));
 
     user.profile = aProfile();
     await psqlUserRepository.save(user);
@@ -48,7 +59,7 @@ describe('PsqlUserRepository', () => {
   });
 
   it('updates address if user already exists', async () => {
-    const user = await psqlUserRepository.save(new User(new UserId(), new Email('kostas3@example.com')));
+    const user = await psqlUserRepository.save(User.create(magicLinkAuthenticationDetails()));
 
     user.address = anAddress();
     await psqlUserRepository.save(user);
