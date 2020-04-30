@@ -15,7 +15,11 @@ export class GetExistingOrCreateNewUser {
   ) {}
 
   public async execute(email: string) {
-    const existingUser = await this.userRepository.findByEmail(new Email(email));
+    const authenticationDetails = new AuthenticationDetails(
+      AuthenticationMethod.MAGIC_LINK,
+      new AuthenticationValue(email)
+    );
+    const existingUser = await this.userRepository.findByAuthenticationDetails(authenticationDetails);
 
     if (existingUser) {
       return existingUser;
