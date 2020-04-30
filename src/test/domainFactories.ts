@@ -21,6 +21,7 @@ import { ADD_TAKE_HOME_TEST_RESULT } from '../domain/model/authentication/Permis
 import { AuthenticationDetails } from '../domain/model/user/AuthenticationDetails';
 import { AuthenticationMethod } from '../domain/model/user/AuthenticationMethod';
 import { AuthenticationValue } from '../domain/model/user/AuthenticationValue';
+import { ReportTestResult } from '../domain/model/reports/ReportTestResult';
 
 export function aNewUser() {
   return User.create(magicLinkAuthenticationDetails());
@@ -205,4 +206,24 @@ export function antibodyTestTypeInterpretationRules() {
       },
     },
   ]);
+}
+
+export function aReportTestResult(
+  testType = aTestType(),
+  id = new TestId(),
+  userId = new UserId(),
+  testCreationTime = new Date(),
+  resultsDetails = { c: true, igg: true, igm: true },
+  resultsCreationTime = new Date()
+) {
+  return new ReportTestResult(
+    id,
+    userId,
+    testType,
+    ConfidenceLevel.LOW,
+    testCreationTime,
+    resultsDetails,
+    ConfidenceLevel.LOW,
+    resultsCreationTime
+  );
 }

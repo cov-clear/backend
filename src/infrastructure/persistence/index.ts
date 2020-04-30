@@ -7,6 +7,7 @@ import { PsqlAccessPassRepository } from './PsqlAccessPassRepository';
 import { PsqlPermissionRepository } from './PsqlPermissionRepository';
 import { PsqlRoleRepository } from './PsqlRoleRepository';
 import { PsqlTestRepository } from './PsqlTestRepository';
+import { PsqlReportRepository } from './PsqlReportRepository';
 
 export const magicLinkRepository = new PsqlMagicLinkRepository(database);
 export const userRepository = new PsqlUserRepository(database);
@@ -16,3 +17,4 @@ export const accessPassRepository = new PsqlAccessPassRepository(database);
 export const permissionRepository = new PsqlPermissionRepository(database);
 export const roleRepository = new PsqlRoleRepository(database);
 export const testRepository = new PsqlTestRepository(database, testTypeRepository);
+export const reportRepository = new PsqlReportRepository(database, testTypeRepository);
