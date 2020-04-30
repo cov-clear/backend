@@ -19,6 +19,7 @@ import { CurrentUserChecker } from '../middleware/CurrentUserChecker';
 import { rollbarClient } from '../../infrastructure/logging/Rollbar';
 import securityHeaders from 'helmet';
 import logger from '../../infrastructure/logging/logger';
+import { ReportsController } from './reports/ReportsController';
 
 export class RootController {
   public expressApp(): Application {
@@ -41,6 +42,7 @@ export class RootController {
         TestController,
         TestTypeController,
         UserController,
+        ReportsController,
       ],
       defaultErrorHandler: false,
       middlewares: [ErrorHandlingMiddleware],
