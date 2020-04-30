@@ -5,7 +5,6 @@ import { UserId } from '../../../domain/model/user/UserId';
 import { v4 as uuidv4 } from 'uuid';
 import { accessPassRepository, userRepository } from '../../../infrastructure/persistence';
 import { User } from '../../../domain/model/user/User';
-import { Email } from '../../../domain/model/user/Email';
 import { AccessPass } from '../../../domain/model/accessPass/AccessPass';
 import {
   anAddress,
@@ -56,8 +55,8 @@ describe('user endpoints', () => {
         .set({ Authorization: `Bearer ${await getTokenForUser(user)}` })
         .expect(200)
         .expect((response) => {
-          const { body: user } = response;
-          expect(user.id.value).toEqual(id.value);
+          const user = response.body;
+          expect(user.id).toEqual(id.value);
           expect(user.creationTime).toBeDefined();
           expect(user.authenticationDetails.method).toBe(AuthenticationMethod.MAGIC_LINK);
           expect(user.authenticationDetails.value.value).toBe('kostas@example.com');

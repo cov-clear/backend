@@ -4,6 +4,7 @@ import { Profile } from '../../domain/model/user/Profile';
 import { UserDTO } from '../dtos/users/UserDTO';
 import { ProfileDTO } from '../dtos/users/ProfileDTO';
 import { AddressDTO } from '../dtos/users/AddressDTO';
+import { AuthenticationDetails } from '../../domain/model/user/AuthenticationDetails';
 
 export class UserTransformer {
   public toUserDTO(user: User): UserDTO {
@@ -11,6 +12,7 @@ export class UserTransformer {
       id: user.id.value,
       email: user.email?.value,
       creationTime: user.creationTime,
+      authenticationDetails: this.toAuthenticationDetailsDTO(user.authenticationDetails),
       profile: user.profile ? this.toProfileDTO(user.profile) : undefined,
       address: user.address ? this.toAddressDTO(user.address) : undefined,
     };
@@ -33,6 +35,13 @@ export class UserTransformer {
       postcode: address.postcode,
       city: address.city,
       region: address.region,
+    };
+  }
+
+  public toAuthenticationDetailsDTO(authenticationDetails: AuthenticationDetails) {
+    return {
+      method: authenticationDetails.method,
+      value: authenticationDetails.value.value,
     };
   }
 }
