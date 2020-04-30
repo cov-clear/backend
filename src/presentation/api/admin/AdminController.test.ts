@@ -31,7 +31,8 @@ describe('admin endpoints', () => {
         ])
         .expect(201)
         .expect((res) => {
-          expect(res.body[0]).toEqual('mail@example.com');
+          expect(res.body[0].authenticationDetails.method).toBe('MAGIC_LINK');
+          expect(res.body[0].authenticationDetails.value).toBe('mail@example.com');
         });
     });
 

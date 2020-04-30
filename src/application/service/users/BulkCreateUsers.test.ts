@@ -53,7 +53,7 @@ describe('BulkCreateUsers', () => {
     const resultUsers = await bulkCreateUsers.execute(command);
     expect(resultUsers.length).toEqual(1);
 
-    const updatedExistingUser = await findByEmail(existingUser.email!);
+    const updatedExistingUser = await findByEmail(existingUser.authenticationDetails.value);
 
     expect(updatedExistingUser!.roles.length).toEqual(existingUser.roles.length + 1);
     expect(updatedExistingUser!.roles.sort()).toEqual([DOCTOR]);
