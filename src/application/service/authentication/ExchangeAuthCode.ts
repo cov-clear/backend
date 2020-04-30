@@ -2,6 +2,10 @@ import { GenerateAuthToken } from './GenerateAuthToken';
 import { GetExistingOrCreateNewUser } from '../users/GetExistingOrCreateNewUser';
 import { MagicLinkCode } from '../../../domain/model/magiclink/MagicLink';
 import { MagicLinkRepository } from '../../../domain/model/magiclink/MagicLinkRepository';
+import { AuthenticationDetails } from '../../../domain/model/user/AuthenticationDetails';
+import { AuthenticationMethod } from '../../../domain/model/user/AuthenticationMethod';
+import { AuthenticationValue } from '../../../domain/model/user/AuthenticationValue';
+import { Email } from '../../../domain/model/user/Email';
 
 // TODO: Rename to be magic link specific
 export class ExchangeAuthCode {
@@ -26,13 +30,18 @@ export class ExchangeAuthCode {
       throw new AuthorisationFailedError(AuthorisationFailureReason.AUTH_CODE_ALREADY_USED);
     }
 
-    const user = await this.getExistingOrCreateNewUser.execute(magicLink.email.value);
+    const authenticationDetails = this.magicLinkAuthenticationDetails(magicLink.email);
+    const user = await this.getExistingOrCreateNewUser.execute(authenticationDetails);
     const token = this.generateAuthToken.execute(user);
 
     magicLink.active = false;
     await this.magicLinkRepository.save(magicLink);
 
     return token;
+  }
+
+  private magicLinkAuthenticationDetails(email: Email): AuthenticationDetails {
+    return new AuthenticationDetails(AuthenticationMethod.MAGIC_LINK, new AuthenticationValue(email.value));
   }
 }
 

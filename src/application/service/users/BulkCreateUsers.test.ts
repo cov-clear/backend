@@ -19,14 +19,14 @@ describe('BulkCreateUsers', () => {
     await roleRepository.save(new Role(DOCTOR));
   });
 
-  it('create users when given a set of users as a command', async () => {
+  it('creates users when given a set of users as a command', async () => {
     const email1 = anEmail(),
       email2 = anEmail();
     const roles1 = [DOCTOR, USER],
       roles2 = [USER];
     const command = [
-      { email: email1.value, roles: roles1 },
-      { email: email2.value, roles: roles2 },
+      { authenticationDetails: { method: 'MAGIC_LINK', value: email1.value }, roles: roles1 },
+      { authenticationDetails: { method: 'MAGIC_LINK', value: email2.value }, roles: roles2 },
     ] as CreateUserCommand[];
 
     const resultUsers = await bulkCreateUsers.execute(command);
@@ -43,7 +43,12 @@ describe('BulkCreateUsers', () => {
 
   it('it adds the new roles for an user if it already exists', async () => {
     const existingUser = await userRepository.save(aNewUser());
-    const command = [{ email: existingUser.email?.value, roles: [DOCTOR] }] as CreateUserCommand[];
+    const command = [
+      {
+        authenticationDetails: { method: 'MAGIC_LINK', value: existingUser.authenticationDetails.value.value },
+        roles: [DOCTOR],
+      },
+    ] as CreateUserCommand[];
 
     const resultUsers = await bulkCreateUsers.execute(command);
     expect(resultUsers.length).toEqual(1);

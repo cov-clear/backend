@@ -1,11 +1,8 @@
-import { Email } from '../../../domain/model/user/Email';
 import { RoleNotFoundError, RoleRepository } from '../../../domain/model/authentication/RoleRepository';
 import { User } from '../../../domain/model/user/User';
 import { UserRepository } from '../../../domain/model/user/UserRepository';
 import { ADMIN, USER } from '../../../domain/model/authentication/Roles';
-import { AuthenticationMethod } from '../../../domain/model/user/AuthenticationMethod';
 import { AuthenticationDetails } from '../../../domain/model/user/AuthenticationDetails';
-import { AuthenticationValue } from '../../../domain/model/user/AuthenticationValue';
 
 export class GetExistingOrCreateNewUser {
   constructor(
@@ -14,20 +11,14 @@ export class GetExistingOrCreateNewUser {
     private setupModeEnabled: boolean
   ) {}
 
-  public async execute(email: string) {
-    const authenticationDetails = new AuthenticationDetails(
-      AuthenticationMethod.MAGIC_LINK,
-      new AuthenticationValue(email)
-    );
+  public async execute(authenticationDetails: AuthenticationDetails) {
     const existingUser = await this.userRepository.findByAuthenticationDetails(authenticationDetails);
 
     if (existingUser) {
       return existingUser;
     }
 
-    const user = User.create(
-      new AuthenticationDetails(AuthenticationMethod.MAGIC_LINK, new AuthenticationValue(email))
-    );
+    const user = User.create(authenticationDetails);
 
     await this.assignRolesToUser(user, this.getRolesToAssign());
 

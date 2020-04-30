@@ -18,8 +18,8 @@ export class BulkCreateUsers {
 
     for (const userCommand of createUsersCommand) {
       const authenticationDetails = new AuthenticationDetails(
-        AuthenticationMethod.MAGIC_LINK,
-        new AuthenticationValue(userCommand.email)
+        AuthenticationMethod.fromString(userCommand.authenticationDetails.method),
+        new AuthenticationValue(userCommand.authenticationDetails.value)
       );
 
       let user = await this.userRepository.findByAuthenticationDetails(authenticationDetails);

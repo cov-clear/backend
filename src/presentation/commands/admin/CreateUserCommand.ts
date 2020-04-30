@@ -1,4 +1,7 @@
 export interface CreateUserCommand {
-  email: string;
+  authenticationDetails: {
+    method: string;
+    value: string;
+  };
   roles: string[];
 }

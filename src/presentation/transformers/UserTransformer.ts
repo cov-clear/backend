@@ -9,7 +9,7 @@ export class UserTransformer {
   public toUserDTO(user: User): UserDTO {
     return {
       id: user.id.value,
-      email: user.email.value,
+      email: user.email?.value,
       creationTime: user.creationTime,
       profile: user.profile ? this.toProfileDTO(user.profile) : undefined,
       address: user.address ? this.toAddressDTO(user.address) : undefined,

@@ -7,10 +7,16 @@ import { accessPassRepository, userRepository } from '../../../infrastructure/pe
 import { User } from '../../../domain/model/user/User';
 import { Email } from '../../../domain/model/user/Email';
 import { AccessPass } from '../../../domain/model/accessPass/AccessPass';
-import { anAddress, aNewUser, aUserWithAllInformation } from '../../../test/domainFactories';
+import {
+  anAddress,
+  aNewUser,
+  aUserWithAllInformation,
+  magicLinkAuthenticationDetails,
+} from '../../../test/domainFactories';
 import { getTokenForUser } from '../../../test/authentication';
 import { anApiAddress, anApiProfile } from '../../../test/apiFactories';
 import { RootController } from '../RootController';
+import { AuthenticationMethod } from '../../../domain/model/user/AuthenticationMethod';
 
 describe('user endpoints', () => {
   const app = new RootController().expressApp();
@@ -43,17 +49,18 @@ describe('user endpoints', () => {
     it('returns 200 with the existing if user is found', async () => {
       const id = new UserId();
 
-      const user = await userRepository.save(new User(id, new Email('kostas@example.com')));
+      const user = await userRepository.save(new User(id, magicLinkAuthenticationDetails('kostas@example.com')));
 
       await request(app)
         .get(`/api/v1/users/${id.value}`)
         .set({ Authorization: `Bearer ${await getTokenForUser(user)}` })
         .expect(200)
         .expect((response) => {
-          const user = response.body;
-          expect((user.id = id.value)).toEqual(id.value);
+          const { body: user } = response;
+          expect(user.id.value).toEqual(id.value);
           expect(user.creationTime).toBeDefined();
-          expect(user.email).toBeDefined();
+          expect(user.authenticationDetails.method).toBe(AuthenticationMethod.MAGIC_LINK);
+          expect(user.authenticationDetails.value.value).toBe('kostas@example.com');
         });
     });
 
