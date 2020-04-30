@@ -24,6 +24,9 @@ import { Profile } from '../domain/model/user/Profile';
 import { Sex } from '../domain/model/user/Sex';
 import { DateOfBirth } from '../domain/model/user/DateOfBirth';
 import { anAddress, antibodyTestType } from '../test/domainFactories';
+import { AuthenticationDetails } from '../domain/model/user/AuthenticationDetails';
+import { AuthenticationMethod } from '../domain/model/user/AuthenticationMethod';
+import { AuthenticationValue } from '../domain/model/user/AuthenticationValue';
 
 export async function createSeedDataForTestingPeriod() {
   const admin = await createAdminAccount();
@@ -45,21 +48,27 @@ export async function createSeedDataForTestingPeriod() {
 }
 
 async function createDoctorAccount() {
-  const doctor = await getExistingOrCreateNewUser.execute('doctor@covclear.com');
+  const doctor = await getExistingOrCreateNewUser.execute(
+    new AuthenticationDetails(AuthenticationMethod.MAGIC_LINK, new AuthenticationValue('doctor@cov-clear.com'))
+  );
   doctor.profile = new Profile('John', 'Lennon', DateOfBirth.fromString('1940-10-09'), Sex.MALE);
   doctor.address = anAddress();
   return userRepository.save(doctor);
 }
 
 async function createPatientAccount() {
-  const patient = await getExistingOrCreateNewUser.execute('patient@covclear.com');
+  const patient = await getExistingOrCreateNewUser.execute(
+    new AuthenticationDetails(AuthenticationMethod.MAGIC_LINK, new AuthenticationValue('patient@covclear.com'))
+  );
   patient.profile = new Profile('Captain', 'Kirk', DateOfBirth.fromString('1940-10-09'), Sex.MALE);
   patient.address = anAddress();
   return userRepository.save(patient);
 }
 
 async function createAdminAccount() {
-  const admin = await getExistingOrCreateNewUser.execute('admin@covclear.com');
+  const admin = await getExistingOrCreateNewUser.execute(
+    new AuthenticationDetails(AuthenticationMethod.MAGIC_LINK, new AuthenticationValue('admin@covclear.com'))
+  );
   admin.profile = new Profile('Major', 'Tom', DateOfBirth.fromString('1940-10-09'), Sex.MALE);
   admin.address = anAddress();
   return userRepository.save(admin);

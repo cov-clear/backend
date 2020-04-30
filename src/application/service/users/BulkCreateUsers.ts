@@ -1,7 +1,5 @@
-import { Email } from '../../../domain/model/user/Email';
 import { RoleRepository } from '../../../domain/model/authentication/RoleRepository';
 import { User } from '../../../domain/model/user/User';
-import { UserId } from '../../../domain/model/user/UserId';
 import { UserRepository } from '../../../domain/model/user/UserRepository';
 import logger from '../../../infrastructure/logging/logger';
 import { CreateUserCommand } from '../../../presentation/commands/admin/CreateUserCommand';
