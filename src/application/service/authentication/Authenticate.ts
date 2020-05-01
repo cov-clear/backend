@@ -1,31 +1,31 @@
-import { GenerateAuthToken } from './GenerateAuthToken';
-import { GetExistingOrCreateNewUser } from '../users/GetExistingOrCreateNewUser';
 import { LoginCommand } from '../../../presentation/commands/authentication/LoginCommand';
-import { AuthenticateWithId } from './AuthenticateWithId';
-import { ExchangeAuthCode } from './ExchangeAuthCode';
+import { AuthenticationMethod } from '../../../domain/model/user/AuthenticationMethod';
+import { AuthenticatorFactory } from '../../../domain/model/authentication/AuthenticatorFactory';
+import { AuthenticationIdentifier } from '../../../domain/model/user/AuthenticationIdentifier';
 
 export class Authenticate {
-  constructor(private exchangeAuthCode: ExchangeAuthCode, private authenticateWithId: AuthenticateWithId) {}
+  constructor(private authenticatorFactory: AuthenticatorFactory) {}
 
   public async execute({ method, value }: LoginCommand) {
-    switch (method) {
-      case 'MAGIC_LINK':
-        return this.exchangeAuthCode.execute(value);
-      case 'ID_CODE':
-        return this.authenticateWithId.execute(value);
-      default:
-        throw new AuthorisationFailedError(AuthorisationFailureReason.INVALID_METHOD);
+    let authenticationMethod;
+    try {
+      authenticationMethod = AuthenticationMethod.fromString(method);
+    } catch (e) {
+      throw new AuthenticationFailedError(AuthenticationFailureReason.INVALID_METHOD);
     }
+    const identifier = new AuthenticationIdentifier(value);
+    const authenticator = this.authenticatorFactory.authenticatorFor(authenticationMethod);
+    const token = await authenticator.authenticate(identifier);
+    return token;
   }
 }
 
-export class AuthorisationFailedError extends Error {
-  constructor(public failureReason: AuthorisationFailureReason) {
-    super(`Failed to authorise code due to ${failureReason}`);
+export class AuthenticationFailedError extends Error {
+  constructor(public failureReason: AuthenticationFailureReason) {
+    super(`Failed to authenticate code due to ${failureReason}`);
   }
 }
 
-// FIXME: Where should that live? Is it a generic authentication error?
-export enum AuthorisationFailureReason {
+export enum AuthenticationFailureReason {
   INVALID_METHOD = 'INVALID_METHOD',
 }

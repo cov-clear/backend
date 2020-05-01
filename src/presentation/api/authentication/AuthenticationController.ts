@@ -1,5 +1,5 @@
-import { createMagicLink, exchangeAuthCode, createAuthenticationSession } from '../../../application/service';
 import { BodyParam, JsonController, Post, UseAfter, Body } from 'routing-controllers';
+import { createMagicLink, exchangeAuthCode, createAuthenticationSession } from '../../../application/service';
 import { AuthenticationErrorHandler } from './AuthenticationErrorHandler';
 import { LoginCommand } from '../../commands/authentication/LoginCommand';
 import * as config from '../../../config';
