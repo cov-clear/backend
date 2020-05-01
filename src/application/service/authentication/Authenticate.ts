@@ -1,5 +1,5 @@
 import { LoginCommand } from '../../../presentation/commands/authentication/LoginCommand';
-import { AuthenticationMethod } from '../../../domain/model/user/AuthenticationMethod';
+import { fromString } from '../../../domain/model/user/AuthenticationMethod';
 import { AuthenticatorFactory } from '../../../domain/model/authentication/AuthenticatorFactory';
 
 export class Authenticate {
@@ -8,7 +8,7 @@ export class Authenticate {
   public async execute({ method, authCode }: LoginCommand) {
     let authenticationMethod;
     try {
-      authenticationMethod = AuthenticationMethod.fromString(method);
+      authenticationMethod = fromString(method);
     } catch (e) {
       throw new AuthenticationFailedError(AuthenticationFailureReason.INVALID_METHOD);
     }

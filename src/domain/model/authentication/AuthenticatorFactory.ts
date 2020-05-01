@@ -14,10 +14,10 @@ export class AuthenticatorFactory {
     return this.authenticators.get(method)!;
   }
 
-  private checkAllAuthenticationMethodsImplemented() {
-    Object.keys(AuthenticationMethod).forEach((key) => {
-      if (!this.authenticators.has(key as AuthenticationMethod)) {
-        throw new InvalidDomainStateError(`Unimplemented authenticator for method: ${key}`);
+  private checkAllAuthenticationMethodsImplemented(): void {
+    Object.values(AuthenticationMethod).forEach((method) => {
+      if (!this.authenticators.has(method)) {
+        throw new InvalidDomainStateError(`Unimplemented authenticator for method: ${method}`);
       }
     });
   }

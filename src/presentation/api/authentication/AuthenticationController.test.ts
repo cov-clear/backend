@@ -82,7 +82,7 @@ describe('auth endpoints', () => {
     it('returns 422 if the code does not exist', async () => {
       await request(app)
         .post('/api/v1/auth/login')
-        .send({ method: 'magic-link', email: 'some@email.com', authCode: v4() })
+        .send({ method: 'MAGIC_LINK', authCode: v4() })
         .expect(422)
         .expect((res) => {
           expect(res.body.code).toEqual(AuthorisationFailureReason.AUTH_CODE_NOT_FOUND);
@@ -95,8 +95,7 @@ describe('auth endpoints', () => {
       await request(app)
         .post('/api/v1/auth/login')
         .send({
-          method: 'magic-link',
-          email: magicLink.email.value,
+          method: 'MAGIC_LINK',
           authCode: magicLink.code.value,
         })
         .expect(200)

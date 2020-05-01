@@ -9,7 +9,7 @@ import { AuthenticationMethod } from '../../../domain/model/user/AuthenticationM
 import { AuthenticationIdentifier } from '../../../domain/model/user/AuthenticationIdentifier';
 
 export class EstonianIdAuthenticator implements Authenticator {
-  public handles: AuthenticationMethod.ESTONIAN_ID;
+  public handles = AuthenticationMethod.ESTONIAN_ID;
 
   constructor(
     private authenticationProvider: AuthenticationProvider,

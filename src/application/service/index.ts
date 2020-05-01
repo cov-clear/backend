@@ -6,6 +6,7 @@ import { Email } from '../../domain/model/user/Email';
 import { CreateAuthenticationSession } from './authentication/CreateAuthenticationSession';
 import { GenerateAuthToken } from './authentication/GenerateAuthToken';
 import { MagicLinkAuthenticator } from './authentication/MagicLinkAuthenticator';
+import { EstonianIdAuthenticator } from './authentication/EstonianIdAuthenticator';
 import { Authenticate } from './authentication/Authenticate';
 import { CreateNewMagicLink } from './authentication/CreateNewMagicLink';
 import * as config from '../../config';
@@ -65,8 +66,6 @@ switch (config.get('emailNotifier.type')) {
     emailNotifier = new AWSEmailNotifier(new AWS.SES({ apiVersion: '2010-12-01' }));
 }
 
-const authenticationProvider = new DokobitAuthenticationProvider();
-
 export const accessManagerFactory = new AccessManagerFactory(accessPassRepository);
 
 export const assignPermissionToRole = new AssignPermissionToRole(roleRepository, permissionRepository);
@@ -107,13 +106,20 @@ export const getExistingOrCreateNewUser = new GetExistingOrCreateNewUser(
 
 export const bulkCreateUsers = new BulkCreateUsers(userRepository, roleRepository);
 
+const authenticationProvider = new DokobitAuthenticationProvider();
+
 export const createAuthenticationSession = new CreateAuthenticationSession(authenticationProvider);
 export const magicLinkAuthenticator = new MagicLinkAuthenticator(
   magicLinkRepository,
   generateAuthToken,
   getExistingOrCreateNewUser
 );
-export const authenticatorFactory = new AuthenticatorFactory([magicLinkAuthenticator]);
+export const estonianIdAuthenticator = new EstonianIdAuthenticator(
+  authenticationProvider,
+  getExistingOrCreateNewUser,
+  generateAuthToken
+);
+export const authenticatorFactory = new AuthenticatorFactory([magicLinkAuthenticator, estonianIdAuthenticator]);
 export const authenticate = new Authenticate(authenticatorFactory);
 
 export const createSharingCode = new CreateSharingCode(sharingCodeRepository);

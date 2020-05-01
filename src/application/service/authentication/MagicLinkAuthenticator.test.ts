@@ -7,7 +7,6 @@ import { MagicLink, MagicLinkCode } from '../../../domain/model/magiclink/MagicL
 import { Email } from '../../../domain/model/user/Email';
 import { cleanupDatabase } from '../../../test/cleanupDatabase';
 import { generateAuthToken, getExistingOrCreateNewUser } from '../index';
-import { AuthenticationIdentifier } from '../../../domain/model/user/AuthenticationIdentifier';
 
 describe('Magic link authenticator', () => {
   const exchangeAuthCode = new MagicLinkAuthenticator(
@@ -25,9 +24,9 @@ describe('Magic link authenticator', () => {
   });
 
   it('throws error when auth code cannot be found', async () => {
-    await expect(
-      exchangeAuthCode.authenticate(new AuthenticationIdentifier(new MagicLinkCode().value))
-    ).rejects.toEqual(new AuthorisationFailedError(AuthorisationFailureReason.AUTH_CODE_NOT_FOUND));
+    await expect(exchangeAuthCode.authenticate(new MagicLinkCode().value)).rejects.toEqual(
+      new AuthorisationFailedError(AuthorisationFailureReason.AUTH_CODE_NOT_FOUND)
+    );
   });
 
   it('throws error when the magic link is expired', async () => {
@@ -36,7 +35,7 @@ describe('Magic link authenticator', () => {
 
     MockDate.set(link.expirationTime().getTime() + 10);
 
-    await expect(exchangeAuthCode.authenticate(new AuthenticationIdentifier(link.code.value))).rejects.toEqual(
+    await expect(exchangeAuthCode.authenticate(link.code.value)).rejects.toEqual(
       new AuthorisationFailedError(AuthorisationFailureReason.AUTH_CODE_EXPIRED)
     );
   });
@@ -45,7 +44,7 @@ describe('Magic link authenticator', () => {
     const email = new Email('kostas@example.com');
     const link = await magicLinkRepository.save(new MagicLink(new MagicLinkCode(), email, false));
 
-    await expect(exchangeAuthCode.authenticate(new AuthenticationIdentifier(link.code.value))).rejects.toEqual(
+    await expect(exchangeAuthCode.authenticate(link.code.value)).rejects.toEqual(
       new AuthorisationFailedError(AuthorisationFailureReason.AUTH_CODE_ALREADY_USED)
     );
   });
@@ -54,7 +53,7 @@ describe('Magic link authenticator', () => {
     const email = new Email('kostas@example.com');
     const link = await magicLinkRepository.save(new MagicLink(new MagicLinkCode(), email));
 
-    const token = await exchangeAuthCode.authenticate(new AuthenticationIdentifier(link.code.value));
+    const token = await exchangeAuthCode.authenticate(link.code.value);
 
     await expect(token).toBeDefined();
   });
