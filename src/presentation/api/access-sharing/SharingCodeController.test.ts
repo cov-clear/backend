@@ -9,6 +9,7 @@ import { User } from '../../../domain/model/user/User';
 import { Email } from '../../../domain/model/user/Email';
 import { getTokenForUser } from '../../../test/authentication';
 import { RootController } from '../RootController';
+import { magicLinkAuthenticationDetails } from '../../../test/domainFactories';
 
 describe('SharingCodeController', () => {
   const app = new RootController().expressApp();
@@ -25,7 +26,7 @@ describe('SharingCodeController', () => {
 
     it('returns 200 with the sharing code if user is found', async () => {
       const id = new UserId();
-      const user = await userRepository.save(new User(id, new Email('kostas@example.com')));
+      const user = await userRepository.save(new User(id, magicLinkAuthenticationDetails()));
 
       await request(app)
         .post(`/api/v1/users/${id.value}/sharing-code`)
@@ -39,7 +40,7 @@ describe('SharingCodeController', () => {
 
     it('returns 404 if trying to access a different userId', async () => {
       const id = new UserId();
-      const user = await userRepository.save(new User(id, new Email('kostas@example.com')));
+      const user = await userRepository.save(new User(id, magicLinkAuthenticationDetails()));
 
       await request(app)
         .post(`/api/v1/users/${new UserId().value}/sharing-code`)

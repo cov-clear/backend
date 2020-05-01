@@ -18,10 +18,17 @@ import { ConfidenceLevel } from '../domain/model/test/ConfidenceLevel';
 import { InterpretationRules } from '../domain/model/test/interpretation/InterpretationRules';
 import { InterpretationTheme } from '../domain/model/test/interpretation/Interpretation';
 import { ADD_TAKE_HOME_TEST_RESULT } from '../domain/model/authentication/Permissions';
+import { AuthenticationDetails } from '../domain/model/user/AuthenticationDetails';
+import { AuthenticationMethod } from '../domain/model/user/AuthenticationMethod';
+import { AuthenticationIdentifier } from '../domain/model/user/AuthenticationIdentifier';
 import { ReportTestResult } from '../domain/model/reports/ReportTestResult';
 
 export function aNewUser() {
-  return new User(new UserId(), anEmail());
+  return User.create(magicLinkAuthenticationDetails());
+}
+
+export function magicLinkAuthenticationDetails(email = `${v4()}@example.com`) {
+  return new AuthenticationDetails(AuthenticationMethod.MAGIC_LINK, new AuthenticationIdentifier(email));
 }
 
 export function anEmail() {
@@ -29,7 +36,7 @@ export function anEmail() {
 }
 
 export function aUserWithAllInformation() {
-  return new User(new UserId(), anEmail(), aProfile(), anAddress());
+  return new User(new UserId(), magicLinkAuthenticationDetails(), anEmail(), aProfile(), anAddress());
 }
 
 export function aProfile() {

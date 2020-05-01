@@ -6,6 +6,7 @@ import { UserId } from '../../../domain/model/user/UserId';
 import { cleanupDatabase } from '../../../test/cleanupDatabase';
 import { getUser } from '../index';
 import { UserNotFoundError } from '../../../domain/model/user/UserRepository';
+import { magicLinkAuthenticationDetails } from '../../../test/domainFactories';
 
 describe('GetUser', () => {
   beforeEach(async () => {
@@ -21,7 +22,7 @@ describe('GetUser', () => {
     it('returns existing user', async () => {
       const id = new UserId();
 
-      await userRepository.save(new User(id, new Email('kostas@example.com')));
+      await userRepository.save(new User(id, magicLinkAuthenticationDetails('kostas@example.com')));
 
       const user = await getUser.byId(id.value);
 

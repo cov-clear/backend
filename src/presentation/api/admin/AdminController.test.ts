@@ -23,10 +23,16 @@ describe('admin endpoints', () => {
         .set({
           Authorization: `Bearer ${await getTokenForUser(authenticatedUser)}`,
         })
-        .send([{ email: 'mail@example.com', roles: [USER] }])
+        .send([
+          {
+            authenticationDetails: { method: 'MAGIC_LINK', identifier: 'mail@example.com' },
+            roles: [USER],
+          },
+        ])
         .expect(201)
         .expect((res) => {
-          expect(res.body[0].email).toEqual('mail@example.com');
+          expect(res.body[0].authenticationDetails.method).toBe('MAGIC_LINK');
+          expect(res.body[0].authenticationDetails.identifier).toBe('mail@example.com');
         });
     });
 
@@ -38,7 +44,12 @@ describe('admin endpoints', () => {
         .set({
           Authorization: `Bearer ${await getTokenForUser(authenticatedUser)}`,
         })
-        .send([{ email: 'mail@example.com', roles: [USER] }])
+        .send([
+          {
+            authenticationDetails: { method: 'MAGIC_LINK', identifier: 'mail@example.com' },
+            roles: [USER],
+          },
+        ])
         .expect(403)
         .expect((res) => {
           expect(res.body.code).toEqual('access.denied');
