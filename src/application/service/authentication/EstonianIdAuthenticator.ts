@@ -2,11 +2,11 @@ import { AuthenticationProvider } from '../../../domain/model/idAuthentication/A
 import { GenerateAuthToken } from './GenerateAuthToken';
 import { GetExistingOrCreateNewUser } from '../users/GetExistingOrCreateNewUser';
 import { AuthenticationSessionToken, Authentication } from '../../../domain/model/idAuthentication/models';
-import { AuthenticationError } from '../../../domain/model/idAuthentication/AuthenticationError';
 import { Authenticator, AuthCode } from '../../../domain/model/authentication/Authenticator';
 import { AuthenticationDetails } from '../../../domain/model/user/AuthenticationDetails';
 import { AuthenticationMethod } from '../../../domain/model/user/AuthenticationMethod';
 import { AuthenticationIdentifier } from '../../../domain/model/user/AuthenticationIdentifier';
+import { AuthenticationError } from './AuthenticationError';
 
 export class EstonianIdAuthenticator implements Authenticator {
   public handles = AuthenticationMethod.ESTONIAN_ID;
@@ -24,7 +24,7 @@ export class EstonianIdAuthenticator implements Authenticator {
     try {
       authentication = await this.authenticationProvider.authenticate(sessionToken);
     } catch (error) {
-      throw new AuthenticationError(error.message);
+      throw new AuthenticationError('ID_AUTH_INVALID', error.message);
     }
 
     const identifier = new AuthenticationIdentifier(authentication.code);

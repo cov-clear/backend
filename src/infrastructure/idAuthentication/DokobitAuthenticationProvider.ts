@@ -1,6 +1,6 @@
 import * as config from '../../config';
 import { AuthenticationProvider } from '../../domain/model/idAuthentication/AuthenticationProvider';
-import { AuthenticationError } from '../../domain/model/idAuthentication/AuthenticationError';
+import { AuthenticationError } from '../../application/service/authentication/AuthenticationError';
 import {
   AuthenticationSession,
   AuthenticationSessionToken,

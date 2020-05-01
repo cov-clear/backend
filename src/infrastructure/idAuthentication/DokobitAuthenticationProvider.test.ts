@@ -1,6 +1,6 @@
 import { DokobitAuthenticationProvider } from './DokobitAuthenticationProvider';
 import { DokobitClient } from './DokobitClient';
-import { AuthenticationError } from '../../domain/model/idAuthentication/AuthenticationError';
+import { AuthenticationError } from '../../application/service/authentication/AuthenticationError';
 import { AuthenticationSessionToken } from '../../domain/model/idAuthentication/models';
 
 describe('Dokobit authentication provider', () => {

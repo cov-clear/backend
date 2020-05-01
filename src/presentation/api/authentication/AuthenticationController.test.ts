@@ -4,7 +4,7 @@ import { v4 } from 'uuid';
 import { createMagicLink } from '../../../application/service';
 import database from '../../../database';
 import { cleanupDatabase } from '../../../test/cleanupDatabase';
-import { AuthorisationFailureReason } from '../../../application/service/authentication/MagicLinkAuthenticator';
+import { MagicLinkAuthenticationErrorReason } from '../../../application/service/authentication/MagicLinkAuthenticator';
 import { RootController } from '../RootController';
 
 describe('auth endpoints', () => {
@@ -85,7 +85,7 @@ describe('auth endpoints', () => {
         .send({ method: 'MAGIC_LINK', authCode: v4() })
         .expect(422)
         .expect((res) => {
-          expect(res.body.code).toEqual(AuthorisationFailureReason.AUTH_CODE_NOT_FOUND);
+          expect(res.body.code).toEqual(MagicLinkAuthenticationErrorReason.AUTH_CODE_NOT_FOUND);
         });
     });
 

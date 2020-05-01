@@ -31,6 +31,10 @@ export function magicLinkAuthenticationDetails(email = `${v4()}@example.com`) {
   return new AuthenticationDetails(AuthenticationMethod.MAGIC_LINK, new AuthenticationIdentifier(email));
 }
 
+export function estonianIdAuthenticationDetails(id = v4()) {
+  return new AuthenticationDetails(AuthenticationMethod.ESTONIAN_ID, new AuthenticationIdentifier(id));
+}
+
 export function anEmail() {
   return new Email(`${v4()}@example.com`);
 }

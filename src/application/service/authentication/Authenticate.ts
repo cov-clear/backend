@@ -1,6 +1,7 @@
 import { LoginCommand } from '../../../presentation/commands/authentication/LoginCommand';
 import { fromString } from '../../../domain/model/user/AuthenticationMethod';
 import { AuthenticatorFactory } from '../../../domain/model/authentication/AuthenticatorFactory';
+import { AuthenticationError } from './AuthenticationError';
 
 export class Authenticate {
   constructor(private authenticatorFactory: AuthenticatorFactory) {}
@@ -10,7 +11,7 @@ export class Authenticate {
     try {
       authenticationMethod = fromString(method);
     } catch (e) {
-      throw new AuthenticationFailedError(AuthenticationFailureReason.INVALID_METHOD);
+      throw new AuthenticationError('INVALID_METHOD');
     }
 
     const authenticator = this.authenticatorFactory.authenticatorFor(authenticationMethod);
@@ -18,14 +19,4 @@ export class Authenticate {
 
     return token;
   }
-}
-
-export class AuthenticationFailedError extends Error {
-  constructor(public failureReason: AuthenticationFailureReason) {
-    super(`Failed to authenticate code due to ${failureReason}`);
-  }
-}
-
-export enum AuthenticationFailureReason {
-  INVALID_METHOD = 'INVALID_METHOD',
 }

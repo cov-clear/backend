@@ -7,6 +7,7 @@ import { AuthenticationMethod } from '../../../domain/model/user/AuthenticationM
 import { AuthenticationIdentifier } from '../../../domain/model/user/AuthenticationIdentifier';
 import { Email } from '../../../domain/model/user/Email';
 import { Authenticator, AuthCode } from '../../../domain/model/authentication/Authenticator';
+import { AuthenticationError } from './AuthenticationError';
 
 export class MagicLinkAuthenticator implements Authenticator {
   public handles = AuthenticationMethod.MAGIC_LINK;
@@ -22,15 +23,15 @@ export class MagicLinkAuthenticator implements Authenticator {
     const magicLink = await this.magicLinkRepository.findByCode(magicLinkCode);
 
     if (!magicLink) {
-      throw new AuthorisationFailedError(AuthorisationFailureReason.AUTH_CODE_NOT_FOUND);
+      throw new MagicLinkAuthenticationError(MagicLinkAuthenticationErrorReason.AUTH_CODE_NOT_FOUND);
     }
 
     if (magicLink.isExpired()) {
-      throw new AuthorisationFailedError(AuthorisationFailureReason.AUTH_CODE_EXPIRED);
+      throw new MagicLinkAuthenticationError(MagicLinkAuthenticationErrorReason.AUTH_CODE_EXPIRED);
     }
 
     if (!magicLink.active) {
-      throw new AuthorisationFailedError(AuthorisationFailureReason.AUTH_CODE_ALREADY_USED);
+      throw new MagicLinkAuthenticationError(MagicLinkAuthenticationErrorReason.AUTH_CODE_ALREADY_USED);
     }
 
     const authenticationDetails = this.magicLinkAuthenticationDetails(magicLink.email);
@@ -48,14 +49,14 @@ export class MagicLinkAuthenticator implements Authenticator {
   }
 }
 
-export class AuthorisationFailedError extends Error {
-  constructor(public failureReason: AuthorisationFailureReason) {
-    super(`Failed to authorise code due to ${failureReason}`);
+export class MagicLinkAuthenticationError extends AuthenticationError {
+  constructor(public failureReason: MagicLinkAuthenticationErrorReason) {
+    super(failureReason);
   }
 }
 
 // TODO: Should rename?
-export enum AuthorisationFailureReason {
+export enum MagicLinkAuthenticationErrorReason {
   AUTH_CODE_NOT_FOUND = 'AUTH_CODE_NOT_FOUND',
   AUTH_CODE_EXPIRED = 'AUTH_CODE_EXPIRED',
   AUTH_CODE_ALREADY_USED = 'AUTH_CODE_ALREADY_USED',
