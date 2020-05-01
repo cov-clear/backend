@@ -1,0 +1,82 @@
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: [[env]]
+  labels:
+    app: backend
+    environment: [[env]]
+spec:
+  replicas: 2
+  minReadySeconds: 5
+  revisionHistoryLimit: 5
+  progressDeadlineSeconds: 300
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 34%
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+        environment: [[env]]
+    spec:
+      terminationGracePeriodSeconds: 10
+      serviceAccountName: backend
+      containers:
+        - name: backend 
+          image: covclear/backend:[[docker_tag]]
+          ports:
+            - name: http
+              protocol: TCP
+              containerPort: 1337
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: AWS_REGION
+              value: eu-west-1
+            - name: FRONTEND_BASE_URL
+              value: https://[[domain]]
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: backend 
+                  key: DATABASE_URL
+            - name: ROLLBAR_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: backend
+                  key: ROLLBAR_TOKEN
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: backend
+                  key: JWT_SECRET
+          livenessProbe:
+            failureThreshold: 3
+            periodSeconds: 5
+            timeoutSeconds: 2
+            httpGet:
+              path: /api/v1/health
+              port: http
+          readinessProbe:
+            failureThreshold: 3
+            periodSeconds: 5
+            timeoutSeconds: 2
+            httpGet:
+              path: /api/v1/health
+              port: http
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1024Mi
+            limits:
+              cpu: 500m
+              memory: 1024Mi
+          securityContext:
+            runAsUser: 1000 # node in the base NodeJS image

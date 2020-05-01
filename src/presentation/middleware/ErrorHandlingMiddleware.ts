@@ -17,7 +17,7 @@ export class ErrorHandlingMiddleware implements ExpressErrorMiddlewareInterface 
     }
 
     const body: any = { code, message };
-    if (config.isDevelopment) {
+    if (config.isDevelopment()) {
       body.stack = err.stack;
     }
 

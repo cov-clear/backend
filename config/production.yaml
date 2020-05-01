@@ -1,5 +1,2 @@
-frontend:
-  baseUrl: https://app.cov-clear.com
-
 emailNotifier:
   type: aws

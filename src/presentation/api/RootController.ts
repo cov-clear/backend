@@ -12,12 +12,14 @@ import { SharingCodeController } from './access-sharing/SharingCodeController';
 import { AuthenticationController } from './authentication/AuthenticationController';
 import { PermissionController } from './authorization/PermissionController';
 import { RoleController } from './authorization/RoleController';
+import { HealthController } from './HealthController';
 import { ErrorHandlingMiddleware } from '../middleware/ErrorHandlingMiddleware';
 import { AuthorizationChecker } from '../middleware/AuthorizationChecker';
 import { CurrentUserChecker } from '../middleware/CurrentUserChecker';
 import { rollbarClient } from '../../infrastructure/logging/Rollbar';
 import securityHeaders from 'helmet';
 import logger from '../../infrastructure/logging/logger';
+import { ReportsController } from './reports/ReportsController';
 
 export class RootController {
   public expressApp(): Application {
@@ -29,6 +31,7 @@ export class RootController {
     useExpressServer(expressApp, {
       routePrefix: '/api',
       controllers: [
+        HealthController,
         AccessPassController,
         AdminController,
         AuthenticationController,
@@ -39,6 +42,7 @@ export class RootController {
         TestController,
         TestTypeController,
         UserController,
+        ReportsController,
       ],
       defaultErrorHandler: false,
       middlewares: [ErrorHandlingMiddleware],
