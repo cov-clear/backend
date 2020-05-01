@@ -1,8 +1,8 @@
 import { AuthenticationMethod } from '../user/AuthenticationMethod';
-import { AuthenticationIdentifier } from '../user/AuthenticationIdentifier';
 
+export type AuthCode = string;
 export type Token = string;
 export interface Authenticator {
   handles: AuthenticationMethod;
-  authenticate(identifier: AuthenticationIdentifier): Promise<Token>;
+  authenticate(authCode: AuthCode): Promise<Token>;
 }

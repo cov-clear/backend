@@ -6,7 +6,7 @@ import { AuthenticationDetails } from '../../../domain/model/user/Authentication
 import { AuthenticationMethod } from '../../../domain/model/user/AuthenticationMethod';
 import { AuthenticationIdentifier } from '../../../domain/model/user/AuthenticationIdentifier';
 import { Email } from '../../../domain/model/user/Email';
-import { Authenticator } from '../../../domain/model/authentication/Authenticator';
+import { Authenticator, AuthCode } from '../../../domain/model/authentication/Authenticator';
 
 export class MagicLinkAuthenticator implements Authenticator {
   public handles = AuthenticationMethod.MAGIC_LINK;
@@ -17,8 +17,8 @@ export class MagicLinkAuthenticator implements Authenticator {
     private getExistingOrCreateNewUser: GetExistingOrCreateNewUser
   ) {}
 
-  public async authenticate(identifier: AuthenticationIdentifier): Promise<string> {
-    const magicLinkCode = new MagicLinkCode(identifier.value);
+  public async authenticate(authCode: AuthCode): Promise<string> {
+    const magicLinkCode = new MagicLinkCode(authCode);
     const magicLink = await this.magicLinkRepository.findByCode(magicLinkCode);
 
     if (!magicLink) {
