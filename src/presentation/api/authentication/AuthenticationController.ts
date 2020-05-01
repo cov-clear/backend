@@ -1,5 +1,5 @@
 import { BodyParam, JsonController, Post, UseAfter, Body } from 'routing-controllers';
-import { createMagicLink, exchangeAuthCode, createAuthenticationSession } from '../../../application/service';
+import { createMagicLink, authenticate, createAuthenticationSession } from '../../../application/service';
 import { AuthenticationErrorHandler } from './AuthenticationErrorHandler';
 import { LoginCommand } from '../../commands/authentication/LoginCommand';
 import * as config from '../../../config';
@@ -7,9 +7,9 @@ import * as config from '../../../config';
 @JsonController('/v1/auth')
 @UseAfter(AuthenticationErrorHandler)
 export class AuthenticationController {
-  private createMagicLink = createMagicLink;
-  private exchangeAuthCode = exchangeAuthCode;
   private createAuthenticationSession = createAuthenticationSession;
+  private createMagicLink = createMagicLink;
+  private authenticate = authenticate;
 
   @Post('/magic-links')
   async createNewMagicLink(@BodyParam('email') emailValue: string) {
@@ -34,18 +34,8 @@ export class AuthenticationController {
   }
 
   @Post('/login')
-  async oldLogin(@BodyParam('authCode') authCode: string) {
-    const command: LoginCommand = {
-      method: 'MAGIC_LINK',
-      value: authCode,
-    };
-    const token = await this.exchangeAuthCode.execute(command);
-    return { token };
-  }
-
-  @Post('/new-login')
   async login(@Body() command: LoginCommand) {
-    const token = await this.exchangeAuthCode.execute(command);
+    const token = await this.authenticate.execute(command);
     return { token };
   }
 }

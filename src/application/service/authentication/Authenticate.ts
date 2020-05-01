@@ -6,16 +6,18 @@ import { AuthenticationIdentifier } from '../../../domain/model/user/Authenticat
 export class Authenticate {
   constructor(private authenticatorFactory: AuthenticatorFactory) {}
 
-  public async execute({ method, value }: LoginCommand) {
+  public async execute({ method, identifier }: LoginCommand) {
     let authenticationMethod;
     try {
       authenticationMethod = AuthenticationMethod.fromString(method);
     } catch (e) {
       throw new AuthenticationFailedError(AuthenticationFailureReason.INVALID_METHOD);
     }
-    const identifier = new AuthenticationIdentifier(value);
+
     const authenticator = this.authenticatorFactory.authenticatorFor(authenticationMethod);
-    const token = await authenticator.authenticate(identifier);
+    const authenticationIdentifier = new AuthenticationIdentifier(identifier);
+    const token = await authenticator.authenticate(authenticationIdentifier);
+
     return token;
   }
 }

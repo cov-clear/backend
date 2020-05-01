@@ -9,7 +9,7 @@ import { Email } from '../../../domain/model/user/Email';
 import { Authenticator } from '../../../domain/model/authentication/Authenticator';
 
 export class MagicLinkAuthenticator implements Authenticator {
-  public authenticatesFor = AuthenticationMethod.MAGIC_LINK;
+  public handles = AuthenticationMethod.MAGIC_LINK;
 
   constructor(
     private magicLinkRepository: MagicLinkRepository,
