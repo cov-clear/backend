@@ -20,7 +20,7 @@ import { InterpretationTheme } from '../domain/model/test/interpretation/Interpr
 import { ADD_TAKE_HOME_TEST_RESULT } from '../domain/model/authentication/Permissions';
 import { AuthenticationDetails } from '../domain/model/user/AuthenticationDetails';
 import { AuthenticationMethod } from '../domain/model/user/AuthenticationMethod';
-import { AuthenticationValue } from '../domain/model/user/AuthenticationValue';
+import { AuthenticationIdentifier } from '../domain/model/user/AuthenticationIdentifier';
 import { ReportTestResult } from '../domain/model/reports/ReportTestResult';
 
 export function aNewUser() {
@@ -28,7 +28,7 @@ export function aNewUser() {
 }
 
 export function magicLinkAuthenticationDetails(email = `${v4()}@example.com`) {
-  return new AuthenticationDetails(AuthenticationMethod.MAGIC_LINK, new AuthenticationValue(email));
+  return new AuthenticationDetails(AuthenticationMethod.MAGIC_LINK, new AuthenticationIdentifier(email));
 }
 
 export function anEmail() {

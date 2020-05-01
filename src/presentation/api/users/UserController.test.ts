@@ -59,7 +59,7 @@ describe('user endpoints', () => {
           expect(user.id).toEqual(id.value);
           expect(user.creationTime).toBeDefined();
           expect(user.authenticationDetails.method).toBe(AuthenticationMethod.MAGIC_LINK);
-          expect(user.authenticationDetails.value).toBe('kostas@example.com');
+          expect(user.authenticationDetails.identifier).toBe('kostas@example.com');
         });
     });
 

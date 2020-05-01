@@ -25,14 +25,14 @@ describe('admin endpoints', () => {
         })
         .send([
           {
-            authenticationDetails: { method: 'MAGIC_LINK', value: 'mail@example.com' },
+            authenticationDetails: { method: 'MAGIC_LINK', identifier: 'mail@example.com' },
             roles: [USER],
           },
         ])
         .expect(201)
         .expect((res) => {
           expect(res.body[0].authenticationDetails.method).toBe('MAGIC_LINK');
-          expect(res.body[0].authenticationDetails.value).toBe('mail@example.com');
+          expect(res.body[0].authenticationDetails.identifier).toBe('mail@example.com');
         });
     });
 
@@ -46,7 +46,7 @@ describe('admin endpoints', () => {
         })
         .send([
           {
-            authenticationDetails: { method: 'MAGIC_LINK', value: 'mail@example.com' },
+            authenticationDetails: { method: 'MAGIC_LINK', identifier: 'mail@example.com' },
             roles: [USER],
           },
         ])

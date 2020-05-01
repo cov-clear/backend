@@ -5,6 +5,7 @@ import { UserDTO } from '../dtos/users/UserDTO';
 import { ProfileDTO } from '../dtos/users/ProfileDTO';
 import { AddressDTO } from '../dtos/users/AddressDTO';
 import { AuthenticationDetails } from '../../domain/model/user/AuthenticationDetails';
+import { AuthenticationDetailsDTO } from '../dtos/users/AuthenticationDetailsDTO';
 
 export class UserTransformer {
   public toUserDTO(user: User): UserDTO {
@@ -38,10 +39,10 @@ export class UserTransformer {
     };
   }
 
-  public toAuthenticationDetailsDTO(authenticationDetails: AuthenticationDetails) {
+  public toAuthenticationDetailsDTO(authenticationDetails: AuthenticationDetails): AuthenticationDetailsDTO {
     return {
       method: authenticationDetails.method,
-      value: authenticationDetails.value.value,
+      identifier: authenticationDetails.identifier.value,
     };
   }
 }

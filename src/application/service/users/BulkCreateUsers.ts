@@ -5,7 +5,7 @@ import logger from '../../../infrastructure/logging/logger';
 import { CreateUserCommand } from '../../../presentation/commands/admin/CreateUserCommand';
 import { AuthenticationDetails } from '../../../domain/model/user/AuthenticationDetails';
 import { AuthenticationMethod } from '../../../domain/model/user/AuthenticationMethod';
-import { AuthenticationValue } from '../../../domain/model/user/AuthenticationValue';
+import { AuthenticationIdentifier } from '../../../domain/model/user/AuthenticationIdentifier';
 
 export class BulkCreateUsers {
   constructor(private userRepository: UserRepository, private roleRepository: RoleRepository) {}
@@ -17,7 +17,7 @@ export class BulkCreateUsers {
     for (const userCommand of createUsersCommand) {
       const authenticationDetails = new AuthenticationDetails(
         AuthenticationMethod.fromString(userCommand.authenticationDetails.method),
-        new AuthenticationValue(userCommand.authenticationDetails.value)
+        new AuthenticationIdentifier(userCommand.authenticationDetails.identifier)
       );
 
       let user = await this.userRepository.findByAuthenticationDetails(authenticationDetails);

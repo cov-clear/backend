@@ -8,7 +8,7 @@ import { Role } from '../../../domain/model/authentication/Role';
 import { CreateUserCommand } from '../../../presentation/commands/admin/CreateUserCommand';
 import { AuthenticationDetails } from '../../../domain/model/user/AuthenticationDetails';
 import { AuthenticationMethod } from '../../../domain/model/user/AuthenticationMethod';
-import { AuthenticationValue } from '../../../domain/model/user/AuthenticationValue';
+import { AuthenticationIdentifier } from '../../../domain/model/user/AuthenticationIdentifier';
 import { Email } from '../../../domain/model/user/Email';
 
 describe('BulkCreateUsers', () => {
@@ -25,8 +25,8 @@ describe('BulkCreateUsers', () => {
     const roles1 = [DOCTOR, USER],
       roles2 = [USER];
     const command = [
-      { authenticationDetails: { method: 'MAGIC_LINK', value: email1.value }, roles: roles1 },
-      { authenticationDetails: { method: 'MAGIC_LINK', value: email2.value }, roles: roles2 },
+      { authenticationDetails: { method: 'MAGIC_LINK', identifier: email1.value }, roles: roles1 },
+      { authenticationDetails: { method: 'MAGIC_LINK', identifier: email2.value }, roles: roles2 },
     ] as CreateUserCommand[];
 
     const resultUsers = await bulkCreateUsers.execute(command);
@@ -45,7 +45,10 @@ describe('BulkCreateUsers', () => {
     const existingUser = await userRepository.save(aNewUser());
     const command = [
       {
-        authenticationDetails: { method: 'MAGIC_LINK', value: existingUser.authenticationDetails.value.value },
+        authenticationDetails: {
+          method: 'MAGIC_LINK',
+          identifier: existingUser.authenticationDetails.identifier.value,
+        },
         roles: [DOCTOR],
       },
     ] as CreateUserCommand[];
@@ -53,7 +56,7 @@ describe('BulkCreateUsers', () => {
     const resultUsers = await bulkCreateUsers.execute(command);
     expect(resultUsers.length).toEqual(1);
 
-    const updatedExistingUser = await findByEmail(existingUser.authenticationDetails.value);
+    const updatedExistingUser = await findByEmail(existingUser.authenticationDetails.identifier);
 
     expect(updatedExistingUser!.roles.length).toEqual(existingUser.roles.length + 1);
     expect(updatedExistingUser!.roles.sort()).toEqual([DOCTOR]);
@@ -62,7 +65,7 @@ describe('BulkCreateUsers', () => {
 
 function findByEmail(email: Email) {
   return userRepository.findByAuthenticationDetails(
-    new AuthenticationDetails(AuthenticationMethod.MAGIC_LINK, new AuthenticationValue(email.value))
+    new AuthenticationDetails(AuthenticationMethod.MAGIC_LINK, new AuthenticationIdentifier(email.value))
   );
 }
 

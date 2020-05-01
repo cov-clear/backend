@@ -15,7 +15,7 @@ import { AssignmentId } from '../../domain/model/authentication/AssignmentAction
 import { AssignmentActionType } from '../../domain/model/authentication/AssignmentActionType';
 import { Role } from '../../domain/model/authentication/Role';
 import { AuthenticationDetails } from '../../domain/model/user/AuthenticationDetails';
-import { AuthenticationValue } from '../../domain/model/user/AuthenticationValue';
+import { AuthenticationIdentifier } from '../../domain/model/user/AuthenticationIdentifier';
 
 const USER_TABLE_NAME = 'user';
 
@@ -23,7 +23,7 @@ const USER_TABLE_COLUMNS = [
   'id',
   'email',
   'authentication_method as authenticationMethod',
-  'authentication_value as authenticationValue',
+  'authentication_identifier as authenticationIdentifier',
   'profile',
   'address',
   'modification_time as modificationTime',
@@ -37,13 +37,13 @@ export class PsqlUserRepository implements UserRepository {
     return this.db.transaction(async (transaction) => {
       await transaction.raw(
         `insert into "${USER_TABLE_NAME}"
-        (id, authentication_method, authentication_value, creation_time, modification_time)
-        values (:id, :authenticationMethod, :authenticationValue, :creationTime, :modificationTime)
+        (id, authentication_method, authentication_identifier, creation_time, modification_time)
+        values (:id, :authenticationMethod, :authenticationIdentifier, :creationTime, :modificationTime)
         on conflict do nothing`,
         {
           id: user.id.value,
           authenticationMethod: user.authenticationDetails.method,
-          authenticationValue: user.authenticationDetails.value.value,
+          authenticationIdentifier: user.authenticationDetails.identifier.value,
           creationTime: user.creationTime,
           modificationTime: user.modificationTime,
         }
@@ -70,11 +70,11 @@ export class PsqlUserRepository implements UserRepository {
     Reflect.set(user.roleAssignments, 'newAssignmentActions', []);
   }
 
-  async findByAuthenticationDetails({ method, value }: AuthenticationDetails): Promise<User | null> {
+  async findByAuthenticationDetails({ method, identifier }: AuthenticationDetails): Promise<User | null> {
     const userRow: any = await this.db(USER_TABLE_NAME)
       .where({
         authentication_method: method,
-        authentication_value: value.value,
+        authentication_identifier: identifier.value,
       })
       .select(USER_TABLE_COLUMNS)
       .first();
@@ -112,7 +112,10 @@ export class PsqlUserRepository implements UserRepository {
   private async extractUserAndPopulateRoles(userRow: any) {
     const user = new User(
       new UserId(userRow.id),
-      new AuthenticationDetails(userRow.authenticationMethod, new AuthenticationValue(userRow.authenticationValue)),
+      new AuthenticationDetails(
+        userRow.authenticationMethod,
+        new AuthenticationIdentifier(userRow.authenticationIdentifier)
+      ),
       userRow.email ? new Email(userRow.email) : undefined,
       fromDbProfile(userRow.profile as DbProfile | undefined),
       fromDbAddress(userRow.address as DbAddress | undefined),

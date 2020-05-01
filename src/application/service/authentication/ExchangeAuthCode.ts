@@ -4,7 +4,7 @@ import { MagicLinkCode } from '../../../domain/model/magiclink/MagicLink';
 import { MagicLinkRepository } from '../../../domain/model/magiclink/MagicLinkRepository';
 import { AuthenticationDetails } from '../../../domain/model/user/AuthenticationDetails';
 import { AuthenticationMethod } from '../../../domain/model/user/AuthenticationMethod';
-import { AuthenticationValue } from '../../../domain/model/user/AuthenticationValue';
+import { AuthenticationIdentifier } from '../../../domain/model/user/AuthenticationIdentifier';
 import { Email } from '../../../domain/model/user/Email';
 
 // TODO: Rename to be magic link specific
@@ -41,7 +41,7 @@ export class ExchangeAuthCode {
   }
 
   private magicLinkAuthenticationDetails(email: Email): AuthenticationDetails {
-    return new AuthenticationDetails(AuthenticationMethod.MAGIC_LINK, new AuthenticationValue(email.value));
+    return new AuthenticationDetails(AuthenticationMethod.MAGIC_LINK, new AuthenticationIdentifier(email.value));
   }
 }
 

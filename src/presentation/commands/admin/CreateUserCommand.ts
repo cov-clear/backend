@@ -1,7 +1,7 @@
 export interface CreateUserCommand {
   authenticationDetails: {
     method: string;
-    value: string;
+    identifier: string;
   };
   roles: string[];
 }

@@ -23,7 +23,7 @@ describe('GetExistingOrCreateNewUser', () => {
     const resultUser = await getExistingOrCreateNewUser.execute(magicLinkAuthenticationDetails('kostas1@example.com'));
 
     expect(resultUser).toBeDefined();
-    expect(resultUser.authenticationDetails.value.value).toBe('kostas1@example.com');
+    expect(resultUser.authenticationDetails.identifier.value).toBe('kostas1@example.com');
   });
 
   describe('when setup mode is enabled', () => {
