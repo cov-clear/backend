@@ -8,13 +8,13 @@ import {
 } from '../../domain/model/idAuthentication/models';
 import { DokobitClient } from './DokobitClient';
 
-const ESTONIA_CODE = 'et';
+const ESTONIA_CODE = 'ee';
 
 export class DokobitAuthenticationProvider implements AuthenticationProvider {
   constructor(private client = new DokobitClient()) {}
 
   async createSession(): Promise<AuthenticationSession> {
-    const returnUrl = `${config.get('frontend.baseUrl')}/authenticate`;
+    const returnUrl = `${config.get('frontend.baseUrl')}/authentication-callback?method=ESTONIAN_ID`;
 
     let session;
     try {

@@ -49,7 +49,7 @@ describe('Dokobit authentication provider', () => {
             code: '123',
             name: 'Indrek',
             surname: 'Nolan',
-            countryCode: 'et',
+            countryCode: 'ee',
           };
         }
       },

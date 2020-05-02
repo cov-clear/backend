@@ -130,7 +130,7 @@ describe('auth endpoints', () => {
             code: '123321',
             name: 'Viljur',
             surname: 'Ukrim',
-            country_code: 'et',
+            country_code: 'ee',
           });
 
         await request(app)

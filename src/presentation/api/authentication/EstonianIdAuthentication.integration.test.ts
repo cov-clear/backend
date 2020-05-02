@@ -22,7 +22,7 @@ describe('Estonian id authentication flow', () => {
         code: '123321',
         name: 'Viljur',
         surname: 'Ukrim',
-        country_code: 'et',
+        country_code: 'ee',
       });
 
     const app = new RootController().expressApp();

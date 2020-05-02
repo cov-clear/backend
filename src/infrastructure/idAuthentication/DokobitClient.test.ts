@@ -21,7 +21,7 @@ describe('Dokobit client', () => {
     nock('https://id-sandbox.dokobit.com')
       .get('/api/authentication/seshToken/status')
       .query({ access_token: 'dummy' })
-      .reply(200, { code: '123', name: 'Indrek', surname: 'Nolan', country_code: 'et' });
+      .reply(200, { code: '123', name: 'Indrek', surname: 'Nolan', country_code: 'ee' });
 
     const client = new DokobitClient();
 
@@ -30,6 +30,6 @@ describe('Dokobit client', () => {
     expect(result.code).toBe('123');
     expect(result.name).toBe('Indrek');
     expect(result.surname).toBe('Nolan');
-    expect(result.countryCode).toBe('et');
+    expect(result.countryCode).toBe('ee');
   });
 });
