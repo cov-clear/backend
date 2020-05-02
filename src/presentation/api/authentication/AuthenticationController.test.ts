@@ -65,7 +65,7 @@ describe('auth endpoints', () => {
   describe('POST /auth/sessions', () => {
     it('creates a Dokobit session', async () => {
       nock('https://id-sandbox.dokobit.com')
-        .post('/api/authentication/create', { return_url: /\/authenticate/i })
+        .post('/api/authentication/create', { return_url: /\/authentication-callback/i })
         .query({ access_token: 'dummy' })
         .reply(200, { session_token: 'some session token', url: 'example.com/dokobit-redirect' });
 

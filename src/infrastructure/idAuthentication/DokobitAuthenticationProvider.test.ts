@@ -7,7 +7,7 @@ describe('Dokobit authentication provider', () => {
   it('creates sessions', async () => {
     const provider = new DokobitAuthenticationProvider({
       async createSession({ returnUrl }) {
-        if (returnUrl === 'http://localhost:3000/authenticate') {
+        if (returnUrl === 'http://localhost:3000/authentication-callback?method=ESTONIAN_ID') {
           return {
             sessionToken: 'seshToken',
             url: 'https://example.com/dokobit-redirect',

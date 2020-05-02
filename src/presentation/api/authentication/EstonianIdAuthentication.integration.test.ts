@@ -8,7 +8,7 @@ import database from '../../../database';
 describe('Estonian id authentication flow', () => {
   it('creates a signed-in user with estonian id authentication details', async () => {
     nock('https://id-sandbox.dokobit.com')
-      .post('/api/authentication/create', { return_url: /\/authenticate/i })
+      .post('/api/authentication/create', { return_url: /\/authentication-callback/i })
       .query({ access_token: 'dummy' })
       .reply(200, {
         session_token: 'some-session-token',
