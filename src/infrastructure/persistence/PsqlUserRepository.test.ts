@@ -15,7 +15,7 @@ import { Role } from '../../domain/model/authentication/Role';
 import { permissionRepository, roleRepository } from './index';
 import { Permission } from '../../domain/model/authentication/Permission';
 import { AuthenticationDetails } from '../../domain/model/user/AuthenticationDetails';
-import { AuthenticationMethod } from '../../domain/model/user/AuthenticationMethod';
+import { AuthenticationMethodType, AuthenticationMethod } from '../../domain/model/user/AuthenticationMethod';
 import { AuthenticationIdentifier } from '../../domain/model/user/AuthenticationIdentifier';
 
 describe('PsqlUserRepository', () => {
@@ -33,7 +33,7 @@ describe('PsqlUserRepository', () => {
     expect(persistedUser?.id).toEqual(user.id);
     expect(persistedUser?.email).toEqual(user.email);
     expect(persistedUser?.authenticationDetails.identifier.value).toBe('kostas1@example.com');
-    expect(persistedUser?.authenticationDetails.method).toBe(AuthenticationMethod.MAGIC_LINK);
+    expect(persistedUser?.authenticationDetails.method.type).toBe(AuthenticationMethodType.MAGIC_LINK);
     expect(persistedUser?.profile).toEqual(user.profile);
     expect(persistedUser?.address).toEqual(user.address);
     expect(persistedUser?.creationTime).toEqual(user.creationTime);
@@ -52,11 +52,11 @@ describe('PsqlUserRepository', () => {
 
   it('inserts new and retrieves a user by estonian id', async () => {
     const user = await psqlUserRepository.save(
-      User.create(new AuthenticationDetails(AuthenticationMethod.ESTONIAN_ID, new AuthenticationIdentifier('32123')))
+      User.create(new AuthenticationDetails(AuthenticationMethod.estonianId(), new AuthenticationIdentifier('32123')))
     );
 
     const persistedUser = await psqlUserRepository.findByAuthenticationDetails(
-      new AuthenticationDetails(AuthenticationMethod.ESTONIAN_ID, new AuthenticationIdentifier('32123'))
+      new AuthenticationDetails(AuthenticationMethod.estonianId(), new AuthenticationIdentifier('32123'))
     );
 
     expect(persistedUser?.id).toEqual(user.id);

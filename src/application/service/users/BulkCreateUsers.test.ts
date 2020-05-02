@@ -65,7 +65,7 @@ describe('BulkCreateUsers', () => {
 
 function findByEmail(email: Email) {
   return userRepository.findByAuthenticationDetails(
-    new AuthenticationDetails(AuthenticationMethod.MAGIC_LINK, new AuthenticationIdentifier(email.value))
+    new AuthenticationDetails(AuthenticationMethod.magicLink(), new AuthenticationIdentifier(email.value))
   );
 }
 

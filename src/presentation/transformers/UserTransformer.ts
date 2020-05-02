@@ -41,7 +41,7 @@ export class UserTransformer {
 
   public toAuthenticationDetailsDTO(authenticationDetails: AuthenticationDetails): AuthenticationDetailsDTO {
     return {
-      method: authenticationDetails.method,
+      method: authenticationDetails.method.type,
       identifier: authenticationDetails.identifier.value,
     };
   }

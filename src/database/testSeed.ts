@@ -50,7 +50,7 @@ export async function createSeedDataForTestingPeriod() {
 
 async function createDoctorAccount() {
   const doctor = await getExistingOrCreateNewUser.execute(
-    new AuthenticationDetails(AuthenticationMethod.MAGIC_LINK, new AuthenticationIdentifier('doctor@cov-clear.com'))
+    new AuthenticationDetails(AuthenticationMethod.magicLink(), new AuthenticationIdentifier('doctor@cov-clear.com'))
   );
   doctor.profile = new Profile('John', 'Lennon', DateOfBirth.fromString('1940-10-09'), Sex.MALE);
   doctor.address = anAddress();
@@ -59,7 +59,7 @@ async function createDoctorAccount() {
 
 async function createPatientAccount() {
   const patient = await getExistingOrCreateNewUser.execute(
-    new AuthenticationDetails(AuthenticationMethod.MAGIC_LINK, new AuthenticationIdentifier('patient@covclear.com'))
+    new AuthenticationDetails(AuthenticationMethod.magicLink(), new AuthenticationIdentifier('patient@covclear.com'))
   );
   patient.profile = new Profile('Captain', 'Kirk', DateOfBirth.fromString('1940-10-09'), Sex.MALE);
   patient.address = anAddress();
@@ -68,7 +68,7 @@ async function createPatientAccount() {
 
 async function createAdminAccount() {
   const admin = await getExistingOrCreateNewUser.execute(
-    new AuthenticationDetails(AuthenticationMethod.MAGIC_LINK, new AuthenticationIdentifier('admin@covclear.com'))
+    new AuthenticationDetails(AuthenticationMethod.magicLink(), new AuthenticationIdentifier('admin@covclear.com'))
   );
   admin.profile = new Profile('Major', 'Tom', DateOfBirth.fromString('1940-10-09'), Sex.MALE);
   admin.address = anAddress();

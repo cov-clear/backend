@@ -28,7 +28,11 @@ export function aNewUser() {
 }
 
 export function magicLinkAuthenticationDetails(email = `${v4()}@example.com`) {
-  return new AuthenticationDetails(AuthenticationMethod.MAGIC_LINK, new AuthenticationIdentifier(email));
+  return new AuthenticationDetails(AuthenticationMethod.magicLink(), new AuthenticationIdentifier(email));
+}
+
+export function estonianIdAuthenticationDetails(id = v4()) {
+  return new AuthenticationDetails(AuthenticationMethod.estonianId(), new AuthenticationIdentifier(id));
 }
 
 export function anEmail() {

@@ -15,7 +15,7 @@ import {
 import { getTokenForUser } from '../../../test/authentication';
 import { anApiAddress, anApiProfile } from '../../../test/apiFactories';
 import { RootController } from '../RootController';
-import { AuthenticationMethod } from '../../../domain/model/user/AuthenticationMethod';
+import { AuthenticationMethodType } from '../../../domain/model/user/AuthenticationMethod';
 
 describe('user endpoints', () => {
   const app = new RootController().expressApp();
@@ -58,7 +58,7 @@ describe('user endpoints', () => {
           const user = response.body;
           expect(user.id).toEqual(id.value);
           expect(user.creationTime).toBeDefined();
-          expect(user.authenticationDetails.method).toBe(AuthenticationMethod.MAGIC_LINK);
+          expect(user.authenticationDetails.method).toBe(AuthenticationMethodType.MAGIC_LINK);
           expect(user.authenticationDetails.identifier).toBe('kostas@example.com');
         });
     });

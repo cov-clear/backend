@@ -3,8 +3,11 @@ import mailgun from 'mailgun-js';
 import AWS from 'aws-sdk';
 
 import { Email } from '../../domain/model/user/Email';
+import { CreateAuthenticationSession } from './authentication/CreateAuthenticationSession';
 import { GenerateAuthToken } from './authentication/GenerateAuthToken';
-import { ExchangeAuthCode } from './authentication/ExchangeAuthCode';
+import { MagicLinkAuthenticator } from './authentication/MagicLinkAuthenticator';
+import { EstonianIdAuthenticator } from './authentication/EstonianIdAuthenticator';
+import { Authenticate } from './authentication/Authenticate';
 import { CreateNewMagicLink } from './authentication/CreateNewMagicLink';
 import * as config from '../../config';
 import { GetExistingOrCreateNewUser } from './users/GetExistingOrCreateNewUser';
@@ -20,6 +23,7 @@ import {
   testRepository,
   reportRepository,
 } from '../../infrastructure/persistence';
+import { DokobitAuthenticationProvider } from '../../infrastructure/idAuthentication/DokobitAuthenticationProvider';
 import { GetUser } from './users/GetUser';
 import { UpdateUser } from './users/UpdateUser';
 import { GetCountries } from './users/GetCountries';
@@ -45,6 +49,7 @@ import { CreateTestType } from './tests/CreateTestType';
 import { AddResultsToTest } from './tests/AddResultsToTest';
 import { UpdateTestType } from './tests/UpdateTestType';
 import { GetReports } from './reports/GetReports';
+import { AuthenticatorFactory } from '../../domain/model/authentication/AuthenticatorFactory';
 
 let emailNotifier = new LoggingEmailNotifier();
 
@@ -101,11 +106,21 @@ export const getExistingOrCreateNewUser = new GetExistingOrCreateNewUser(
 
 export const bulkCreateUsers = new BulkCreateUsers(userRepository, roleRepository);
 
-export const exchangeAuthCode = new ExchangeAuthCode(
+const authenticationProvider = new DokobitAuthenticationProvider();
+
+export const createAuthenticationSession = new CreateAuthenticationSession(authenticationProvider);
+export const magicLinkAuthenticator = new MagicLinkAuthenticator(
   magicLinkRepository,
   generateAuthToken,
   getExistingOrCreateNewUser
 );
+export const estonianIdAuthenticator = new EstonianIdAuthenticator(
+  authenticationProvider,
+  getExistingOrCreateNewUser,
+  generateAuthToken
+);
+export const authenticatorFactory = new AuthenticatorFactory([magicLinkAuthenticator, estonianIdAuthenticator]);
+export const authenticate = new Authenticate(authenticatorFactory);
 
 export const createSharingCode = new CreateSharingCode(sharingCodeRepository);
 export const createAccessPass = new CreateAccessPass(accessPassRepository, sharingCodeRepository);

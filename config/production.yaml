@@ -1,2 +1,9 @@
+frontend:
+  baseUrl: https://app.cov-clear.com
+
+authentication:
+  dokobit:
+    baseUrl: https://id.dokobit.com
+
 emailNotifier:
   type: aws
