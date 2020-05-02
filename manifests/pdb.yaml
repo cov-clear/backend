@@ -4,10 +4,10 @@ apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
   name: backend
-  namespace: [[env]]
+  namespace: :env:
   labels:
     app: backend
-    environment: [[env]]
+    environment: :env:
 spec:
   maxUnavailable: 30%
   selector:

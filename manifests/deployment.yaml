@@ -1,12 +1,13 @@
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend
-  namespace: [[env]]
+  namespace: :env:
   labels:
     app: backend
-    environment: [[env]]
+    environment: :env:
 spec:
   replicas: 2
   minReadySeconds: 5
@@ -23,29 +24,25 @@ spec:
     metadata:
       labels:
         app: backend
-        environment: [[env]]
+        environment: :env:
     spec:
       terminationGracePeriodSeconds: 10
       serviceAccountName: backend
       containers:
         - name: backend
-          image: covclear/backend:[[docker_tag]]
+          image: covclear/backend::docker_tag:
           ports:
             - name: http
               protocol: TCP
               containerPort: 1337
           envFrom:
             - configMapRef:
-                name: backend
+                name: backend-config
             - secretRef:
-                name: backend
+                name: backend-secrets
           env:
             - name: NODE_ENV
               value: production
-            - name: AWS_REGION
-              value: eu-west-1
-            - name: FRONTEND_BASE_URL
-              value: https://[[domain]]
           livenessProbe:
             failureThreshold: 3
             periodSeconds: 5
