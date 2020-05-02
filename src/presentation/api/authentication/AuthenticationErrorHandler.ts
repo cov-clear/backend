@@ -1,7 +1,6 @@
 import { ExpressErrorMiddlewareInterface, Middleware } from 'routing-controllers';
 import { ApiError } from '../../dtos/ApiError';
 import { DomainValidationError } from '../../../domain/model/DomainValidationError';
-import { MagicLinkAuthenticationError } from '../../../application/service/authentication/MagicLinkAuthenticator';
 import { AuthenticationError } from '../../../application/service/authentication/AuthenticationError';
 import { ResourceNotFoundError } from '../../../domain/model/ResourceNotFoundError';
 
