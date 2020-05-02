@@ -7,7 +7,7 @@ const SHARING_CODE_LIFETIME_MSEC = 5 * 60 * 1_000;
 export class SharingCode {
   constructor(
     readonly userId: UserId,
-    readonly duration: number = 15,
+    readonly accessDuration: number = 15, // Minutes
     readonly code: string = uuidv4(),
     readonly creationTime: Date = new Date()
   ) {}

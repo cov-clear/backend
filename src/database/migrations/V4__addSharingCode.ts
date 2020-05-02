@@ -6,7 +6,6 @@ export async function up(db: knex) {
   await db.schema.createTable(SHARING_CODE_TABLE, (table) => {
     table.uuid('code').primary();
     table.uuid('user_id').notNullable();
-    table.integer('duration').notNullable();
     table.timestamp('creation_time').notNullable().index();
   });
 }

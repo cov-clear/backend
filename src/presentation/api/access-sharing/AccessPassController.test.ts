@@ -51,7 +51,7 @@ describe('sharing code endpoints', () => {
       await userRepository.save(user1);
       await userRepository.save(user2);
 
-      const sharingCode = new SharingCode(user2.id, uuidv4(), new Date('1970-01-01'));
+      const sharingCode = new SharingCode(user2.id, 15, uuidv4(), new Date('1970-01-01'));
       await sharingCodeRepository.save(sharingCode);
 
       await request(app)
@@ -68,7 +68,7 @@ describe('sharing code endpoints', () => {
       await userRepository.save(user1);
       await userRepository.save(user2);
 
-      const sharingCode = new SharingCode(user2.id, uuidv4(), new Date());
+      const sharingCode = new SharingCode(user2.id, 15, uuidv4(), new Date());
       await sharingCodeRepository.save(sharingCode);
 
       await request(app)

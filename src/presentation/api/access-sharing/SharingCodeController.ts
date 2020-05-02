@@ -14,12 +14,12 @@ export class SharingCodeController {
   @Post('')
   async createNewAccessPass(
     @Param('userId') userIdValue: string,
-    @Param('duration') duration: number,
+    @Param('accessDuration') accessDuration: number,
     @CurrentUser({ required: true }) actor: User
   ) {
     await this.ensureIsLoggedInAsUser(actor, new UserId(userIdValue));
 
-    const sharingCode = await this.createSharingCode.withUserId(userIdValue);
+    const sharingCode = await this.createSharingCode.withUserId(userIdValue, accessDuration);
 
     return this.sharingCodeTransformer.toSharingCodeDTO(sharingCode);
   }
