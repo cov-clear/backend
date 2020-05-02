@@ -3,6 +3,7 @@ import request from 'supertest';
 import { decode } from 'jsonwebtoken';
 
 import { RootController } from '../RootController';
+import database from '../../../database';
 
 describe('Estonian id authentication flow', () => {
   it('creates a signed-in user with estonian id authentication details', async () => {
@@ -62,4 +63,8 @@ describe('Estonian id authentication flow', () => {
         });
       });
   });
+});
+
+afterAll(() => {
+  return database.destroy();
 });
