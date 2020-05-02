@@ -15,6 +15,7 @@ import { AssignmentActionType } from '../../domain/model/authentication/Assignme
 import { Role } from '../../domain/model/authentication/Role';
 import { AuthenticationDetails } from '../../domain/model/user/AuthenticationDetails';
 import { AuthenticationIdentifier } from '../../domain/model/user/AuthenticationIdentifier';
+import { AuthenticationMethod } from '../../domain/model/user/AuthenticationMethod';
 
 const USER_TABLE_NAME = 'user';
 
@@ -41,7 +42,7 @@ export class PsqlUserRepository implements UserRepository {
         on conflict do nothing`,
         {
           id: user.id.value,
-          authenticationMethod: user.authenticationDetails.method,
+          authenticationMethod: user.authenticationDetails.method.type,
           authenticationIdentifier: user.authenticationDetails.identifier.value,
           creationTime: user.creationTime,
           modificationTime: user.modificationTime,
@@ -72,7 +73,7 @@ export class PsqlUserRepository implements UserRepository {
   async findByAuthenticationDetails({ method, identifier }: AuthenticationDetails): Promise<User | null> {
     const userRow: any = await this.db(USER_TABLE_NAME)
       .where({
-        authentication_method: method,
+        authentication_method: method.type,
         authentication_identifier: identifier.value,
       })
       .select(USER_TABLE_COLUMNS)
@@ -112,7 +113,7 @@ export class PsqlUserRepository implements UserRepository {
     const user = new User(
       new UserId(userRow.id),
       new AuthenticationDetails(
-        userRow.authenticationMethod,
+        new AuthenticationMethod(userRow.authenticationMethod),
         new AuthenticationIdentifier(userRow.authenticationIdentifier)
       ),
       userRow.email ? new Email(userRow.email) : undefined,

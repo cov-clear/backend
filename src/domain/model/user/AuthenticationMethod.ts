@@ -5,6 +5,7 @@ export class AuthenticationMethod {
   constructor(readonly type: AuthenticationMethodType) {}
 
   public get supported() {
+    // TODO: read this from config
     return true;
   }
 }

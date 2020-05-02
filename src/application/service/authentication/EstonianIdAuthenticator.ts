@@ -4,12 +4,12 @@ import { GetExistingOrCreateNewUser } from '../users/GetExistingOrCreateNewUser'
 import { AuthenticationSessionToken, AuthenticationResult } from '../../../domain/model/idAuthentication/models';
 import { Authenticator, AuthCode } from '../../../domain/model/authentication/Authenticator';
 import { AuthenticationDetails } from '../../../domain/model/user/AuthenticationDetails';
-import { AuthenticationMethod } from '../../../domain/model/user/AuthenticationMethod';
+import { AuthenticationMethodType, AuthenticationMethod } from '../../../domain/model/user/AuthenticationMethod';
 import { AuthenticationIdentifier } from '../../../domain/model/user/AuthenticationIdentifier';
 import { AuthenticationError } from './AuthenticationError';
 
 export class EstonianIdAuthenticator implements Authenticator {
-  public handles = AuthenticationMethod.ESTONIAN_ID;
+  public handles = AuthenticationMethodType.ESTONIAN_ID;
 
   constructor(
     private authenticationProvider: AuthenticationProvider,
@@ -20,15 +20,15 @@ export class EstonianIdAuthenticator implements Authenticator {
   async authenticate(authCode: AuthCode): Promise<string> {
     const sessionToken = new AuthenticationSessionToken(authCode);
 
-    let authentication: AuthenticationResult;
+    let authenticationResult: AuthenticationResult;
     try {
-      authentication = await this.authenticationProvider.authenticate(sessionToken);
+      authenticationResult = await this.authenticationProvider.authenticate(sessionToken);
     } catch (error) {
       throw new AuthenticationError('ID_AUTH_INVALID', error.message);
     }
 
-    const identifier = new AuthenticationIdentifier(authentication.code);
-    const authenticationDetails = new AuthenticationDetails(AuthenticationMethod.ESTONIAN_ID, identifier);
+    const identifier = new AuthenticationIdentifier(authenticationResult.code);
+    const authenticationDetails = new AuthenticationDetails(AuthenticationMethod.estonianId(), identifier);
 
     const user = await this.getExistingOrCreateNewUser.execute(authenticationDetails);
     // TODO: fill profile from `authentication`

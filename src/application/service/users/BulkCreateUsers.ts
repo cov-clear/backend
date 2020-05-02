@@ -4,7 +4,10 @@ import { UserRepository } from '../../../domain/model/user/UserRepository';
 import logger from '../../../infrastructure/logging/logger';
 import { CreateUserCommand } from '../../../presentation/commands/admin/CreateUserCommand';
 import { AuthenticationDetails } from '../../../domain/model/user/AuthenticationDetails';
-import { fromString as authenticationMethodTypeFromString } from '../../../domain/model/user/AuthenticationMethod';
+import {
+  fromString as authenticationMethodTypeFromString,
+  AuthenticationMethod,
+} from '../../../domain/model/user/AuthenticationMethod';
 import { AuthenticationIdentifier } from '../../../domain/model/user/AuthenticationIdentifier';
 
 export class BulkCreateUsers {
@@ -15,8 +18,9 @@ export class BulkCreateUsers {
     let users: User[] = [];
 
     for (const userCommand of createUsersCommand) {
+      const methodType = authenticationMethodTypeFromString(userCommand.authenticationDetails.method);
       const authenticationDetails = new AuthenticationDetails(
-        authenticationMethodTypeFromString(userCommand.authenticationDetails.method),
+        new AuthenticationMethod(methodType),
         new AuthenticationIdentifier(userCommand.authenticationDetails.identifier)
       );
 

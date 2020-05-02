@@ -1,6 +1,6 @@
-import { AuthenticationMethodType } from './AuthenticationMethod';
+import { AuthenticationMethod } from './AuthenticationMethod';
 import { AuthenticationIdentifier } from './AuthenticationIdentifier';
 
 export class AuthenticationDetails {
-  constructor(readonly method: AuthenticationMethodType, readonly identifier: AuthenticationIdentifier) {}
+  constructor(readonly method: AuthenticationMethod, readonly identifier: AuthenticationIdentifier) {}
 }

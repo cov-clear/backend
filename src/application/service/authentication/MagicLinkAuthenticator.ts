@@ -3,7 +3,7 @@ import { GetExistingOrCreateNewUser } from '../users/GetExistingOrCreateNewUser'
 import { MagicLinkCode } from '../../../domain/model/magiclink/MagicLink';
 import { MagicLinkRepository } from '../../../domain/model/magiclink/MagicLinkRepository';
 import { AuthenticationDetails } from '../../../domain/model/user/AuthenticationDetails';
-import { AuthenticationMethodType } from '../../../domain/model/user/AuthenticationMethod';
+import { AuthenticationMethod, AuthenticationMethodType } from '../../../domain/model/user/AuthenticationMethod';
 import { AuthenticationIdentifier } from '../../../domain/model/user/AuthenticationIdentifier';
 import { Email } from '../../../domain/model/user/Email';
 import { Authenticator, AuthCode } from '../../../domain/model/authentication/Authenticator';
@@ -45,7 +45,7 @@ export class MagicLinkAuthenticator implements Authenticator {
   }
 
   private magicLinkAuthenticationDetails(email: Email): AuthenticationDetails {
-    return new AuthenticationDetails(AuthenticationMethodType.MAGIC_LINK, new AuthenticationIdentifier(email.value));
+    return new AuthenticationDetails(AuthenticationMethod.magicLink(), new AuthenticationIdentifier(email.value));
   }
 }
 
