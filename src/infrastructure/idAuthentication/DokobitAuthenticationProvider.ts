@@ -4,7 +4,7 @@ import { AuthenticationError } from '../../application/service/authentication/Au
 import {
   AuthenticationSession,
   AuthenticationSessionToken,
-  Authentication,
+  AuthenticationResult,
 } from '../../domain/model/idAuthentication/models';
 import { DokobitClient } from './DokobitClient';
 
@@ -31,7 +31,7 @@ export class DokobitAuthenticationProvider implements AuthenticationProvider {
     };
   }
 
-  async authenticate(token: AuthenticationSessionToken): Promise<Authentication> {
+  async authenticate(token: AuthenticationSessionToken): Promise<AuthenticationResult> {
     let sessionStatus;
     try {
       sessionStatus = await this.client.getSessionStatus(token.value);

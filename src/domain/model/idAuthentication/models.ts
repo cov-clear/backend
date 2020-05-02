@@ -7,7 +7,7 @@ export interface AuthenticationSession {
   redirectUrl: string;
 }
 
-export interface Authentication {
+export interface AuthenticationResult {
   code: string;
   firstName: string;
   lastName: string;

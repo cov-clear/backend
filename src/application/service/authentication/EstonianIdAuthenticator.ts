@@ -1,7 +1,7 @@
 import { AuthenticationProvider } from '../../../domain/model/idAuthentication/AuthenticationProvider';
 import { GenerateAuthToken } from './GenerateAuthToken';
 import { GetExistingOrCreateNewUser } from '../users/GetExistingOrCreateNewUser';
-import { AuthenticationSessionToken, Authentication } from '../../../domain/model/idAuthentication/models';
+import { AuthenticationSessionToken, AuthenticationResult } from '../../../domain/model/idAuthentication/models';
 import { Authenticator, AuthCode } from '../../../domain/model/authentication/Authenticator';
 import { AuthenticationDetails } from '../../../domain/model/user/AuthenticationDetails';
 import { AuthenticationMethod } from '../../../domain/model/user/AuthenticationMethod';
@@ -20,7 +20,7 @@ export class EstonianIdAuthenticator implements Authenticator {
   async authenticate(authCode: AuthCode): Promise<string> {
     const sessionToken = new AuthenticationSessionToken(authCode);
 
-    let authentication: Authentication;
+    let authentication: AuthenticationResult;
     try {
       authentication = await this.authenticationProvider.authenticate(sessionToken);
     } catch (error) {
