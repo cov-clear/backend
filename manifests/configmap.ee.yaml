@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: [[env]]
+  labels:
+    app: backend
+    environment: [[env]]
+data:
+  AUTH_MAGIC_LINK_ENABLED: "false"
+  AUTH_ESTONIAN_ID_ENABLED: "true"

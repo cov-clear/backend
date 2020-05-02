@@ -34,6 +34,11 @@ spec:
             - name: http
               protocol: TCP
               containerPort: 1337
+          envFrom:
+            - configMapRef:
+                name: backend
+            - secretRef:
+                name: backend
           env:
             - name: NODE_ENV
               value: production
@@ -41,26 +46,6 @@ spec:
               value: eu-west-1
             - name: FRONTEND_BASE_URL
               value: https://[[domain]]
-            - name: DATABASE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: backend
-                  key: DATABASE_URL
-            - name: ROLLBAR_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: backend
-                  key: ROLLBAR_TOKEN
-            - name: JWT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: backend
-                  key: JWT_SECRET
-            - name: DOKOBIT_ACCESS_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: backend
-                  key: DOKOBIT_ACCESS_TOKEN
           livenessProbe:
             failureThreshold: 3
             periodSeconds: 5

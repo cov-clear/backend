@@ -8,8 +8,15 @@ if [ "$#" -ne 4 ]; then
   exit 1
 fi
 
+ENVIRONMENT=$1
+DOCKER_TAG=$2
+APP_DOMAIN=$3
+ROLE_ARN=$4
+
 for file in namespace service_account pdb service ingress deployment
 do
-  manifest=`sed "s|\[\[env\]\]|$1|g;s|\[\[docker_tag\]\]|$2|g;s|\[\[domain\]\]|$3|g;s|\[\[role_arn\]\]|$4|g" $file.yaml`
+  manifest=`sed "s|\[\[env\]\]|$ENVIRONMENT|g;s|\[\[docker_tag\]\]|$DOCKER_TAG|g;s|\[\[domain\]\]|$APP_DOMAIN|g;s|\[\[role_arn\]\]|$ROLE_ARN|g" $file.yaml`
   echo  "$manifest"
 done
+
+echo "`sed "s|\[\[env\]\]|$1|g" configmap.$ENVIRONMENT.yaml`"
