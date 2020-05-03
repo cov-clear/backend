@@ -3,7 +3,7 @@ frontend:
 
 authentication:
   dokobit:
-    baseUrl: https://id.dokobit.com
+    baseUrl: https://id-sandbox.dokobit.com # until we go live, so we can play with it in prod
 
 emailNotifier:
   type: aws
