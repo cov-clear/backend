@@ -117,7 +117,8 @@ export const magicLinkAuthenticator = new MagicLinkAuthenticator(
 export const estonianIdAuthenticator = new EstonianIdAuthenticator(
   authenticationProvider,
   getExistingOrCreateNewUser,
-  generateAuthToken
+  generateAuthToken,
+  userRepository
 );
 export const authenticatorFactory = new AuthenticatorFactory([magicLinkAuthenticator, estonianIdAuthenticator]);
 export const authenticate = new Authenticate(authenticatorFactory);
