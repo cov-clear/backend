@@ -127,7 +127,7 @@ describe('auth endpoints', () => {
           .get('/api/authentication/some-session-token/status')
           .query({ access_token: 'dummy' })
           .reply(200, {
-            code: '123321',
+            code: '39210030814',
             name: 'Viljur',
             surname: 'Ukrim',
             country_code: 'ee',

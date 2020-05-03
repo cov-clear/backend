@@ -1,12 +1,16 @@
+import Isikukood from 'isikukood';
 import * as config from '../../config';
 import { AuthenticationProvider } from '../../domain/model/idAuthentication/AuthenticationProvider';
 import { AuthenticationError } from '../../application/service/authentication/AuthenticationError';
 import {
+  AuthenticationResult,
   AuthenticationSession,
   AuthenticationSessionToken,
-  AuthenticationResult,
 } from '../../domain/model/idAuthentication/models';
-import { DokobitClient } from './DokobitClient';
+import { DokobitClient, DokobitSessionStatus } from './DokobitClient';
+import { Profile } from '../../domain/model/user/Profile';
+import { DateOfBirth } from '../../domain/model/user/DateOfBirth';
+import { Sex } from '../../domain/model/user/Sex';
 
 const ESTONIA_CODE = 'ee';
 
@@ -45,8 +49,31 @@ export class DokobitAuthenticationProvider implements AuthenticationProvider {
 
     return {
       code: sessionStatus.code,
-      firstName: sessionStatus.name,
-      lastName: sessionStatus.surname,
+      profile: mapToProfile(sessionStatus),
     };
+  }
+}
+
+function mapToProfile(sessionStatus: DokobitSessionStatus): Profile {
+  var id = getAndValidateEstonianIdCode(sessionStatus);
+  return new Profile(sessionStatus.name, sessionStatus.surname, DateOfBirth.fromDate(id.getBirthday()), getSex(id));
+}
+
+function getAndValidateEstonianIdCode(sessionStatus: DokobitSessionStatus): Isikukood {
+  const idCode = new Isikukood(sessionStatus.code);
+  if (!idCode.validate()) {
+    throw new AuthenticationError('idCode is not valid');
+  }
+  return idCode;
+}
+
+function getSex(id: Isikukood): Sex {
+  switch (id.getGender()) {
+    case 'male':
+      return Sex.MALE;
+    case 'female':
+      return Sex.FEMALE;
+    default:
+      throw new AuthenticationError('Non parsable gender');
   }
 }

@@ -2,6 +2,8 @@ import { DokobitAuthenticationProvider } from './DokobitAuthenticationProvider';
 import { DokobitClient } from './DokobitClient';
 import { AuthenticationError } from '../../application/service/authentication/AuthenticationError';
 import { AuthenticationSessionToken } from '../../domain/model/idAuthentication/models';
+import { DateOfBirth } from '../../domain/model/user/DateOfBirth';
+import { Sex } from '../../domain/model/user/Sex';
 
 describe('Dokobit authentication provider', () => {
   it('creates sessions', async () => {
@@ -46,7 +48,7 @@ describe('Dokobit authentication provider', () => {
       async getSessionStatus(sessionToken) {
         if (sessionToken === 'seshToken') {
           return {
-            code: '123',
+            code: '39210030814',
             name: 'Indrek',
             surname: 'Nolan',
             countryCode: 'ee',
@@ -57,8 +59,10 @@ describe('Dokobit authentication provider', () => {
 
     const response = await provider.authenticate(new AuthenticationSessionToken('seshToken'));
 
-    expect(response.code).toBe('123');
-    expect(response.firstName).toBe('Indrek');
-    expect(response.lastName).toBe('Nolan');
+    expect(response.code).toBe('39210030814');
+    expect(response.profile.firstName).toBe('Indrek');
+    expect(response.profile.lastName).toBe('Nolan');
+    expect(response.profile.dateOfBirth.toString()).toEqual(new DateOfBirth(1992, 10, 3).toString());
+    expect(response.profile.sex).toEqual(Sex.MALE);
   });
 });
