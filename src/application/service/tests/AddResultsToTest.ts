@@ -47,7 +47,7 @@ export class AddResultsToTest {
   }
 
   private async validateAccessAndPermissionToAddResults(actor: User, testType: TestType) {
-    if (actor.hasPermission(testType.neededPermissionToAddResults)) {
+    if (!actor.hasPermission(testType.neededPermissionToAddResults)) {
       throw new AccessDeniedError(testType.neededPermissionToAddResults);
     }
   }
