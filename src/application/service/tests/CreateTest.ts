@@ -48,7 +48,7 @@ export class CreateTest {
   }
 
   private getAdministrationConfidence(actor: User) {
-    if (actor.permissions.indexOf(ADMINISTER_TEST_WITH_HIGH_CONFIDENCE) !== -1) {
+    if (actor.hasPermission(ADMINISTER_TEST_WITH_HIGH_CONFIDENCE)) {
       return ConfidenceLevel.HIGH;
     }
     return ConfidenceLevel.LOW;

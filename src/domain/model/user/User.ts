@@ -93,4 +93,8 @@ export class User {
 
     return Array.from(permissions);
   }
+
+  get hasPermission(permission: string): boolean {
+    return this.permissions().includes(permission);
+  }
 }
