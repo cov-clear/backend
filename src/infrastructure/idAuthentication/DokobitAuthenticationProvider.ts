@@ -1,14 +1,14 @@
+import Isikukood from 'isikukood';
 import * as config from '../../config';
 import { AuthenticationProvider } from '../../domain/model/idAuthentication/AuthenticationProvider';
 import { AuthenticationError } from '../../application/service/authentication/AuthenticationError';
 import {
+  AuthenticationResult,
   AuthenticationSession,
   AuthenticationSessionToken,
-  AuthenticationResult,
 } from '../../domain/model/idAuthentication/models';
 import { DokobitClient, DokobitSessionStatus } from './DokobitClient';
 import { Profile } from '../../domain/model/user/Profile';
-import Isikukood from 'isikukood';
 import { DateOfBirth } from '../../domain/model/user/DateOfBirth';
 import { Sex } from '../../domain/model/user/Sex';
 
@@ -56,7 +56,6 @@ export class DokobitAuthenticationProvider implements AuthenticationProvider {
 
 function mapToProfile(sessionStatus: DokobitSessionStatus): Profile {
   var id = getAndValidateEstonianIdCode(sessionStatus);
-  id.validate();
   return new Profile(sessionStatus.name, sessionStatus.surname, DateOfBirth.fromDate(id.getBirthday()), getSex(id));
 }
 
@@ -69,9 +68,12 @@ function getAndValidateEstonianIdCode(sessionStatus: DokobitSessionStatus): Isik
 }
 
 function getSex(id: Isikukood): Sex {
-  const gender = id.getGender();
-  if (gender === 'unknown') {
-    throw new AuthenticationError('Non parsable gender');
+  switch (id.getGender()) {
+    case 'male':
+      return Sex.MALE;
+    case 'female':
+      return Sex.FEMALE;
+    default:
+      throw new AuthenticationError('Non parsable gender');
   }
-  return gender === 'male' ? Sex.MALE : Sex.FEMALE;
 }
