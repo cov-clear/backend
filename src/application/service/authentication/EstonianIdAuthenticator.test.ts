@@ -6,6 +6,7 @@ import { AuthenticationDetails } from '../../../domain/model/user/Authentication
 import { AuthenticationMethod } from '../../../domain/model/user/AuthenticationMethod';
 import { AuthenticationIdentifier } from '../../../domain/model/user/AuthenticationIdentifier';
 import { generateAuthToken, getExistingOrCreateNewUser } from '../index';
+import database from '../../../database';
 
 describe(EstonianIdAuthenticator, () => {
   it('throws an AuthenticationError when the id authentication provider fails', async () => {
@@ -53,4 +54,8 @@ describe(EstonianIdAuthenticator, () => {
     expect(user).toBeDefined();
     expect(user?.profile).toEqual(profile);
   });
+});
+
+afterAll(() => {
+  return database.destroy();
 });

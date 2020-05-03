@@ -19,7 +19,7 @@ describe('Estonian id authentication flow', () => {
       .get('/api/authentication/some-session-token/status')
       .query({ access_token: 'dummy' })
       .reply(200, {
-        code: '123321',
+        code: '39210030814',
         name: 'Viljur',
         surname: 'Ukrim',
         country_code: 'ee',
@@ -59,7 +59,7 @@ describe('Estonian id authentication flow', () => {
         const user = response.body;
         expect(user.authenticationDetails).toEqual({
           method: 'ESTONIAN_ID',
-          identifier: '123321',
+          identifier: '39210030814',
         });
       });
   });
