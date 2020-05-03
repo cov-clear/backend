@@ -8,14 +8,10 @@ export class CreatePermission {
   constructor(private permissionRepository: PermissionRepository) {}
 
   async execute(permissionName: string, authenticatedUser: User) {
-    if (!this.hasPermissionToCreateNewRole(authenticatedUser)) {
+    if (!authenticatedUser.hasPermission(CREATE_NEW_PERMISSION)) {
       throw new AccessDeniedError(CREATE_NEW_PERMISSION);
     }
 
     return this.permissionRepository.save(new Permission(permissionName));
-  }
-
-  private hasPermissionToCreateNewRole(authenticatedUser: User) {
-    return !!authenticatedUser.permissions.find((name) => name === CREATE_NEW_PERMISSION);
   }
 }

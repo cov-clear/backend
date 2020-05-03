@@ -47,7 +47,7 @@ export class AddResultsToTest {
   }
 
   private async validateAccessAndPermissionToAddResults(actor: User, testType: TestType) {
-    if (actor.permissions.indexOf(testType.neededPermissionToAddResults) === -1) {
+    if (!actor.hasPermission(testType.neededPermissionToAddResults)) {
       throw new AccessDeniedError(testType.neededPermissionToAddResults);
     }
   }
@@ -58,7 +58,7 @@ export class AddResultsToTest {
   }
 
   private getConfidenceLevel(actor: User) {
-    if (actor.permissions.indexOf(ADD_RESULTS_WITH_HIGH_CONFIDENCE) !== -1) {
+    if (actor.hasPermission(ADD_RESULTS_WITH_HIGH_CONFIDENCE)) {
       return ConfidenceLevel.HIGH;
     }
     return ConfidenceLevel.LOW;

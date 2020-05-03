@@ -10,3 +10,8 @@ export interface UserDTO {
   profile?: ProfileDTO;
   address?: AddressDTO;
 }
+
+export interface RestrictedUserDTO {
+  id: string;
+  authenticationDetails: AuthenticationDetailsDTO;
+}
