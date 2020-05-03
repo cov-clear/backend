@@ -37,6 +37,7 @@ describe('user endpoints', () => {
         .expect(403);
     });
 
+    // TODO once we start rejecting auth types that do not match the environment, this should be enabled.
     // it('returns 422 if the authentication details are of the wrong type', async () => {
     //   const actor = await persistedUserWithRoleAndPermissions('TEST_ADDER', [CREATE_USERS]);
     //   const authDetails = estonianIdAuthenticationDetails();
