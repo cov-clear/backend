@@ -19,6 +19,13 @@ export class UserTransformer {
     };
   }
 
+  public toRestrictedUserDTO(user: User): UserDTO {
+    return {
+      id: user.id.value,
+      authenticationDetails: this.toAuthenticationDetailsDTO(user.authenticationDetails),
+    };
+  }
+
   public toProfileDTO(profile: Profile): ProfileDTO {
     return {
       firstName: profile.firstName,
