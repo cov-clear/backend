@@ -28,7 +28,7 @@ describe('user endpoints', () => {
   });
 
   describe('POST /users', () => {
-    it('returns 403 if the actor does not have permission ot create users', async () => {
+    it('returns 403 if the actor does not have permission to create users', async () => {
       const actor = await userRepository.save(aNewUser());
       await request(app)
         .post(`/api/v1/users`)

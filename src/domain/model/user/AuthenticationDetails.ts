@@ -1,4 +1,4 @@
-import { AuthenticationMethod, fromString } from './AuthenticationMethod';
+import { AuthenticationMethod } from './AuthenticationMethod';
 import { AuthenticationIdentifier } from './AuthenticationIdentifier';
 import { DomainValidationError } from '../DomainValidationError';
 
