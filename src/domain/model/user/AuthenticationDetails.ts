@@ -1,6 +1,21 @@
-import { AuthenticationMethod } from './AuthenticationMethod';
+import { AuthenticationMethod, fromString } from './AuthenticationMethod';
 import { AuthenticationIdentifier } from './AuthenticationIdentifier';
 import { DomainValidationError } from '../DomainValidationError';
+
+export class AuthenticationDetailsFactory {
+  constructor() {}
+
+  public forMethodAndIdentifier(method: string, identifier: string): AuthenticationDetails {
+    const authenticationMethodType = fromString(method);
+
+    const authenticationDetails = new AuthenticationDetails(
+      new AuthenticationMethod(authenticationMethodType),
+      new AuthenticationIdentifier(identifier)
+    );
+
+    return authenticationDetails;
+  }
+}
 
 export class AuthenticationDetails {
   constructor(readonly method: AuthenticationMethod, readonly identifier: AuthenticationIdentifier) {
@@ -11,4 +26,8 @@ export class AuthenticationDetails {
       );
     }
   }
+
+  // static createFromMethodAndType(method: string, identifier: string) {
+  //   return new User(new UserId(), authenticationDetails);
+  // }
 }

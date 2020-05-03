@@ -1,4 +1,5 @@
+import { AuthenticationDetailsDTO } from '../../dtos/users/AuthenticationDetailsDTO';
+
 export interface CreateUserCommand {
-  method: string;
-  identifier: string;
+  authenticationDetails: AuthenticationDetailsDTO;
 }

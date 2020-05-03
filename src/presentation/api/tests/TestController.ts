@@ -33,7 +33,7 @@ export class TestController {
 
   @Get('/users/:id/tests')
   async getTestsOfUser(@Param('id') userIdValue: string, @CurrentUser({ required: true }) actor: User) {
-    canAccessUser = await canAccessUser(actor, userIdValue);
+    const canAccessUser = await this.canAccessUser(actor, userIdValue);
 
     if (!canAccessUser) {
       throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
@@ -51,7 +51,7 @@ export class TestController {
     @Body() testCommand: TestCommand,
     @CurrentUser({ required: true }) actor: User
   ) {
-    const canAccessUser = await canAccessUser(actor, userIdValue);
+    const canAccessUser = await this.canAccessUser(actor, userIdValue);
     const canCreateWithoutAccess = actor.hasPermission(CREATE_TESTS_WITHOUT_ACCESS_PASS);
 
     if (!canAccessUser && !canCreateWithoutAccess) {

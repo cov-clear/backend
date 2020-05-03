@@ -50,6 +50,7 @@ import { AddResultsToTest } from './tests/AddResultsToTest';
 import { UpdateTestType } from './tests/UpdateTestType';
 import { GetReports } from './reports/GetReports';
 import { AuthenticatorFactory } from '../../domain/model/authentication/AuthenticatorFactory';
+import { AuthenticationDetailsFactory } from '../../domain/model/user/AuthenticationDetails';
 
 let emailNotifier = new LoggingEmailNotifier();
 
@@ -121,6 +122,7 @@ export const estonianIdAuthenticator = new EstonianIdAuthenticator(
 );
 export const authenticatorFactory = new AuthenticatorFactory([magicLinkAuthenticator, estonianIdAuthenticator]);
 export const authenticate = new Authenticate(authenticatorFactory);
+export const authenticationDetailsFactory = new AuthenticationDetailsFactory();
 
 export const createSharingCode = new CreateSharingCode(sharingCodeRepository);
 export const createAccessPass = new CreateAccessPass(accessPassRepository, sharingCodeRepository);
