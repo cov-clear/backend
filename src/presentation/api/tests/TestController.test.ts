@@ -23,6 +23,8 @@ import { TestDTO } from '../../dtos/tests/TestDTO';
 import { TestResultsCommand } from '../../commands/tests/TestResultsCommand';
 import { TestCommand } from '../../commands/tests/TestCommand';
 
+import { CREATE_TESTS_WITHOUT_ACCESS_PASS } from '../../../domain/model/authentication/Permissions';
+
 describe('TestController', () => {
   const app = new RootController().expressApp();
 
@@ -231,6 +233,26 @@ describe('TestController', () => {
           expect(response.body.creator.userId).toEqual(user.id.value);
           expect(response.body.creator.confidence).toBeDefined();
           expect(response.body.creationTime).toBeDefined();
+        });
+    });
+
+    it('returns 201 if a user with global test create permission tries to create a test for another user', async () => {
+      const testType = await testTypeRepository.save(aTestType());
+      const actorUser = await persistedUserWithRoleAndPermissions('TESTER', [CREATE_TESTS_WITHOUT_ACCESS_PASS]);
+      const subjectUser = await userRepository.save(aNewUser());
+
+      const validTest = getValidTestCommandWithNoResults(testType.id);
+
+      await request(app)
+        .post(`/api/v1/users/${subjectUser.id.value}/tests`)
+        .set({
+          Authorization: `Bearer ${await getTokenForUser(actorUser)}`,
+        })
+        .send(validTest)
+        .expect(201)
+        .expect((response) => {
+          expect(response.body.creator.userId).toEqual(actorUser.id.value);
+          expect(response.body.creator.confidence).toBeDefined();
         });
     });
   });
