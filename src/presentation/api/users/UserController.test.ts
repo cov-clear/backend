@@ -39,7 +39,12 @@ describe('user endpoints', () => {
 
     // it('returns 422 if the authentication details are of the wrong type', async () => {
     //   const actor = await persistedUserWithRoleAndPermissions('TEST_ADDER', [CREATE_USERS]);
-    //   const authenticationDetails = estonianIdAuthenticationDetails();
+    //   const authDetails = estonianIdAuthenticationDetails();
+    //   const method = authDetails!.method!.type;
+    //   const identifier = authDetails!.identifier!.value;
+    //
+    //   const authenticationDetails = { method, identifier };
+    //
     //   await request(app)
     //     .patch(`/api/v1/users`)
     //     .set({ Authorization: `Bearer ${await getTokenForUser(actor)}` })
