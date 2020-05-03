@@ -74,7 +74,7 @@ jobs:
           COUNTRY: uk
         run: |
           cd $K8S_YAML_DIR
-          ./render_manifests.sh "$COUNTRY" "sha-$(git rev-parse --short ${{ github.sha }})" "$COUNTRY.cov-clear.com" "$ROLE_ARN" | kubectl apply -f -
+          ./render_manifests.py "$COUNTRY" "sha-$(git rev-parse --short ${{ github.sha }})" "$COUNTRY.cov-clear.com" "$ROLE_ARN" | kubectl apply -f -
           kubectl --namespace $COUNTRY rollout status deployments.apps/backend
       - name: Deploy EE environment
         env:
@@ -83,5 +83,5 @@ jobs:
           COUNTRY: ee
         run: |
           cd $K8S_YAML_DIR
-          ./render_manifests.sh "$COUNTRY" "sha-$(git rev-parse --short ${{ github.sha }})" "$COUNTRY.cov-clear.com" "$ROLE_ARN" | kubectl apply -f -
+          ./render_manifests.py "$COUNTRY" "sha-$(git rev-parse --short ${{ github.sha }})" "$COUNTRY.cov-clear.com" "$ROLE_ARN" | kubectl apply -f -
           kubectl --namespace $COUNTRY rollout status deployments.apps/backend
