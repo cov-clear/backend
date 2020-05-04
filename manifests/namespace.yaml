@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: [[env]]
+  name: :env:
   labels:
     app: cov-clear
-    environment: [[env]]
+    environment: :env:

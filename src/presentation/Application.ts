@@ -6,7 +6,6 @@ export class Application {
   public async createAndRun() {
     await this.migrateDatabase();
     logger.info('DB connected and migrated');
-
     return new RootController().expressApp();
   }
 

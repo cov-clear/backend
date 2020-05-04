@@ -1,12 +1,37 @@
-import { accessManagerFactory, getUser, updateUser } from '../../../application/service';
+import { accessManagerFactory, getUser, updateUser, getExistingOrCreateNewUser } from '../../../application/service';
+
 import { UserTransformer } from '../../transformers/UserTransformer';
 import { UserId } from '../../../domain/model/user/UserId';
 
 import { ApiError, apiErrorCodes } from '../../dtos/ApiError';
-import { Authorized, Body, CurrentUser, Get, JsonController, Param, Patch, UseAfter } from 'routing-controllers';
+import { UserDTO, RestrictedUserDTO } from '../../dtos/users/UserDTO';
+
+import {
+  Authorized,
+  Body,
+  CurrentUser,
+  Get,
+  HttpCode,
+  JsonController,
+  Param,
+  Patch,
+  Post,
+  UseAfter,
+  UseBefore,
+} from 'routing-controllers';
+import { hasPermission } from '../../middleware/hasPermission';
+import { CREATE_USERS } from '../../../domain/model/authentication/Permissions';
 import { UserErrorHandler } from './UserErrorHandler';
 import { User } from '../../../domain/model/user/User';
+import { CreateUserCommand } from '../../commands/users/CreateUserCommand';
 import { UpdateUserCommand } from '../../commands/users/UpdateUserCommand';
+
+import { AuthenticationDetails } from '../../../domain/model/user/AuthenticationDetails';
+import {
+  AuthenticationMethod,
+  fromString as authenticationMethodTypeFromString,
+} from '../../../domain/model/user/AuthenticationMethod';
+import { AuthenticationIdentifier } from '../../../domain/model/user/AuthenticationIdentifier';
 
 @Authorized()
 @JsonController('/v1/users')
@@ -15,8 +40,23 @@ export class UserController {
   private userTransformer = new UserTransformer();
   private accessManagerFactory = accessManagerFactory;
 
+  @Post('')
+  @HttpCode(201)
+  @UseBefore(hasPermission(CREATE_USERS))
+  async createUser(@Body() createUserCommand: CreateUserCommand): Promise<RestrictedUserDTO> {
+    const authenticationMethodType = authenticationMethodTypeFromString(createUserCommand.authenticationDetails.method);
+
+    const authenticationDetails = new AuthenticationDetails(
+      new AuthenticationMethod(authenticationMethodType),
+      new AuthenticationIdentifier(createUserCommand.authenticationDetails.identifier)
+    );
+
+    const user = await getExistingOrCreateNewUser.execute(authenticationDetails);
+    return this.userTransformer.toRestrictedUserDTO(user);
+  }
+
   @Get('/:id')
-  async getById(@Param('id') idValue: string, @CurrentUser({ required: true }) actor: User) {
+  async getById(@Param('id') idValue: string, @CurrentUser({ required: true }) actor: User): Promise<UserDTO> {
     const id = new UserId(idValue);
 
     await this.validateCanGetUser(actor, id);
@@ -31,7 +71,7 @@ export class UserController {
     @Param('id') idValue: string,
     @Body() updateUserCommand: UpdateUserCommand,
     @CurrentUser({ required: true }) actor: User
-  ) {
+  ): Promise<UserDTO> {
     const userId = new UserId(idValue);
 
     await this.validateCanUpdateUser(actor, userId);

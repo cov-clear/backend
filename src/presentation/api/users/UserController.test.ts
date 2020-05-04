@@ -5,18 +5,104 @@ import { UserId } from '../../../domain/model/user/UserId';
 import { v4 as uuidv4 } from 'uuid';
 import { accessPassRepository, userRepository } from '../../../infrastructure/persistence';
 import { User } from '../../../domain/model/user/User';
-import { Email } from '../../../domain/model/user/Email';
 import { AccessPass } from '../../../domain/model/accessPass/AccessPass';
-import { anAddress, aNewUser, aUserWithAllInformation } from '../../../test/domainFactories';
+import { CREATE_USERS } from '../../../domain/model/authentication/Permissions';
+import {
+  anAddress,
+  aNewUser,
+  aUserWithAllInformation,
+  magicLinkAuthenticationDetails,
+  estonianIdAuthenticationDetails,
+} from '../../../test/domainFactories';
+import { persistedUserWithRoleAndPermissions } from '../../../test/persistedEntities';
 import { getTokenForUser } from '../../../test/authentication';
 import { anApiAddress, anApiProfile } from '../../../test/apiFactories';
 import { RootController } from '../RootController';
+import { AuthenticationMethodType } from '../../../domain/model/user/AuthenticationMethod';
 
 describe('user endpoints', () => {
   const app = new RootController().expressApp();
 
   beforeEach(async () => {
     await cleanupDatabase();
+  });
+
+  describe('POST /users', () => {
+    it('returns 403 if the actor does not have permission to create users', async () => {
+      const actor = await userRepository.save(aNewUser());
+      await request(app)
+        .post(`/api/v1/users`)
+        .set({ Authorization: `Bearer ${await getTokenForUser(actor)}` })
+        .send({})
+        .expect(403);
+    });
+
+    // TODO once we start rejecting auth types that do not match the environment, this should be enabled.
+    // it('returns 422 if the authentication details are of the wrong type', async () => {
+    //   const actor = await persistedUserWithRoleAndPermissions('TEST_ADDER', [CREATE_USERS]);
+    //   const authDetails = estonianIdAuthenticationDetails();
+    //   const method = authDetails!.method!.type;
+    //   const identifier = authDetails!.identifier!.value;
+    //
+    //   const authenticationDetails = { method, identifier };
+    //
+    //   await request(app)
+    //     .patch(`/api/v1/users`)
+    //     .set({ Authorization: `Bearer ${await getTokenForUser(actor)}` })
+    //     .send(authenticationDetails)
+    //     .expect(422);
+    // });
+
+    describe('if the authentication details do not exist', () => {
+      it('should creates a new user and return a restricted user model', async () => {
+        const actor = await persistedUserWithRoleAndPermissions('TEST_ADDER', [CREATE_USERS]);
+        const authDetails = magicLinkAuthenticationDetails();
+        const method = authDetails!.method!.type;
+        const identifier = authDetails!.identifier!.value;
+
+        const authenticationDetails = { method, identifier };
+
+        await request(app)
+          .post(`/api/v1/users`)
+          .set({ Authorization: `Bearer ${await getTokenForUser(actor)}` })
+          .send({ authenticationDetails })
+          .expect(201)
+          .expect((res) => {
+            expect(res.body.id).toBeDefined();
+            expect(res.body.authenticationDetails).toBeDefined();
+            expect(res.body.authenticationDetails.method).toBe(method);
+            expect(res.body.authenticationDetails.identifier).toBe(identifier);
+          });
+      });
+    });
+
+    describe('if the authentication details already exist', () => {
+      it('should return the existing user with restricted data', async () => {
+        const actor = await persistedUserWithRoleAndPermissions('TEST_ADDER', [CREATE_USERS]);
+        const subject = await userRepository.save(aNewUser());
+        const method = subject.authenticationDetails!.method!.type;
+        const identifier = subject.authenticationDetails!.identifier!.value;
+
+        const authenticationDetails = { method, identifier };
+
+        await request(app)
+          .post(`/api/v1/users`)
+          .set({ Authorization: `Bearer ${await getTokenForUser(actor)}` })
+          .send({ authenticationDetails })
+          .expect(201)
+          .expect((res) => {
+            expect(res.body.id).toBe(subject.id.value);
+            expect(res.body.authenticationDetails).toBeDefined();
+            expect(res.body.authenticationDetails.method).toBe(method);
+            expect(res.body.authenticationDetails.identifier).toBe(identifier);
+
+            expect(res.body.email).toBeUndefined();
+            expect(res.body.creationTime).toBeUndefined();
+            expect(res.body.profile).toBeUndefined();
+            expect(res.body.address).toBeUndefined();
+          });
+      });
+    });
   });
 
   describe('GET /users/:id', () => {
@@ -43,7 +129,7 @@ describe('user endpoints', () => {
     it('returns 200 with the existing if user is found', async () => {
       const id = new UserId();
 
-      const user = await userRepository.save(new User(id, new Email('kostas@example.com')));
+      const user = await userRepository.save(new User(id, magicLinkAuthenticationDetails('kostas@example.com')));
 
       await request(app)
         .get(`/api/v1/users/${id.value}`)
@@ -51,9 +137,10 @@ describe('user endpoints', () => {
         .expect(200)
         .expect((response) => {
           const user = response.body;
-          expect((user.id = id.value)).toEqual(id.value);
+          expect(user.id).toEqual(id.value);
           expect(user.creationTime).toBeDefined();
-          expect(user.email).toBeDefined();
+          expect(user.authenticationDetails.method).toBe(AuthenticationMethodType.MAGIC_LINK);
+          expect(user.authenticationDetails.identifier).toBe('kostas@example.com');
         });
     });
 

@@ -1,9 +1,10 @@
+import nock from 'nock';
 import request from 'supertest';
 import { v4 } from 'uuid';
 import { createMagicLink } from '../../../application/service';
 import database from '../../../database';
 import { cleanupDatabase } from '../../../test/cleanupDatabase';
-import { AuthorisationFailureReason } from '../../../application/service/authentication/ExchangeAuthCode';
+import { MagicLinkAuthenticationErrorReason } from '../../../application/service/authentication/MagicLinkAuthenticator';
 import { RootController } from '../RootController';
 
 describe('auth endpoints', () => {
@@ -61,31 +62,85 @@ describe('auth endpoints', () => {
     });
   });
 
-  describe('POST /auth/login', () => {
-    it('returns 422 if the code does not exist', async () => {
-      await request(app)
-        .post('/api/v1/auth/login')
-        .send({ method: 'magic-link', email: 'some@email.com', authCode: v4() })
-        .expect(422)
-        .expect((res) => {
-          expect(res.body.code).toEqual(AuthorisationFailureReason.AUTH_CODE_NOT_FOUND);
-        });
-    });
-
-    it('exchanges an auth code for a signed JWT', async () => {
-      const magicLink = await createMagicLink.execute('kostas@example.com');
+  describe('POST /auth/sessions', () => {
+    it('creates a Dokobit session', async () => {
+      nock('https://id-sandbox.dokobit.com')
+        .post('/api/authentication/create', { return_url: /\/authentication-callback/i })
+        .query({ access_token: 'dummy' })
+        .reply(200, { session_token: 'some session token', url: 'example.com/dokobit-redirect' });
 
       await request(app)
-        .post('/api/v1/auth/login')
-        .send({
-          method: 'magic-link',
-          email: magicLink.email.value,
-          authCode: magicLink.code.value,
-        })
+        .post('/api/v1/auth/sessions')
         .expect(200)
         .expect((response) => {
-          expect(response.body.token).toBeDefined();
+          expect(response.body.redirectUrl).toBe('example.com/dokobit-redirect');
         });
+    });
+  });
+
+  describe('POST /auth/login', () => {
+    describe('with magic link', () => {
+      it('returns 422 if the code does not exist', async () => {
+        await request(app)
+          .post('/api/v1/auth/login')
+          .send({ method: 'MAGIC_LINK', authCode: v4() })
+          .expect(422)
+          .expect((res) => {
+            expect(res.body.code).toEqual(MagicLinkAuthenticationErrorReason.AUTH_CODE_NOT_FOUND);
+          });
+      });
+
+      it('exchanges an auth code for a signed JWT', async () => {
+        const magicLink = await createMagicLink.execute('kostas@example.com');
+
+        await request(app)
+          .post('/api/v1/auth/login')
+          .send({
+            method: 'MAGIC_LINK',
+            authCode: magicLink.code.value,
+          })
+          .expect(200)
+          .expect((response) => {
+            expect(response.body.token).toBeDefined();
+          });
+      });
+    });
+
+    describe('with estonian id', () => {
+      it('returns 422 if the estonian id session is invalid', async () => {
+        nock('https://id-sandbox.dokobit.com')
+          .get('/api/authentication/some-session-token/status')
+          .query({ access_token: 'dummy' })
+          .reply(403, { message: 'we failed' });
+
+        await request(app)
+          .post('/api/v1/auth/login')
+          .send({ method: 'ESTONIAN_ID', authCode: 'some-session-token' })
+          .expect(422)
+          .expect((res) => {
+            expect(res.body.code).toBe('ID_AUTH_INVALID');
+          });
+      });
+
+      it('exchanges an auth code for a signed JWT', async () => {
+        nock('https://id-sandbox.dokobit.com')
+          .get('/api/authentication/some-session-token/status')
+          .query({ access_token: 'dummy' })
+          .reply(200, {
+            code: '39210030814',
+            name: 'Viljur',
+            surname: 'Ukrim',
+            country_code: 'ee',
+          });
+
+        await request(app)
+          .post('/api/v1/auth/login')
+          .send({ method: 'ESTONIAN_ID', authCode: 'some-session-token' })
+          .expect(200)
+          .expect((response) => {
+            expect(response.body.token).toBeDefined();
+          });
+      });
     });
   });
 });

@@ -1,4 +1,4 @@
-import knex from 'knex';
+import knex, { Transaction } from 'knex';
 import { UserRepository } from '../../domain/model/user/UserRepository';
 import { Email } from '../../domain/model/user/Email';
 import { User } from '../../domain/model/user/User';
@@ -6,7 +6,6 @@ import { UserId } from '../../domain/model/user/UserId';
 import { Address } from '../../domain/model/user/Address';
 import { Profile } from '../../domain/model/user/Profile';
 import { Sex } from '../../domain/model/user/Sex';
-import database from '../../database';
 import { Country } from '../../domain/model/user/Country';
 import { DateOfBirth } from '../../domain/model/user/DateOfBirth';
 import { RoleAssignmentAction } from '../../domain/model/authentication/RoleAssignmentAction';
@@ -14,12 +13,17 @@ import { createRoleWithAssignedPermissions } from './PsqlRoleRepository';
 import { AssignmentId } from '../../domain/model/authentication/AssignmentAction';
 import { AssignmentActionType } from '../../domain/model/authentication/AssignmentActionType';
 import { Role } from '../../domain/model/authentication/Role';
+import { AuthenticationDetails } from '../../domain/model/user/AuthenticationDetails';
+import { AuthenticationIdentifier } from '../../domain/model/user/AuthenticationIdentifier';
+import { AuthenticationMethod } from '../../domain/model/user/AuthenticationMethod';
 
 const USER_TABLE_NAME = 'user';
 
 const USER_TABLE_COLUMNS = [
   'id',
   'email',
+  'authentication_method as authenticationMethod',
+  'authentication_identifier as authenticationIdentifier',
   'profile',
   'address',
   'modification_time as modificationTime',
@@ -30,38 +34,48 @@ export class PsqlUserRepository implements UserRepository {
   constructor(private db: knex) {}
 
   async save(user: User): Promise<User> {
-    await this.db.raw(
-      `insert into "${USER_TABLE_NAME}" (id, email, creation_time, modification_time)
-        values (:id, :email, :creationTime, :modificationTime)
+    return this.db.transaction(async (transaction) => {
+      await transaction.raw(
+        `insert into "${USER_TABLE_NAME}"
+        (id, authentication_method, authentication_identifier, creation_time, modification_time)
+        values (:id, :authenticationMethod, :authenticationIdentifier, :creationTime, :modificationTime)
         on conflict do nothing`,
-      {
-        id: user.id.value,
-        email: user.email.value,
-        creationTime: user.creationTime,
-        modificationTime: user.modificationTime,
+        {
+          id: user.id.value,
+          authenticationMethod: user.authenticationDetails.method.type,
+          authenticationIdentifier: user.authenticationDetails.identifier.value,
+          creationTime: user.creationTime,
+          modificationTime: user.modificationTime,
+        }
+      );
+      if (user.profile || user.address || user.email) {
+        await transaction('user')
+          .where({ id: user.id.value })
+          .update({
+            profile: JSON.stringify(toDbProfile(user.profile)),
+            address: JSON.stringify(toDbAddress(user.address)),
+            email: user.email?.value,
+            modification_time: user.modificationTime,
+          });
       }
-    );
-    if (user.profile || user.address) {
-      await database('user')
-        .where({ id: user.id.value })
-        .update({
-          profile: JSON.stringify(toDbProfile(user.profile)),
-          address: JSON.stringify(toDbAddress(user.address)),
-          modification_time: user.modificationTime,
-        });
-    }
-    await this.saveUserRoleAssignments(user);
-    return user;
+      await this.saveUserRoleAssignments(user, transaction);
+      return user;
+    });
   }
 
-  private async saveUserRoleAssignments(user: User) {
-    await Promise.all(user.roleAssignments.newAssignmentActions.map(this.saveRoleAssignment.bind(this)));
+  private async saveUserRoleAssignments(user: User, transaction?: Transaction) {
+    await Promise.all(
+      user.roleAssignments.newAssignmentActions.map((action) => this.saveRoleAssignment(action, transaction))
+    );
     Reflect.set(user.roleAssignments, 'newAssignmentActions', []);
   }
 
-  async findByEmail(email: Email): Promise<User | null> {
+  async findByAuthenticationDetails({ method, identifier }: AuthenticationDetails): Promise<User | null> {
     const userRow: any = await this.db(USER_TABLE_NAME)
-      .where('email', '=', email.value)
+      .where({
+        authentication_method: method.type,
+        authentication_identifier: identifier.value,
+      })
       .select(USER_TABLE_COLUMNS)
       .first();
 
@@ -83,8 +97,8 @@ export class PsqlUserRepository implements UserRepository {
     return this.extractUserAndPopulateRoles(userRow);
   }
 
-  private async saveRoleAssignment(roleAssignment: RoleAssignmentAction) {
-    await this.db('role_to_user_assignment').insert({
+  private async saveRoleAssignment(roleAssignment: RoleAssignmentAction, context = this.db) {
+    await context('role_to_user_assignment').insert({
       id: roleAssignment.id.value,
       user_id: roleAssignment.assignedTo.id.value,
       role_name: roleAssignment.assignedResource.name,
@@ -98,7 +112,11 @@ export class PsqlUserRepository implements UserRepository {
   private async extractUserAndPopulateRoles(userRow: any) {
     const user = new User(
       new UserId(userRow.id),
-      new Email(userRow.email),
+      new AuthenticationDetails(
+        new AuthenticationMethod(userRow.authenticationMethod),
+        new AuthenticationIdentifier(userRow.authenticationIdentifier)
+      ),
+      userRow.email ? new Email(userRow.email) : undefined,
       fromDbProfile(userRow.profile as DbProfile | undefined),
       fromDbAddress(userRow.address as DbAddress | undefined),
       userRow.creationTime,

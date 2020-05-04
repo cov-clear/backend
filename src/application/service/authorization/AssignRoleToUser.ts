@@ -19,16 +19,12 @@ export class AssignRoleToUser {
       throw new UserNotFoundError(new UserId(userId));
     }
 
-    if (!this.hasPermissionToAssignRole(authenticatedUser)) {
+    if (!authenticatedUser.hasPermission(ASSIGN_ROLE_TO_USER)) {
       throw new AccessDeniedError(ASSIGN_ROLE_TO_USER);
     }
 
     user.assignRole(role, authenticatedUser.id);
     await this.userRepository.save(user);
     return role;
-  }
-
-  private hasPermissionToAssignRole(authenticatedUser: User) {
-    return !!authenticatedUser.permissions.find((name) => name === ASSIGN_ROLE_TO_USER);
   }
 }

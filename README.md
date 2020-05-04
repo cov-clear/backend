@@ -48,6 +48,10 @@ Date of birth data is converted to age, and address data converted to regions to
 
 Full API documentation is available [here](https://documenter.getpostman.com/view/870016/SzYUZ1LQ?version=latest).
 
+### Estonian ID testing
+
+To test against Dokobit's sandbox, use predefined testing codes available [here](https://support.dokobit.com/article/540-testing-data).
+
 ## Team
 
 This application was designed and built by a team of engineers from [transferwise.com](https://transferwise.com) in partnership with a team of medical professionals. To learn more about the project and the team, please visit [cov-clear.com/about](https://cov-clear.com/about).

@@ -5,19 +5,38 @@ import { Email } from './Email';
 import { Profile } from './Profile';
 import { Role } from '../authentication/Role';
 import { UserId } from './UserId';
+import { AuthenticationDetails } from './AuthenticationDetails';
 
 export class User {
   readonly roleAssignments: AssignmentActions<User, Role>;
 
   constructor(
     readonly id: UserId,
-    readonly email: Email,
+    readonly authenticationDetails: AuthenticationDetails,
+    private _email?: Email,
     private _profile?: Profile,
     private _address?: Address,
     readonly creationTime: Date = new Date(),
     private _modificationTime: Date = new Date()
   ) {
     this.roleAssignments = new AssignmentActions([], (role) => role.name);
+  }
+
+  static create(authenticationDetails: AuthenticationDetails) {
+    return new User(new UserId(), authenticationDetails);
+  }
+
+  set email(newEmail) {
+    if (!newEmail) {
+      throw new DomainValidationError('email', 'Cannot set email to null or undefined');
+    }
+
+    this._email = newEmail;
+    this._modificationTime = new Date();
+  }
+
+  get email() {
+    return this._email;
   }
 
   set profile(newProfile) {
@@ -73,5 +92,9 @@ export class User {
     });
 
     return Array.from(permissions);
+  }
+
+  hasPermission(permission: string): boolean {
+    return this.permissions.includes(permission);
   }
 }

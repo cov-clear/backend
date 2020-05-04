@@ -11,6 +11,11 @@ emailNotifier:
     apiKey: dummy
     domain: dummy
 
+authentication:
+  dokobit:
+    accessToken: dummy
+    baseUrl: https://id-sandbox.dokobit.com
+
 logLevels:
   messages: info
   requests: warn

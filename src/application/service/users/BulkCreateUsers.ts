@@ -1,10 +1,14 @@
-import { Email } from '../../../domain/model/user/Email';
 import { RoleRepository } from '../../../domain/model/authentication/RoleRepository';
 import { User } from '../../../domain/model/user/User';
-import { UserId } from '../../../domain/model/user/UserId';
 import { UserRepository } from '../../../domain/model/user/UserRepository';
 import logger from '../../../infrastructure/logging/logger';
 import { CreateUserCommand } from '../../../presentation/commands/admin/CreateUserCommand';
+import { AuthenticationDetails } from '../../../domain/model/user/AuthenticationDetails';
+import {
+  fromString as authenticationMethodTypeFromString,
+  AuthenticationMethod,
+} from '../../../domain/model/user/AuthenticationMethod';
+import { AuthenticationIdentifier } from '../../../domain/model/user/AuthenticationIdentifier';
 
 export class BulkCreateUsers {
   constructor(private userRepository: UserRepository, private roleRepository: RoleRepository) {}
@@ -14,10 +18,16 @@ export class BulkCreateUsers {
     let users: User[] = [];
 
     for (const userCommand of createUsersCommand) {
-      let user = await this.userRepository.findByEmail(new Email(userCommand.email));
+      const methodType = authenticationMethodTypeFromString(userCommand.authenticationDetails.method);
+      const authenticationDetails = new AuthenticationDetails(
+        new AuthenticationMethod(methodType),
+        new AuthenticationIdentifier(userCommand.authenticationDetails.identifier)
+      );
+
+      let user = await this.userRepository.findByAuthenticationDetails(authenticationDetails);
 
       if (!user) {
-        user = new User(new UserId(), new Email(userCommand.email));
+        user = User.create(authenticationDetails);
       }
 
       for (const roleName of userCommand.roles) {

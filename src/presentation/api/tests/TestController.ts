@@ -20,6 +20,7 @@ import { TestErrorHandler } from './TestErrorHandler';
 import { User } from '../../../domain/model/user/User';
 import { TestResultsCommand } from '../../commands/tests/TestResultsCommand';
 import { TestCommand } from '../../commands/tests/TestCommand';
+import { CREATE_TESTS_WITHOUT_ACCESS_PASS } from '../../../domain/model/authentication/Permissions';
 
 @Authorized()
 @JsonController('/v1')
@@ -32,7 +33,11 @@ export class TestController {
 
   @Get('/users/:id/tests')
   async getTestsOfUser(@Param('id') userIdValue: string, @CurrentUser({ required: true }) actor: User) {
-    await this.validateCanAccessUser(actor, new UserId(userIdValue));
+    const canAccessUser = await this.canAccessUser(actor, userIdValue);
+
+    if (!canAccessUser) {
+      throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
+    }
 
     const tests = await this.getTests.byUserId(userIdValue);
 
@@ -46,7 +51,12 @@ export class TestController {
     @Body() testCommand: TestCommand,
     @CurrentUser({ required: true }) actor: User
   ) {
-    await this.validateCanAccessUser(actor, new UserId(userIdValue));
+    const canAccessUser = await this.canAccessUser(actor, userIdValue);
+    const canCreateWithoutAccess = actor.hasPermission(CREATE_TESTS_WITHOUT_ACCESS_PASS);
+
+    if (!canAccessUser && !canCreateWithoutAccess) {
+      throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
+    }
 
     const test = await this.createTest.execute(actor, userIdValue, testCommand);
 
@@ -71,11 +81,8 @@ export class TestController {
     return transformTestResultsToDTO(results);
   }
 
-  private async validateCanAccessUser(actor: User, userIdToBeAccessed: UserId) {
-    const canAccessUser = await this.accessManagerFactory.forAuthenticatedUser(actor).canAccessUser(userIdToBeAccessed);
-
-    if (!canAccessUser) {
-      throw new ApiError(404, apiErrorCodes.USER_NOT_FOUND);
-    }
+  private async canAccessUser(actor: User, userIdValue: string) {
+    const userId = new UserId(userIdValue);
+    return this.accessManagerFactory.forAuthenticatedUser(actor).canAccessUser(userId);
   }
 }
