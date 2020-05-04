@@ -1,9 +1,10 @@
 import { createSharingCode } from '../../../application/service';
 import { ApiError, apiErrorCodes } from '../../dtos/ApiError';
 import { UserId } from '../../../domain/model/user/UserId';
-import { Authorized, CurrentUser, JsonController, Param, Post } from 'routing-controllers';
+import { Authorized, CurrentUser, JsonController, Param, BodyParam, Post } from 'routing-controllers';
 import { SharingCodeTransformer } from '../../transformers/SharingCodeTransformer';
 import { User } from '../../../domain/model/user/User';
+import { SharingCodeDTO } from '../../dtos/access-sharing/SharingCodeDTO';
 
 @Authorized()
 @JsonController('/v1/users/:userId/sharing-code')
@@ -14,9 +15,9 @@ export class SharingCodeController {
   @Post('')
   async createNewAccessPass(
     @Param('userId') userIdValue: string,
-    @Param('accessDuration') accessDuration: number,
+    @BodyParam('accessDuration') accessDuration: number,
     @CurrentUser({ required: true }) actor: User
-  ) {
+  ): Promise<SharingCodeDTO> {
     await this.ensureIsLoggedInAsUser(actor, new UserId(userIdValue));
 
     const sharingCode = await this.createSharingCode.withUserId(userIdValue, accessDuration);
