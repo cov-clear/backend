@@ -178,7 +178,7 @@ describe('user endpoints', () => {
       const actorUser = await userRepository.save(aNewUser());
       const subjectUser = await userRepository.save(aNewUser());
 
-      const accessPass = new AccessPass(actorUser.id, subjectUser.id, uuidv4(), new Date('1970-01-01'));
+      const accessPass = new AccessPass(actorUser.id, subjectUser.id, 60, uuidv4(), new Date('1970-01-01'));
 
       await accessPassRepository.save(accessPass);
 

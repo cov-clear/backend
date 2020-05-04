@@ -11,7 +11,7 @@ describe('Access Pass', () => {
     const actorUserId = new UserId();
     const subjectUserId = new UserId();
 
-    const accessPass = new AccessPass(actorUserId, subjectUserId);
+    const accessPass = new AccessPass(actorUserId, subjectUserId, 120);
 
     expect(accessPass.actorUserId).toBe(actorUserId);
     expect(accessPass.subjectUserId).toBe(subjectUserId);
@@ -25,11 +25,15 @@ describe('Access Pass', () => {
 
     MockDate.set('2020-11-03 00:00:00');
 
-    const accessPass = new AccessPass(actorUserId, subjectUserId);
+    const accessPass = new AccessPass(actorUserId, subjectUserId, 120);
+
+    // More than default duration
+    MockDate.set('2020-11-03 01:01:00');
 
     expect(accessPass.isExpired()).toBe(false);
 
-    MockDate.set('2020-11-03 01:01:00');
+    // More than specified duration
+    MockDate.set('2020-11-03 02:01:00');
 
     expect(accessPass.isExpired()).toBe(true);
   });

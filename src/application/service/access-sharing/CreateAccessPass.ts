@@ -20,7 +20,7 @@ export class CreateAccessPass {
       throw new AccessPassFailedError(AccessPassFailureReason.SHARING_CODE_EXPIRED);
     }
 
-    const accessPass = new AccessPass(new UserId(userId), sharingCode.userId);
+    const accessPass = new AccessPass(new UserId(userId), sharingCode.userId, sharingCode.accessDuration);
 
     return this.accessPassRepository.save(accessPass);
   }

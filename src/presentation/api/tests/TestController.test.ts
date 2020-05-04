@@ -85,7 +85,7 @@ describe('TestController', () => {
       const subjectUser = await userRepository.save(aNewUser());
       await testRepository.save(aTest(subjectUser.id));
 
-      const accessPass = new AccessPass(actorUser.id, subjectUser.id, uuidv4(), new Date('1970-01-01'));
+      const accessPass = new AccessPass(actorUser.id, subjectUser.id, 60, uuidv4(), new Date('1970-01-01'));
 
       await accessPassRepository.save(accessPass);
 

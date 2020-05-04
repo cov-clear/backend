@@ -14,6 +14,7 @@ export class PsqlAccessPassRepository implements AccessPassRepository {
         'id',
         'actor_user_id as actorUserId',
         'subject_user_id as subjectUserId',
+        'duration',
         'creation_time as creationTime',
       ])
       .where({
@@ -30,6 +31,7 @@ export class PsqlAccessPassRepository implements AccessPassRepository {
     return new AccessPass(
       new UserId(linkRow.actorUserId),
       new UserId(linkRow.subjectUserId),
+      linkRow.duration,
       linkRow.id,
       linkRow.creationTime
     );
@@ -39,13 +41,14 @@ export class PsqlAccessPassRepository implements AccessPassRepository {
     return await this.db
       .raw(
         `
-      insert into "${ACCESS_PASS_TABLE_NAME}" (id, actor_user_id, subject_user_id, creation_time)
-      values (:id, :actor_user_id, :subject_user_id, :creation_time)
+      insert into "${ACCESS_PASS_TABLE_NAME}" (id, actor_user_id, subject_user_id, duration, creation_time)
+      values (:id, :actor_user_id, :subject_user_id, :duration, :creation_time)
     `,
         {
           id: accessPass.id,
           actor_user_id: accessPass.actorUserId.value,
           subject_user_id: accessPass.subjectUserId.value,
+          duration: accessPass.duration,
           creation_time: accessPass.creationTime,
         }
       )

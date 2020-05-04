@@ -1,13 +1,13 @@
 import { v4 as uuidv4 } from 'uuid';
 import { UserId } from '../user/UserId';
 
-// 1 hour
-const ACCESS_REQUEST_LIFETIME_MSEC = 60 * 60 * 1_000;
+const DEFAULT_DURATION_MINUTES = 60;
 
 export class AccessPass {
   constructor(
     readonly actorUserId: UserId,
     readonly subjectUserId: UserId,
+    readonly duration: number = DEFAULT_DURATION_MINUTES,
     readonly id: string = uuidv4(),
     readonly creationTime: Date = new Date()
   ) {}
@@ -17,6 +17,7 @@ export class AccessPass {
   }
 
   public expirationTime(): Date {
-    return new Date(this.creationTime.getTime() + ACCESS_REQUEST_LIFETIME_MSEC);
+    const millisecondDuration = this.duration * 60 * 1_000;
+    return new Date(this.creationTime.getTime() + millisecondDuration);
   }
 }
