@@ -31,10 +31,12 @@ describe('SharingCodeController', () => {
       await request(app)
         .post(`/api/v1/users/${id.value}/sharing-code`)
         .set({ Authorization: `Bearer ${await getTokenForUser(user)}` })
+        .send({ accessDuration: 60 })
         .expect(200)
         .expect((response) => {
           const sharingCode = response.body;
           expect(sharingCode.code).toBeDefined();
+          expect(sharingCode.accessDuration).toBe(60);
         });
     });
 

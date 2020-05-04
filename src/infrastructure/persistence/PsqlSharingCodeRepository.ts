@@ -8,26 +8,27 @@ export class PsqlSharingCodeRepository implements SharingCodeRepository {
 
   async findByCode(code: string) {
     const linkRow: any = await this.db('sharing_code')
-      .select(['code', 'user_id as userId', 'creation_time as creationTime'])
+      .select(['code', 'user_id as userId', 'access_duration as accessDuration', 'creation_time as creationTime'])
       .where('code', '=', code)
       .first();
 
     if (!linkRow) {
       return null;
     }
-    return new SharingCode(new UserId(linkRow.userId), linkRow.code, linkRow.creationTime);
+    return new SharingCode(new UserId(linkRow.userId), linkRow.accessDuration, linkRow.code, linkRow.creationTime);
   }
 
   async save(sharingCode: SharingCode) {
     return await this.db
       .raw(
         `
-      insert into sharing_code (code, user_id, creation_time)
-      values (:code, :user_id, :creation_time)
+      insert into sharing_code (code, user_id, access_duration, creation_time)
+      values (:code, :user_id, :access_duration, :creation_time)
     `,
         {
           code: sharingCode.code,
           user_id: sharingCode.userId.value,
+          access_duration: sharingCode.accessDuration,
           creation_time: sharingCode.creationTime,
         }
       )

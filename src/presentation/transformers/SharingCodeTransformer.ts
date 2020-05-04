@@ -5,6 +5,7 @@ export class SharingCodeTransformer {
   public toSharingCodeDTO(sharingCode: SharingCode): SharingCodeDTO {
     return {
       code: sharingCode.code,
+      accessDuration: sharingCode.accessDuration,
       expiryTime: sharingCode.expirationTime(),
     };
   }
