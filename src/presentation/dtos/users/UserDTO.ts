@@ -15,3 +15,9 @@ export interface RestrictedUserDTO {
   id: string;
   authenticationDetails: AuthenticationDetailsDTO;
 }
+
+export interface SharedUserDTO {
+  id: string;
+  profile?: ProfileDTO;
+  address?: AddressDTO;
+}

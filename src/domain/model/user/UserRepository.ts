@@ -8,6 +8,7 @@ export interface UserRepository {
   save(user: User): Promise<User>;
 
   findByUserId(userId: UserId): Promise<User | null>;
+  findByUserIds(userIds: Array<UserId>): Promise<Array<User>>;
 
   findByAuthenticationDetails(authenticationDetails: AuthenticationDetails): Promise<User | null>;
 }

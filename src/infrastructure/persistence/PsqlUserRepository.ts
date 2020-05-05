@@ -97,6 +97,12 @@ export class PsqlUserRepository implements UserRepository {
     return this.extractUserAndPopulateRoles(userRow);
   }
 
+  async findByUserIds(userIds: Array<UserId>): Promise<Array<User>> {
+    const idValues = userIds.map((userId) => userId.value);
+    const rows: any = await this.db(USER_TABLE_NAME).whereIn('id', idValues).select(USER_TABLE_COLUMNS);
+    return rows.map(mapRowToUser);
+  }
+
   private async saveRoleAssignment(roleAssignment: RoleAssignmentAction, context = this.db) {
     await context('role_to_user_assignment').insert({
       id: roleAssignment.id.value,
@@ -110,18 +116,7 @@ export class PsqlUserRepository implements UserRepository {
   }
 
   private async extractUserAndPopulateRoles(userRow: any) {
-    const user = new User(
-      new UserId(userRow.id),
-      new AuthenticationDetails(
-        new AuthenticationMethod(userRow.authenticationMethod),
-        new AuthenticationIdentifier(userRow.authenticationIdentifier)
-      ),
-      userRow.email ? new Email(userRow.email) : undefined,
-      fromDbProfile(userRow.profile as DbProfile | undefined),
-      fromDbAddress(userRow.address as DbAddress | undefined),
-      userRow.creationTime,
-      userRow.modificationTime
-    );
+    const user = mapRowToUser(userRow);
     const roleAssignmentActions = await this.getRoleAssignments(user);
     Reflect.set(user.roleAssignments, 'assignmentActions', roleAssignmentActions);
     Reflect.set(user.roleAssignments, 'newAssignmentActions', []);
@@ -186,6 +181,21 @@ export class PsqlUserRepository implements UserRepository {
       roleAssignmentRow.ruaCreationTime
     );
   }
+}
+
+function mapRowToUser(userRow: any): User {
+  return new User(
+    new UserId(userRow.id),
+    new AuthenticationDetails(
+      new AuthenticationMethod(userRow.authenticationMethod),
+      new AuthenticationIdentifier(userRow.authenticationIdentifier)
+    ),
+    userRow.email ? new Email(userRow.email) : undefined,
+    fromDbProfile(userRow.profile as DbProfile | undefined),
+    fromDbAddress(userRow.address as DbAddress | undefined),
+    userRow.creationTime,
+    userRow.modificationTime
+  );
 }
 
 function toDbProfile(profile?: Profile): DbProfile | undefined {

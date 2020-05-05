@@ -1,10 +1,16 @@
-import { accessManagerFactory, getUser, updateUser, getExistingOrCreateNewUser } from '../../../application/service';
+import {
+  accessManagerFactory,
+  getUser,
+  updateUser,
+  getExistingOrCreateNewUser,
+  getAccessibleUsers,
+} from '../../../application/service';
 
 import { UserTransformer } from '../../transformers/UserTransformer';
 import { UserId } from '../../../domain/model/user/UserId';
 
 import { ApiError, apiErrorCodes } from '../../dtos/ApiError';
-import { UserDTO, RestrictedUserDTO } from '../../dtos/users/UserDTO';
+import { UserDTO, RestrictedUserDTO, SharedUserDTO } from '../../dtos/users/UserDTO';
 
 import {
   Authorized,
@@ -19,6 +25,7 @@ import {
   UseAfter,
   UseBefore,
 } from 'routing-controllers';
+
 import { hasPermission } from '../../middleware/hasPermission';
 import { CREATE_USERS } from '../../../domain/model/authentication/Permissions';
 import { UserErrorHandler } from './UserErrorHandler';
@@ -55,13 +62,27 @@ export class UserController {
     return this.userTransformer.toRestrictedUserDTO(user);
   }
 
+  @Get('')
+  async getUsers(@CurrentUser({ required: true }) actor: User): Promise<Array<SharedUserDTO>> {
+    const users = await getAccessibleUsers.byActorId(actor.id.value);
+    return users.map(this.userTransformer.toSharedUserDTO);
+  }
+
   @Get('/:id')
-  async getById(@Param('id') idValue: string, @CurrentUser({ required: true }) actor: User): Promise<UserDTO> {
+  async getById(
+    @Param('id') idValue: string,
+    @CurrentUser({ required: true }) actor: User
+  ): Promise<UserDTO | SharedUserDTO> {
     const id = new UserId(idValue);
 
     await this.validateCanGetUser(actor, id);
 
     const user = await getUser.byId(idValue);
+
+    // Share less data if requesting another user
+    if (id.value !== actor.id.value) {
+      return this.userTransformer.toSharedUserDTO(user);
+    }
 
     return this.userTransformer.toUserDTO(user);
   }
