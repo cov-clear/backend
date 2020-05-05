@@ -2,6 +2,7 @@ import express, { Application } from 'express';
 import { attachAuthenticationToRequest } from '../middleware/attachAuthenticationToRequest';
 
 import { AdminController } from './admin/AdminController';
+import { ServiceConfigController } from './config/ServiceConfigController';
 import { useExpressServer } from 'routing-controllers';
 import { UserController } from './users/UserController';
 import { TestController } from './tests/TestController';
@@ -33,6 +34,7 @@ export class RootController {
       controllers: [
         HealthController,
         AccessPassController,
+        ServiceConfigController,
         AdminController,
         AuthenticationController,
         CountryController,

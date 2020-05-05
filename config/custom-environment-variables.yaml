@@ -9,6 +9,9 @@ emailNotifier:
     apiKey: MAILGUN_API_KEY
     domain: MAILGUN_DOMAIN
 
+i18n:
+  defaultLanguage: DEFAULT_LANGUAGE
+
 authentication:
   allowedMethods:
     magicLink: AUTH_MAGIC_LINK_ENABLED

@@ -11,6 +11,7 @@ import { Authenticate } from './authentication/Authenticate';
 import { CreateNewMagicLink } from './authentication/CreateNewMagicLink';
 import * as config from '../../config';
 import { GetExistingOrCreateNewUser } from './users/GetExistingOrCreateNewUser';
+import { GetServiceConfig } from './config/GetServiceConfig';
 import { BulkCreateUsers } from './users/BulkCreateUsers';
 import {
   accessPassRepository,
@@ -105,6 +106,8 @@ export const getExistingOrCreateNewUser = new GetExistingOrCreateNewUser(
 );
 
 export const bulkCreateUsers = new BulkCreateUsers(userRepository, roleRepository);
+
+export const getServiceConfig = new GetServiceConfig(config);
 
 const authenticationProvider = new DokobitAuthenticationProvider();
 
