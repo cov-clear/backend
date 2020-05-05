@@ -9,6 +9,9 @@ emailNotifier:
     apiKey: MAILGUN_API_KEY
     domain: MAILGUN_DOMAIN
 
+i18n:
+  defaultLanguage: DEFAULT_LANGUAGE
+
 authentication:
   dokobit:
     accessToken: DOKOBIT_ACCESS_TOKEN

@@ -11,6 +11,9 @@ emailNotifier:
     apiKey: dummy
     domain: dummy
 
+i18n:
+  defaultLanguage: en
+
 authentication:
   dokobit:
     accessToken: dummy
