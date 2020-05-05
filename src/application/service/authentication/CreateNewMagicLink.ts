@@ -19,10 +19,12 @@ export class CreateNewMagicLink {
       this.fromEmailHeader,
       magicLink.email,
       'Sign in to COV-Clear',
-      this.emailTemplate.replace(
-        /{{LINK}}/g,
-        `${this.frontendBaseUrl}authentication-callback?method=MAGIC_LINK&authCode=${magicLink.code.value}`
-      )
+      this.emailTemplate
+        .replace(
+          /{{LINK}}/g,
+          `${this.frontendBaseUrl}authentication-callback?method=MAGIC_LINK&authCode=${magicLink.code.value}`
+        )
+        .replace(/{{ASSETS_URL}}/g, this.frontendBaseUrl)
     );
 
     return magicLink;
