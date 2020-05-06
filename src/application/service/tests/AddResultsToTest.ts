@@ -10,6 +10,11 @@ import { ConfidenceLevel } from '../../../domain/model/test/ConfidenceLevel';
 import { ADD_RESULTS_WITH_HIGH_CONFIDENCE } from '../../../domain/model/authentication/Permissions';
 import { Test } from '../../../domain/model/test/Test';
 import { TestResultsCommand } from '../../../presentation/commands/tests/TestResultsCommand';
+import { userRepository } from '../../../infrastructure/persistence';
+import { emailNotifier } from '../index';
+import { Email } from '../../../domain/model/user/Email';
+import fs from 'fs';
+import * as config from '../../../config';
 
 export class AddResultsToTest {
   constructor(private testRepository: TestRepository) {}
@@ -27,6 +32,12 @@ export class AddResultsToTest {
     test.setResults(this.getResults(actor, resultsDetails, resultsCommand.notes));
 
     await this.testRepository.save(test);
+
+    const patient = await userRepository.findByUserId(test.userId);
+
+    if (patient && patient.id != actor.id) {
+      await this.sendEmailForTestResult(patient);
+    }
 
     return test.results as Results;
   }
@@ -62,5 +73,24 @@ export class AddResultsToTest {
       return ConfidenceLevel.HIGH;
     }
     return ConfidenceLevel.LOW;
+  }
+
+  private async sendEmailForTestResult(patient: User) {
+    const emailTemplate = (await fs.promises.readFile(
+      __dirname + '/../../../../assets/emails/new-test-result.html',
+      'UTF-8'
+    )) as string;
+    const frontendBaseUrl = new URL(config.get('frontend.baseUrl'));
+
+    if (patient.email) {
+      await emailNotifier.send(
+        new Email(config.get('emailNotifier.fromEmailHeader')),
+        new Email(patient.email.value),
+        'A new test result has been added to COV-Clear',
+        emailTemplate.replace(/{{LINK}}/g, `${frontendBaseUrl}`)
+      );
+    }
+
+    return true;
   }
 }

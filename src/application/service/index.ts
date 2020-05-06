@@ -51,7 +51,7 @@ import { UpdateTestType } from './tests/UpdateTestType';
 import { GetReports } from './reports/GetReports';
 import { AuthenticatorFactory } from '../../domain/model/authentication/AuthenticatorFactory';
 
-let emailNotifier = new LoggingEmailNotifier();
+export let emailNotifier = new LoggingEmailNotifier();
 
 switch (config.get('emailNotifier.type')) {
   case 'mailgun':

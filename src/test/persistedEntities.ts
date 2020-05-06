@@ -1,4 +1,4 @@
-import { aNewUser, aRoleWithPermissions } from './domainFactories';
+import { aNewUser, aRoleWithPermissions, aUserWithAllInformation } from './domainFactories';
 import { Permission } from '../domain/model/authentication/Permission';
 import { permissionRepository, roleRepository, userRepository } from '../infrastructure/persistence';
 
