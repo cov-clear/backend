@@ -12,5 +12,5 @@ export async function persistedUserWithRoleAndPermissions(roleName: string, perm
 
   await Promise.all(permissionNames.map((permissionName) => permissionRepository.save(new Permission(permissionName))));
   await roleRepository.save(role);
-  return await userRepository.save(admin);
+  return userRepository.save(admin);
 }
