@@ -76,7 +76,7 @@ export class AddResultsToTest {
   }
 
   private async sendEmailForTestResult(patient: User) {
-    const emailTemplate = fs.readFileSync(__dirname + '/../../../../assets/emails/new-test-result.html').toString();
+    const emailTemplate = await fs.promises.readFile(__dirname + '/../../../../assets/emails/new-test-result.html', 'UTF-8');
     const frontendBaseUrl = new URL(config.get('frontend.baseUrl'));
 
     if (patient.email) {
