@@ -6,6 +6,7 @@ import { Profile } from './Profile';
 import { Role } from '../authentication/Role';
 import { UserId } from './UserId';
 import { AuthenticationDetails } from './AuthenticationDetails';
+import { AuthenticationMethodType } from './AuthenticationMethod';
 
 export class User {
   readonly roleAssignments: AssignmentActions<User, Role>;
@@ -23,7 +24,13 @@ export class User {
   }
 
   static create(authenticationDetails: AuthenticationDetails) {
-    return new User(new UserId(), authenticationDetails);
+    const user = new User(new UserId(), authenticationDetails);
+
+    if (authenticationDetails.method.type == AuthenticationMethodType.MAGIC_LINK) {
+      user.email = authenticationDetails.identifier;
+    }
+
+    return user;
   }
 
   set email(newEmail) {
