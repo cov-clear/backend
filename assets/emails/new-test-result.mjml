@@ -1,0 +1,45 @@
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-section padding="16px 16px 16px 16px" />
+      <mj-text font-family="Roboto, Helvetica Neue, sans-serif"
+               color="#000000"
+               font-size="18px"
+               line-height="32px"
+               padding="16px 0px 16px 0px" />
+      <mj-button background-color="#096DD9"
+                 width="100%"
+                 font-family="Roboto, Helvetica Neue, sans-serif"
+                 color="#ffffff"
+                 font-size="16px"
+                 line-height="24px"
+                 padding="16px 0px 16px 0px" />
+      <mj-class name="secondary-text"
+                color="#6c6c6c"
+                font-size="16px"
+                line-height="24px"
+                padding="16px 0px 16px 0px" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#ffffff">
+    <mj-section>
+      <mj-column>
+        <mj-image alt="Logo"
+                  src="https://app.cov-clear.com/images/logo192.png"
+                  align="center"
+                  border="none"
+                  width="192px"
+                  padding="0px 0px 0px 0px" />
+      </mj-column>
+    </mj-section>
+    <mj-section>
+      <mj-column vertical-align="middle" width="100%">
+        <mj-text>Hello,</mj-text>
+        <mj-text>A new test result has been added to your profile. Please log into cov-clear to view your result.</mj-text>
+        <mj-button href="{{LINK}}">Sign in to COV-Clear</mj-button>
+        <mj-text mj-class="secondary-text">Or copy/paste this link into your browser: {{LINK}}</mj-text>
+				<mj-text>Thanks,<br/>The COV-Clear team</mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

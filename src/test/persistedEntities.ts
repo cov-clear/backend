@@ -1,4 +1,4 @@
-import { aNewUser, aRoleWithPermissions } from './domainFactories';
+import { aNewUser, aRoleWithPermissions, aUserWithAllInformation } from './domainFactories';
 import { Permission } from '../domain/model/authentication/Permission';
 import { permissionRepository, roleRepository, userRepository } from '../infrastructure/persistence';
 
@@ -12,5 +12,5 @@ export async function persistedUserWithRoleAndPermissions(roleName: string, perm
 
   await Promise.all(permissionNames.map((permissionName) => permissionRepository.save(new Permission(permissionName))));
   await roleRepository.save(role);
-  return userRepository.save(admin);
+  return await userRepository.save(admin);
 }
