@@ -72,16 +72,18 @@ jobs:
           K8S_YAML_DIR: ./manifests
           ROLE_ARN: arn:aws:iam::310398818202:role/cov-clear-uk-backend
           COUNTRY: uk
+          DOMAIN: uk.cov-clear.com
         run: |
           cd $K8S_YAML_DIR
-          ./render_manifests.py "$COUNTRY" "sha-$(git rev-parse --short ${{ github.sha }})" "$COUNTRY.cov-clear.com" "$ROLE_ARN" | kubectl apply -f -
+          ./render_manifests.py "$COUNTRY" "sha-$(git rev-parse --short ${{ github.sha }})" "$DOMAIN" "$ROLE_ARN" | kubectl apply -f -
           kubectl --namespace $COUNTRY rollout status deployments.apps/backend
       - name: Deploy EE environment
         env:
           K8S_YAML_DIR: ./manifests
           ROLE_ARN: arn:aws:iam::310398818202:role/cov-clear-ee-backend
           COUNTRY: ee
+          DOMAIN: app.immunitypassport.co
         run: |
           cd $K8S_YAML_DIR
-          ./render_manifests.py "$COUNTRY" "sha-$(git rev-parse --short ${{ github.sha }})" "$COUNTRY.cov-clear.com" "$ROLE_ARN" | kubectl apply -f -
+          ./render_manifests.py "$COUNTRY" "sha-$(git rev-parse --short ${{ github.sha }})" "$DOMAIN" "$ROLE_ARN" | kubectl apply -f -
           kubectl --namespace $COUNTRY rollout status deployments.apps/backend
