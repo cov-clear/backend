@@ -87,10 +87,9 @@ export class AddResultsToTest {
         new Email(config.get('emailNotifier.fromEmailHeader')),
         new Email(patient.email.value),
         'A new test result has been added to COV-Clear',
-        emailTemplate.replace(/{{LINK}}/g, `${frontendBaseUrl}`)
+        emailTemplate.replace(/{{LINK}}/g, `${frontendBaseUrl}`).replace(/{{ASSETS_URL}}/g, frontendBaseUrl.toString())
       );
     }
-
     return true;
   }
 }
