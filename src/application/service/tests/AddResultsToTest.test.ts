@@ -6,13 +6,16 @@ import { aTestResultsCommand } from '../../../test/apiFactories';
 import { ConfidenceLevel } from '../../../domain/model/test/ConfidenceLevel';
 import database from '../../../database';
 import { cleanupDatabase } from '../../../test/cleanupDatabase';
-import { AddResultsToTest } from './AddResultsToTest';
+import { addResultsToTest } from '../index';
+import { LoggingEmailNotifier } from '../../../infrastructure/notifications/LoggingEmailNotifier';
 
-describe('AddResultsToTests', () => {
-  const addResultsToTest = new AddResultsToTest(testRepository);
+describe('AddResultsToTest', () => {
+  let emailNotifierSpy: any;
 
   beforeEach(async () => {
     await cleanupDatabase();
+    emailNotifierSpy = jest.spyOn(LoggingEmailNotifier.prototype, 'send');
+    emailNotifierSpy.mockReset();
   });
 
   it('adds results with LOW confidence if the actor does not have the necessary permission', async () => {
@@ -26,7 +29,7 @@ describe('AddResultsToTests', () => {
     expect(results.creatorConfidence).toEqual(ConfidenceLevel.LOW);
   });
 
-  it('adds results with HIGH confidence if the actor has the necessary permission', async () => {
+  it('adds results with HIGH confidence if the actor has the necessary permission & sends email to subject', async () => {
     const testType = await testTypeRepository.save(aTestType());
     const actor = await persistedUserWithRoleAndPermissions('TESTER', [
       ADD_RESULTS_WITH_HIGH_CONFIDENCE,
@@ -38,6 +41,7 @@ describe('AddResultsToTests', () => {
     const results = await addResultsToTest.execute(actor, test.id.value, aTestResultsCommand());
 
     expect(results.creatorConfidence).toEqual(ConfidenceLevel.HIGH);
+    expect(emailNotifierSpy).toBeCalledTimes(1);
   });
 });
 
