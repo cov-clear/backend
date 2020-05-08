@@ -25,7 +25,7 @@
     <mj-section>
       <mj-column>
         <mj-image alt="Logo"
-                  src="https://app.cov-clear.com/images/logo192.png"
+                  src="{{ASSETS_URL}}/images/logo192.png"
                   align="center"
                   border="none"
                   width="192px"
