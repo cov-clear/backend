@@ -25,7 +25,7 @@ export class SharingCodeController {
 
     log.info('Created sharing code', {
       // Sharing code is sensitive info even though it's temporary and single-use, only showing the start of it for matching with other logs.
-      sharingCodeStart: sharingCode.code.substring(4),
+      sharingCodeStart: sharingCode.code.slice(4),
       accessDuration: sharingCode.accessDuration,
       userId: sharingCode.userId.value,
       actorId: actor.id.value,
