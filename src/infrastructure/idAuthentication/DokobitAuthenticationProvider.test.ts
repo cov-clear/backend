@@ -49,8 +49,8 @@ describe('Dokobit authentication provider', () => {
         if (sessionToken === 'seshToken') {
           return {
             code: '39210030814',
-            name: 'Indrek',
-            surname: 'Nolan',
+            name: 'INDREK TEST',
+            surname: "o'nolan",
             countryCode: 'ee',
           };
         }
@@ -60,8 +60,8 @@ describe('Dokobit authentication provider', () => {
     const response = await provider.authenticate(new AuthenticationSessionToken('seshToken'));
 
     expect(response.code).toBe('39210030814');
-    expect(response.profile.firstName).toBe('Indrek');
-    expect(response.profile.lastName).toBe('Nolan');
+    expect(response.profile.firstName).toBe('Indrek Test');
+    expect(response.profile.lastName).toBe("O'Nolan");
     expect(response.profile.dateOfBirth.toString()).toEqual(new DateOfBirth(1992, 10, 3).toString());
     expect(response.profile.sex).toEqual(Sex.MALE);
   });
