@@ -120,7 +120,19 @@ export const estonianIdAuthenticator = new EstonianIdAuthenticator(
   generateAuthToken,
   userRepository
 );
-export const authenticatorFactory = new AuthenticatorFactory([magicLinkAuthenticator, estonianIdAuthenticator]);
+
+let allowedAuthenticationMethods = [];
+
+if (config.get('authentication.allowedMethods.magicLink')) {
+  allowedAuthenticationMethods.push(magicLinkAuthenticator);
+}
+
+if (config.get('authentication.allowedMethods.estonianId')) {
+  allowedAuthenticationMethods.push(estonianIdAuthenticator);
+}
+
+export const authenticatorFactory = new AuthenticatorFactory(allowedAuthenticationMethods);
+
 export const authenticate = new Authenticate(authenticatorFactory);
 
 export const createSharingCode = new CreateSharingCode(sharingCodeRepository);

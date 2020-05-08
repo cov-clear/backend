@@ -12,6 +12,9 @@ emailNotifier:
     domain: dummy
 
 authentication:
+  allowedMethods:
+    magicLink: true
+    estonianId: false
   dokobit:
     accessToken: dummy
     baseUrl: https://id-sandbox.dokobit.com
