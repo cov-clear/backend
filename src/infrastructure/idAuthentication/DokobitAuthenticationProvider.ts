@@ -68,7 +68,7 @@ function capitalizeName(name: string) {
   if (!name) {
     return name;
   }
-  return name.replace(/\b(\w)/g, (s) => s.toUpperCase());
+  return name.toLowerCase().replace(/\b(\w)/g, (s) => s.toUpperCase());
 }
 
 function getAndValidateEstonianIdCode(sessionStatus: DokobitSessionStatus): Isikukood {
