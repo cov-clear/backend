@@ -55,8 +55,20 @@ export class DokobitAuthenticationProvider implements AuthenticationProvider {
 }
 
 function mapToProfile(sessionStatus: DokobitSessionStatus): Profile {
-  var id = getAndValidateEstonianIdCode(sessionStatus);
-  return new Profile(sessionStatus.name, sessionStatus.surname, DateOfBirth.fromDate(id.getBirthday()), getSex(id));
+  const id = getAndValidateEstonianIdCode(sessionStatus);
+  return new Profile(
+    capitalizeName(sessionStatus.name),
+    capitalizeName(sessionStatus.surname),
+    DateOfBirth.fromDate(id.getBirthday()),
+    getSex(id)
+  );
+}
+
+function capitalizeName(name: string) {
+  if (!name) {
+    return name;
+  }
+  return name.replace(/\b(\w)/g, (s) => s.toUpperCase());
 }
 
 function getAndValidateEstonianIdCode(sessionStatus: DokobitSessionStatus): Isikukood {
