@@ -4,6 +4,8 @@ import { UserRepository } from '../../../domain/model/user/UserRepository';
 import { ADMIN, USER } from '../../../domain/model/authentication/Roles';
 import { AuthenticationDetails } from '../../../domain/model/user/AuthenticationDetails';
 
+import log from '../../../infrastructure/logging/logger';
+
 export class GetExistingOrCreateNewUser {
   constructor(
     private userRepository: UserRepository,
@@ -11,10 +13,11 @@ export class GetExistingOrCreateNewUser {
     private setupModeEnabled: boolean
   ) {}
 
-  public async execute(authenticationDetails: AuthenticationDetails) {
+  public async execute(authenticationDetails: AuthenticationDetails, actor?: User) {
     const existingUser = await this.userRepository.findByAuthenticationDetails(authenticationDetails);
 
     if (existingUser) {
+      this.logUserView(existingUser, actor);
       return existingUser;
     }
 
@@ -22,7 +25,9 @@ export class GetExistingOrCreateNewUser {
 
     await this.assignRolesToUser(user, this.getRolesToAssign());
 
-    return this.userRepository.save(user);
+    const createdUser = await this.userRepository.save(user);
+    this.logUserCreation(createdUser, actor);
+    return createdUser;
   }
 
   private async assignRolesToUser(user: User, roleNames: string[]) {
@@ -37,5 +42,20 @@ export class GetExistingOrCreateNewUser {
 
   private getRolesToAssign() {
     return this.setupModeEnabled ? [USER, ADMIN] : [USER];
+  }
+
+  private logUserCreation(user: User, actor: User = user) {
+    log.info('User created', {
+      userId: user.id.value,
+      authenticationMethod: user.authenticationDetails.method.type,
+      actorId: actor.id.value,
+    });
+  }
+
+  private logUserView(user: User, actor: User = user) {
+    log.info('User viewed via authentication details', {
+      userId: user.id.value,
+      actorId: actor.id.value,
+    });
   }
 }

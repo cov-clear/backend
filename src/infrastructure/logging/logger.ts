@@ -24,8 +24,12 @@ function pinoConfig(config: any): pino.LoggerOptions {
   return cfg;
 }
 
-function info(message: string): void {
-  logger.info(message);
+function info(message: string, object?: object): void {
+  if (object) {
+    logger.info(object, message);
+  } else {
+    logger.info(message);
+  }
 }
 
 function error(message: string, err?: Error): void {

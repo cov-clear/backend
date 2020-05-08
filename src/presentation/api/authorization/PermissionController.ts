@@ -20,6 +20,7 @@ import {
 import { PermissionErrorHandler } from './PermissionErrorHandler';
 import { PermissionTransformer } from '../../transformers/PermissionTransformer';
 import { User } from '../../../domain/model/user/User';
+import log from '../../../infrastructure/logging/logger';
 
 @Authorized()
 @JsonController('/v1')
@@ -32,8 +33,12 @@ export class PermissionController {
 
   @Get('/permissions')
   @UseBefore(hasPermission(LIST_PERMISSIONS))
-  async getAll() {
+  async getAll(@CurrentUser({ required: true }) actor: User) {
     const permissions = await this.getPermissions.all();
+
+    log.info('Listed permissions', {
+      actorId: actor.id.value,
+    });
 
     return permissions.map(this.permissionTransformer.toPermissionDTO);
   }
@@ -43,6 +48,11 @@ export class PermissionController {
   @UseBefore(hasPermission(CREATE_NEW_PERMISSION))
   async createNew(@BodyParam('name') name: string, @CurrentUser({ required: true }) actor: User) {
     const permission = await this.createPermission.execute(name, actor);
+
+    log.info('Created permission', {
+      actorId: actor.id.value,
+      permission: permission.name,
+    });
 
     return this.permissionTransformer.toPermissionDTO(permission);
   }
@@ -55,6 +65,12 @@ export class PermissionController {
     @CurrentUser({ required: true }) actor: User
   ) {
     const permission = await this.assignPermissionToRole.execute(permissionName, roleName, actor);
+
+    log.info('Assigned permission to role', {
+      actorId: actor.id.value,
+      permission: permission.name,
+      role: roleName,
+    });
 
     return this.permissionTransformer.toPermissionDTO(permission);
   }

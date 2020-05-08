@@ -5,6 +5,7 @@ import { Authorized, BodyParam, CurrentUser, JsonController, Param, Post, UseAft
 import { AccessPassTransformer } from '../../transformers/AccessPassTransformer';
 import { AccessPassErrorHandler } from './AccessPassErrorHandler';
 import { User } from '../../../domain/model/user/User';
+import log from '../../../infrastructure/logging/logger';
 
 @Authorized()
 @JsonController('/v1/users/:userId/access-passes')
@@ -21,6 +22,14 @@ export class AccessPassController {
     await this.ensureIsLoggedInAsUser(actor, new UserId(userIdValue));
 
     const accessPass = await createAccessPass.withSharingCode(sharingCode, userIdValue);
+
+    log.info('Created access pass', {
+      // Sharing code is sensitive info even though it's temporary and single-use, only showing the start of it for matching with other logs.
+      sharingCodeStart: sharingCode.slice(4),
+      accessPassId: accessPass.id,
+      userId: accessPass.subjectUserId.value,
+      actorId: accessPass.actorUserId.value,
+    });
 
     return this.accessPassTransformer.toAccessPassDTO(accessPass);
   }

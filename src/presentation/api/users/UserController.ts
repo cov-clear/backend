@@ -33,6 +33,8 @@ import {
 } from '../../../domain/model/user/AuthenticationMethod';
 import { AuthenticationIdentifier } from '../../../domain/model/user/AuthenticationIdentifier';
 
+import log from '../../../infrastructure/logging/logger';
+
 @Authorized()
 @JsonController('/v1/users')
 @UseAfter(UserErrorHandler)
@@ -43,7 +45,10 @@ export class UserController {
   @Post('')
   @HttpCode(201)
   @UseBefore(hasPermission(CREATE_USERS))
-  async createUser(@Body() createUserCommand: CreateUserCommand): Promise<RestrictedUserDTO> {
+  async createUser(
+    @Body() createUserCommand: CreateUserCommand,
+    @CurrentUser() actor?: User
+  ): Promise<RestrictedUserDTO> {
     const authenticationMethodType = authenticationMethodTypeFromString(createUserCommand.authenticationDetails.method);
 
     const authenticationDetails = new AuthenticationDetails(
@@ -51,7 +56,7 @@ export class UserController {
       new AuthenticationIdentifier(createUserCommand.authenticationDetails.identifier)
     );
 
-    const user = await getExistingOrCreateNewUser.execute(authenticationDetails);
+    const user = await getExistingOrCreateNewUser.execute(authenticationDetails, actor);
     return this.userTransformer.toRestrictedUserDTO(user);
   }
 
@@ -62,6 +67,7 @@ export class UserController {
     await this.validateCanGetUser(actor, id);
 
     const user = await getUser.byId(idValue);
+    log.info('User viewed via id', { userId: user.id.value, actorId: actor.id.value });
 
     return this.userTransformer.toUserDTO(user);
   }
@@ -77,6 +83,7 @@ export class UserController {
     await this.validateCanUpdateUser(actor, userId);
 
     const user = await updateUser.execute(idValue, updateUserCommand);
+    log.info('User updated', { userId: user.id.value, actorId: actor.id.value });
     return this.userTransformer.toUserDTO(user);
   }
 

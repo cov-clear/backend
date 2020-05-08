@@ -9,13 +9,17 @@ import {
   AuthenticationMethod,
 } from '../../../domain/model/user/AuthenticationMethod';
 import { AuthenticationIdentifier } from '../../../domain/model/user/AuthenticationIdentifier';
+import log from '../../../infrastructure/logging/logger';
+import { Uuid } from '../../../domain/Uuid';
 
 export class BulkCreateUsers {
   constructor(private userRepository: UserRepository, private roleRepository: RoleRepository) {}
 
-  public async execute(createUsersCommand: CreateUserCommand[]): Promise<User[]> {
+  public async execute(createUsersCommand: CreateUserCommand[], actor: User): Promise<User[]> {
     const roles = await this.roleRepository.findAll();
     let users: User[] = [];
+
+    const batchId = new Uuid();
 
     for (const userCommand of createUsersCommand) {
       const methodType = authenticationMethodTypeFromString(userCommand.authenticationDetails.method);
@@ -41,7 +45,16 @@ export class BulkCreateUsers {
         user.assignRole(role, user.id);
       }
 
-      users.push(await this.userRepository.save(user));
+      const savedUser = await this.userRepository.save(user);
+
+      log.info('Created user in bulk', {
+        batchId: batchId.value,
+        userId: savedUser.id.value,
+        authenticationMethod: savedUser.authenticationDetails.method.type,
+        actorId: actor.id.value,
+      });
+
+      users.push(savedUser);
     }
 
     return users;

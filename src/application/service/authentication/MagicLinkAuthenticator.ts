@@ -8,6 +8,7 @@ import { AuthenticationIdentifier } from '../../../domain/model/user/Authenticat
 import { Email } from '../../../domain/model/user/Email';
 import { Authenticator, AuthCode } from '../../../domain/model/authentication/Authenticator';
 import { AuthenticationError } from './AuthenticationError';
+import log from '../../../infrastructure/logging/logger';
 
 export class MagicLinkAuthenticator implements Authenticator {
   public handles = AuthenticationMethodType.MAGIC_LINK;
@@ -40,6 +41,11 @@ export class MagicLinkAuthenticator implements Authenticator {
 
     magicLink.active = false;
     await this.magicLinkRepository.save(magicLink);
+
+    log.info('Authenticated user', {
+      userId: user.id.value,
+      authenticationMethod: this.handles,
+    });
 
     return token;
   }

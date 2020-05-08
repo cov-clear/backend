@@ -16,6 +16,7 @@ import {
 import { RoleErrorHandler } from './RoleErrorHandler';
 import { RoleTransformer } from '../../transformers/RoleTransformer';
 import { User } from '../../../domain/model/user/User';
+import log from '../../../infrastructure/logging/logger';
 
 @Authorized()
 @JsonController('/v1')
@@ -28,8 +29,10 @@ export class RoleController {
 
   @Get('/roles')
   @UseBefore(hasPermission(LIST_ROLES))
-  async getAll() {
+  async getAll(@CurrentUser({ required: true }) actor: User) {
     const roles = await this.getRoles.all();
+
+    log.info('Listed roles', { actorId: actor.id.value });
 
     return roles.map(this.roleTransformer.toRoleDTO);
   }
@@ -39,6 +42,8 @@ export class RoleController {
   @UseBefore(hasPermission(CREATE_NEW_ROLE))
   async createNew(@BodyParam('name') name: string, @CurrentUser({ required: true }) actor: User) {
     const role = await this.createRole.execute(name, actor);
+
+    log.info('Created role', { role: role.name, actorId: actor.id.value });
 
     return this.roleTransformer.toRoleDTO(role);
   }
@@ -51,6 +56,8 @@ export class RoleController {
     @CurrentUser({ required: true }) actor: User
   ) {
     const role = await this.assignRoleToUser.execute(roleName, userIdValue, actor);
+
+    log.info('Assigned role to user', { role: role.name, actorId: actor.id.value, userId: userIdValue });
 
     return this.roleTransformer.toRoleDTO(role);
   }
