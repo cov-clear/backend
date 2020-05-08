@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest src --runInBand",
-    "test:watch": "jest src --watch",
+    "test": "env LOG_LEVEL_MESSAGES=warn jest src --runInBand",
+    "test:watch": "env LOG_LEVEL_MESSAGES=warn jest src --watch",
     "develop": "nodemon",
     "build": "tsc",
     "start": "node dist",
