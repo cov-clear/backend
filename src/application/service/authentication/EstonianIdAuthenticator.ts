@@ -9,6 +9,7 @@ import { AuthenticationIdentifier } from '../../../domain/model/user/Authenticat
 import { AuthenticationError } from './AuthenticationError';
 import { UserRepository } from '../../../domain/model/user/UserRepository';
 import { User } from '../../../domain/model/user/User';
+import log from '../../../infrastructure/logging/logger';
 
 export class EstonianIdAuthenticator implements Authenticator {
   public handles = AuthenticationMethodType.ESTONIAN_ID;
@@ -35,6 +36,11 @@ export class EstonianIdAuthenticator implements Authenticator {
 
     const user = await this.getExistingOrCreateNewUser.execute(authenticationDetails);
     await this.updateUserProfile(user, authenticationResult);
+
+    log.info('User authenticated', {
+      userId: user.id.value,
+      authenticationMethod: this.handles,
+    });
 
     return this.generateAuthToken.execute(user);
   }
