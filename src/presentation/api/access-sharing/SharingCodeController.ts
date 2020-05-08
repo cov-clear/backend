@@ -5,6 +5,7 @@ import { Authorized, CurrentUser, JsonController, Param, BodyParam, Post } from 
 import { SharingCodeTransformer } from '../../transformers/SharingCodeTransformer';
 import { User } from '../../../domain/model/user/User';
 import { SharingCodeDTO } from '../../dtos/access-sharing/SharingCodeDTO';
+import log from '../../../infrastructure/logging/logger';
 
 @Authorized()
 @JsonController('/v1/users/:userId/sharing-code')
@@ -21,6 +22,14 @@ export class SharingCodeController {
     await this.ensureIsLoggedInAsUser(actor, new UserId(userIdValue));
 
     const sharingCode = await this.createSharingCode.withUserId(userIdValue, accessDuration);
+
+    log.info('Created sharing code', {
+      // Sharing code is sensitive info even though it's temporary and single-use, only showing the start of it for matching with other logs.
+      sharingCodeStart: sharingCode.code.substring(4),
+      accessDuration: sharingCode.accessDuration,
+      userId: sharingCode.userId.value,
+      actorId: actor.id.value,
+    });
 
     return this.sharingCodeTransformer.toSharingCodeDTO(sharingCode);
   }

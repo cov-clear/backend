@@ -42,7 +42,7 @@ export class MagicLinkAuthenticator implements Authenticator {
     magicLink.active = false;
     await this.magicLinkRepository.save(magicLink);
 
-    log.info('User authenticated', {
+    log.info('Authenticated user', {
       userId: user.id.value,
       authenticationMethod: this.handles,
     });

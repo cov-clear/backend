@@ -37,7 +37,7 @@ export class EstonianIdAuthenticator implements Authenticator {
     const user = await this.getExistingOrCreateNewUser.execute(authenticationDetails);
     await this.updateUserProfile(user, authenticationResult);
 
-    log.info('User authenticated', {
+    log.info('Authenticated user', {
       userId: user.id.value,
       authenticationMethod: this.handles,
     });
