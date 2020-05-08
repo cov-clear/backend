@@ -1,4 +1,4 @@
 export interface ServiceConfigDTO {
-  allowedAuthMethods: object;
+  preferredAuthMethod: string;
   defaultLanguage: string;
 }

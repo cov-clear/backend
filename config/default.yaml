@@ -15,6 +15,9 @@ i18n:
   defaultLanguage: en
 
 authentication:
+  allowedMethods:
+    magicLink: true
+    estonianId: false
   dokobit:
     accessToken: dummy
     baseUrl: https://id-sandbox.dokobit.com

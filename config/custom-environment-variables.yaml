@@ -13,6 +13,9 @@ i18n:
   defaultLanguage: DEFAULT_LANGUAGE
 
 authentication:
+  allowedMethods:
+    magicLink: AUTH_MAGIC_LINK_ENABLED
+    estonianId: AUTH_ESTONIAN_ID_ENABLED
   dokobit:
     accessToken: DOKOBIT_ACCESS_TOKEN
 
