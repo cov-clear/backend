@@ -21,6 +21,7 @@ import { User } from '../../../domain/model/user/User';
 import { TestResultsCommand } from '../../commands/tests/TestResultsCommand';
 import { TestCommand } from '../../commands/tests/TestCommand';
 import { CREATE_TESTS_WITHOUT_ACCESS_PASS } from '../../../domain/model/authentication/Permissions';
+import log from '../../../infrastructure/logging/logger';
 
 @Authorized()
 @JsonController('/v1')
@@ -41,6 +42,8 @@ export class TestController {
 
     const tests = await this.getTests.byUserId(userIdValue);
 
+    log.info('Viewed tests', { userId: userIdValue, actorId: actor.id.value });
+
     return tests.map(transformTestToDTO);
   }
 
@@ -60,12 +63,26 @@ export class TestController {
 
     const test = await this.createTest.execute(actor, userIdValue, testCommand);
 
+    log.info('Created test', {
+      testId: test.id.value,
+      testTypeId: test.testType.id.value,
+      userId: test.userId.value,
+      actorId: test.creatorUserId.value,
+    });
+
     return transformTestToDTO(test);
   }
 
   @Get('/tests/:id')
-  async getTestById(@Param('id') testIdValue: string) {
+  async getTestById(@Param('id') testIdValue: string, @CurrentUser({ required: true }) actor: User) {
     const test = await this.getTests.byId(testIdValue);
+    const canAccessUser = await this.canAccessUser(actor, test.userId.value);
+
+    if (!canAccessUser) {
+      throw new ApiError(404, apiErrorCodes.TEST_NOT_FOUND);
+    }
+
+    log.info('Viewed test', { testId: test.id.value, userId: test.userId.value, actorId: actor.id.value });
 
     return transformTestToDTO(test);
   }
@@ -77,6 +94,11 @@ export class TestController {
     @CurrentUser({ required: true }) actor: User
   ) {
     const results = await this.addResultsToTest.execute(actor, testIdValue, resultsCommand);
+
+    log.info('Added results to test', {
+      testId: testIdValue,
+      actorId: actor.id.value,
+    });
 
     return transformTestResultsToDTO(results);
   }

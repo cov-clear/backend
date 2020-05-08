@@ -1,12 +1,14 @@
-import { getTestTypes, getReports } from '../../../application/service';
+import { writeToStream } from '@fast-csv/format';
 import { Request, Response } from 'express';
-import { Authorized, Get, JsonController, UseBefore, Res, Req, QueryParam } from 'routing-controllers';
+import { Authorized, Get, JsonController, UseBefore, Res, Req, QueryParam, CurrentUser } from 'routing-controllers';
+import { getTestTypes, getReports } from '../../../application/service';
 import { hasPermission } from '../../middleware/hasPermission';
 import { VIEW_ADMIN_REPORTS } from '../../../domain/model/authentication/Permissions';
 import { ApiError, apiErrorCodes } from '../../dtos/ApiError';
 import { transformReportTestResultsToReport } from '../../transformers/reports/transformReportTestResultsToReport';
-
-import { writeToStream } from '@fast-csv/format';
+import log from '../../../infrastructure/logging/logger';
+import { User } from '../../../domain/model/user/User';
+import { userInfo } from 'os';
 
 @Authorized()
 @JsonController('/v1/reports')
@@ -18,7 +20,7 @@ export class ReportsController {
   @UseBefore(hasPermission(VIEW_ADMIN_REPORTS))
   async getAllTestResultsTestTypeId(
     @QueryParam('testTypeId') testTypeId: string,
-    @Req() req: Request,
+    @CurrentUser({ required: true }) actor: User,
     @Res() res: Response
   ) {
     const testType = await this.getTestTypes.byId(testTypeId);
@@ -28,6 +30,11 @@ export class ReportsController {
     }
 
     const tests = await this.getReports.getTestResultsByTestTypeTestId(testType.id);
+
+    log.info('Generated test report', {
+      actorId: actor.id.value,
+      testTypeId: testType.id.value,
+    });
 
     const reportFileName = 'TestResultsReport_' + Date.now() + '.csv';
 

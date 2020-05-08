@@ -29,7 +29,7 @@ describe('BulkCreateUsers', () => {
       { authenticationDetails: { method: 'MAGIC_LINK', identifier: email2.value }, roles: roles2 },
     ] as CreateUserCommand[];
 
-    const resultUsers = await bulkCreateUsers.execute(command);
+    const resultUsers = await bulkCreateUsers.execute(command, aNewUser());
 
     expect(resultUsers).toBeDefined();
     expect(resultUsers.length).toEqual(2);
@@ -53,7 +53,7 @@ describe('BulkCreateUsers', () => {
       },
     ] as CreateUserCommand[];
 
-    const resultUsers = await bulkCreateUsers.execute(command);
+    const resultUsers = await bulkCreateUsers.execute(command, aNewUser());
     expect(resultUsers.length).toEqual(1);
 
     const updatedExistingUser = await findByEmail(existingUser.authenticationDetails.identifier);
