@@ -25,7 +25,7 @@ export class AccessPassController {
 
     log.info('Created access pass', {
       // Sharing code is sensitive info even though it's temporary and single-use, only showing the start of it for matching with other logs.
-      sharingCodeStart: sharingCode.slice(4),
+      sharingCodeStart: sharingCode.slice(0, 4),
       accessPassId: accessPass.id,
       userId: accessPass.subjectUserId.value,
       actorId: accessPass.actorUserId.value,
