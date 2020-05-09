@@ -12,15 +12,15 @@ emailNotifier:
     domain: dummy
 
 requirements:
-  address: true
+  address: 'true'
 
 i18n:
   defaultLanguage: en
 
 authentication:
   allowedMethods:
-    magicLink: true
-    estonianId: false
+    magicLink: 'true'
+    estonianId: 'false'
   dokobit:
     accessToken: dummy
     baseUrl: https://id-sandbox.dokobit.com
@@ -39,6 +39,6 @@ jwt:
 
 app:
   name: 'COV-Clear'
-  setupModeEnabled: false
+  setupModeEnabled: 'false'
 
 port: 1337
