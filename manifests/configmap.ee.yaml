@@ -10,8 +10,9 @@ metadata:
     environment: :env:
 data:
   AWS_REGION: eu-west-1
-  AUTH_MAGIC_LINK_ENABLED: "false"
-  AUTH_ESTONIAN_ID_ENABLED: "true"
+  AUTH_MAGIC_LINK_ENABLED: false
+  AUTH_ESTONIAN_ID_ENABLED: true
   APP_NAME: ImmunityPassport
-  ADDRESS_REQUIRED: "false"
+  ADDRESS_REQUIRED: false
+  DEFAULT_LANGUAGE: "et"
   FRONTEND_BASE_URL: https://:app_domain:

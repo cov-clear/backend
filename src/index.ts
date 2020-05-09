@@ -15,7 +15,7 @@ async function main() {
 
     logger.info('App started', {
       port: config.get('port'),
-      setupModeEnabled: config.get('app.setupModeEnabled'),
+      setupModeEnabled: config.get('app.setupModeEnabled') === 'true',
     });
   });
 }

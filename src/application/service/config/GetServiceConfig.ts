@@ -5,8 +5,8 @@ export class GetServiceConfig {
   constructor(private config: any) {}
 
   public async execute(): Promise<ServiceConfigDTO> {
-    const estonianAuthEnabled = this.config.get('authentication.allowedMethods.estonianId');
-    const addressRequired = this.config.get('requirements.address');
+    const estonianAuthEnabled = this.config.get('authentication.allowedMethods.estonianId') === 'true';
+    const addressRequired = this.config.get('requirements.address') === 'true';
     const appName = this.config.get('app.name');
 
     return {
