@@ -38,7 +38,7 @@ jwt:
   secret: 1-9182fj1wofj1-08fj182fj1-90fj21-0r89j12-8rh
 
 app:
-  name: 'COV-clear'
+  name: 'COV-Clear'
   setupModeEnabled: false
 
 port: 1337
