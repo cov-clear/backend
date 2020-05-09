@@ -12,7 +12,7 @@ emailNotifier:
     domain: dummy
 
 requirements:
-  address: false
+  address: true
 
 i18n:
   defaultLanguage: en
