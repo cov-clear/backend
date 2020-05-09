@@ -9,9 +9,18 @@ emailNotifier:
     apiKey: MAILGUN_API_KEY
     domain: MAILGUN_DOMAIN
 
+i18n:
+  defaultLanguage: DEFAULT_LANGUAGE
+
 authentication:
+  allowedMethods:
+    magicLink: AUTH_MAGIC_LINK_ENABLED
+    estonianId: AUTH_ESTONIAN_ID_ENABLED
   dokobit:
     accessToken: DOKOBIT_ACCESS_TOKEN
+
+logLevels:
+  messages: LOG_LEVEL_MESSAGES
 
 jwt:
   secret: JWT_SECRET
