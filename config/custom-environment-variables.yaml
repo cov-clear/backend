@@ -12,6 +12,9 @@ emailNotifier:
 i18n:
   defaultLanguage: DEFAULT_LANGUAGE
 
+requirements:
+  address: ADDRESS_REQUIRED
+
 authentication:
   allowedMethods:
     magicLink: AUTH_MAGIC_LINK_ENABLED

@@ -11,6 +11,9 @@ emailNotifier:
     apiKey: dummy
     domain: dummy
 
+requirements:
+  address: false
+
 i18n:
   defaultLanguage: en
 
