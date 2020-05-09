@@ -34,4 +34,5 @@ rollbar:
   token: ROLLBAR_TOKEN
 
 app:
+  name: APP_NAME
   setupModeEnabled: APP_SETUP_MODE_ENABLED

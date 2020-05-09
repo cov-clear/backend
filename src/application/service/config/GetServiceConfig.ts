@@ -7,6 +7,7 @@ export class GetServiceConfig {
   public async execute(): Promise<ServiceConfigDTO> {
     const estonianAuthEnabled = this.config.get('authentication.allowedMethods.estonianId');
     const addressRequired = this.config.get('requirements.address');
+    const appName = this.config.get('app.name');
 
     return {
       preferredAuthMethod: estonianAuthEnabled
@@ -14,6 +15,7 @@ export class GetServiceConfig {
         : AuthenticationMethodType.MAGIC_LINK,
       defaultLanguage: this.config.get('i18n.defaultLanguage'),
       addressRequired,
+      appName,
     };
   }
 }

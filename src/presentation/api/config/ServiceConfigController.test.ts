@@ -20,6 +20,7 @@ describe('service config endpoints', () => {
           expect(res.body.preferredAuthMethod).toBe('MAGIC_LINK');
           expect(res.body.defaultLanguage).toBe('en');
           expect(res.body.addressRequired).toBe(true);
+          expect(res.body.appName).toBe('COV-Clear');
         });
     });
   });
