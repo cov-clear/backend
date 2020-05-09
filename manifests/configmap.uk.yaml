@@ -14,5 +14,5 @@ data:
   AUTH_ESTONIAN_ID_ENABLED: true
   APP_NAME: COV-Clear
   ADDRESS_REQUIRED: true
-  DEFAULT_LANGUAGE: "en"
+  DEFAULT_LANGUAGE: en
   FRONTEND_BASE_URL: https://:app_domain:
