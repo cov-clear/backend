@@ -12,4 +12,6 @@ data:
   AWS_REGION: eu-west-1
   AUTH_MAGIC_LINK_ENABLED: "true"
   AUTH_ESTONIAN_ID_ENABLED: "true"
+  APP_NAME: COV-Clear
+  ADDRESS_REQUIRED: "true"
   FRONTEND_BASE_URL: https://:app_domain:
