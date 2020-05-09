@@ -13,7 +13,10 @@ async function main() {
       return;
     }
 
-    logger.info(`App listening on ${config.get('port')}`);
+    logger.info('App started', {
+      port: config.get('port'),
+      setupModeEnabled: config.get('app.setupModeEnabled'),
+    });
   });
 }
 

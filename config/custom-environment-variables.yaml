@@ -12,6 +12,9 @@ emailNotifier:
 i18n:
   defaultLanguage: DEFAULT_LANGUAGE
 
+requirements:
+  address: ADDRESS_REQUIRED
+
 authentication:
   allowedMethods:
     magicLink: AUTH_MAGIC_LINK_ENABLED
@@ -31,4 +34,5 @@ rollbar:
   token: ROLLBAR_TOKEN
 
 app:
+  name: APP_NAME
   setupModeEnabled: APP_SETUP_MODE_ENABLED

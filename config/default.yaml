@@ -11,6 +11,9 @@ emailNotifier:
     apiKey: dummy
     domain: dummy
 
+requirements:
+  address: true
+
 i18n:
   defaultLanguage: en
 
@@ -35,6 +38,7 @@ jwt:
   secret: 1-9182fj1wofj1-08fj182fj1-90fj21-0r89j12-8rh
 
 app:
+  name: 'COV-Clear'
   setupModeEnabled: false
 
 port: 1337
