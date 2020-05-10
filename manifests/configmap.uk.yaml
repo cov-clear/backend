@@ -11,7 +11,7 @@ metadata:
 data:
   AWS_REGION: eu-west-1
   AUTH_MAGIC_LINK_ENABLED: 'true'
-  AUTH_ESTONIAN_ID_ENABLED: 'true'
+  AUTH_ESTONIAN_ID_ENABLED: 'false'
   APP_NAME: COV-Clear
   ADDRESS_REQUIRED: 'true'
   DEFAULT_LANGUAGE: en
