@@ -19,6 +19,7 @@ import { TestTypeErrorHandler } from './TestTypeErrorHandler';
 import { User } from '../../../domain/model/user/User';
 import { UpdateTestTypeCommand } from '../../commands/tests/UpdateTestTypeCommand';
 import { CreateTestTypeCommand } from '../../commands/tests/CreateTestTypeCommand';
+import logger from '../../../infrastructure/logging/logger';
 
 @Authorized()
 @JsonController('/v1/test-types')
@@ -29,8 +30,12 @@ export class TestTypeController {
   private updateTestType = updateTestType;
 
   @Get('')
-  async getTestsOfUser(@CurrentUser({ required: true }) actor: User) {
-    const testTypes = await this.getTestTypes.forPermissions(actor.permissions);
+  async getAllTestTypes(@CurrentUser({ required: true }) actor: User) {
+    const testTypes = await this.getTestTypes.all();
+
+    logger.info('Listed test types', {
+      actorId: actor.id.value,
+    });
 
     return testTypes.map(transformTestTypeToDTO);
   }
@@ -38,16 +43,31 @@ export class TestTypeController {
   @Post('')
   @HttpCode(201)
   @UseBefore(hasPermission(CREATE_TEST_TYPE))
-  async createTestForUser(@Body() command: CreateTestTypeCommand) {
+  async createSingleTestType(@Body() command: CreateTestTypeCommand, @CurrentUser({ required: true }) actor: User) {
     const testType = await this.createTestType.execute(command);
+
+    logger.info('Created test type', {
+      testTypeId: testType.id.value,
+      actorId: actor.id.value,
+    });
 
     return transformTestTypeToDTO(testType);
   }
 
   @Patch('/:id')
   @UseBefore(hasPermission(UPDATE_TEST_TYPE))
-  async updateTestWithResults(@Param('id') testTypeId: string, @Body() command: UpdateTestTypeCommand) {
+  async updateSingleTestType(
+    @Param('id') testTypeId: string,
+    @Body() command: UpdateTestTypeCommand,
+    @CurrentUser({ required: true }) actor: User
+  ) {
     const testType = await this.updateTestType.execute(testTypeId, command);
+
+    logger.info('Updated test type', {
+      testTypeId: testType.id.value,
+      actorId: actor.id.value,
+    });
+
     return transformTestTypeToDTO(testType);
   }
 }

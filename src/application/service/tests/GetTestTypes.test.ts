@@ -18,9 +18,9 @@ describe('GetTestTypes', () => {
     await testTypeRepository.save(new TestType(id2, 'untrusted', { type: 'boolean' }, 'PERMISSION'));
   });
 
-  describe('forPermissions', () => {
-    it('returns all test types for that permission', async () => {
-      const testTypes = await getTestTypes.forPermissions(['PERMISSION']);
+  describe('all', () => {
+    it('returns all test types', async () => {
+      const testTypes = await getTestTypes.all();
       expect(testTypes.length).toBe(2);
     });
   });
