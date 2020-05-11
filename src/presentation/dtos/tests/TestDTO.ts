@@ -1,4 +1,4 @@
-import { TestTypeSimpleDTO } from './TestTypeSimpleDTO';
+import { TestTypeDTO } from './TestTypeDTO';
 import { TestInterpretationDTO } from './TestInterpretationDTO';
 import { TestResultsDTO } from './TestResultDTO';
 
@@ -6,7 +6,7 @@ export interface TestDTO {
   id: string;
   userId: string;
   creationTime: Date;
-  testType: TestTypeSimpleDTO;
+  testType: TestTypeDTO;
   creator: {
     userId: string;
     confidence: string;

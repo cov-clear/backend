@@ -59,6 +59,7 @@ describe('TestController', () => {
         .expect(200)
         .expect((response) => {
           expect(response.body[0].id).toEqual(test.id.value);
+          expect(response.body[0].testType.resultsSchema).toBeDefined();
         });
     });
 

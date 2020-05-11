@@ -1,7 +1,7 @@
 import { accessManagerFactory, addResultsToTest, createTest, getTests } from '../../../application/service';
 import { UserId } from '../../../domain/model/user/UserId';
 import { ApiError, apiErrorCodes } from '../../dtos/ApiError';
-import { transformTestToDTO } from '../../transformers/tests/transfromTestToDTO';
+import { transformTestToDTO } from '../../transformers/tests/transformTestToDTO';
 import { transformTestResultsToDTO } from '../../transformers/tests/transformTestResultsToDTO';
 import {
   Authorized,

@@ -1,7 +1,7 @@
 import { Test } from '../../../domain/model/test/Test';
 import { transformTestResultsToDTO } from './transformTestResultsToDTO';
 import { transformTestInterpretationToDTO } from './transformTestInterpretationToDTO';
-import { transformTestTypeToSimpleDTO } from './transformTestTypeToSimpleDTO';
+import { transformTestTypeToDTO } from './transformTestTypeToDTO';
 import { TestDTO } from '../../dtos/tests/TestDTO';
 
 export function transformTestToDTO(test: Test): TestDTO {
@@ -14,7 +14,7 @@ export function transformTestToDTO(test: Test): TestDTO {
       confidence: test.creatorConfidence,
     },
     results: test.results ? transformTestResultsToDTO(test.results) : null,
-    testType: transformTestTypeToSimpleDTO(test.testType),
+    testType: transformTestTypeToDTO(test.testType),
     resultsInterpretations: test.interpretations.map(transformTestInterpretationToDTO),
   };
 }
