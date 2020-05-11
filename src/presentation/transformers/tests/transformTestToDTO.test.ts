@@ -1,5 +1,5 @@
 import { aTest } from '../../../test/domainFactories';
-import { transformTestToDTO } from './transfromTestToDTO';
+import { transformTestToDTO } from './transformTestToDTO';
 
 describe('transformTestToDTO', () => {
   it('correctly transforms a test', () => {
@@ -14,6 +14,7 @@ describe('transformTestToDTO', () => {
     expect(testDTO.creator.confidence).toEqual(test.creatorConfidence);
 
     expect(testDTO.testType).toBeDefined();
+    expect(testDTO.testType).toEqual(test.testType);
     expect(testDTO.results).toBeDefined();
 
     expect(Array.isArray(testDTO.resultsInterpretations)).toBe(true);
