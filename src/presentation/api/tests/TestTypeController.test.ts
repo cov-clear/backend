@@ -28,7 +28,7 @@ describe('test type endpoints', () => {
 
     it('returns 200 with the existing test type if user is found', async () => {
       const testType = await testTypeRepository.save(aTestType('PCR', 'PCR_PERMISSION'));
-      const user = await persistedUserWithRoleAndPermissions('USER', ['PCR_PERMISSION']);
+      const user = await persistedUserWithRoleAndPermissions('USER', []);
 
       await request(app)
         .get(`/api/v1/test-types`)
