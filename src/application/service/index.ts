@@ -27,6 +27,7 @@ import {
 import { DokobitAuthenticationProvider } from '../../infrastructure/idAuthentication/DokobitAuthenticationProvider';
 import { GetUser } from './users/GetUser';
 import { UpdateUser } from './users/UpdateUser';
+import { GetAccessibleUsers } from './users/GetAccessibleUsers';
 import { GetCountries } from './users/GetCountries';
 import { GetTestTypes } from './tests/GetTestTypes';
 import { CreateSharingCode } from './access-sharing/CreateSharingCode';
@@ -96,8 +97,8 @@ export const createMagicLink = new CreateNewMagicLink(
 );
 
 export const getUser = new GetUser(userRepository);
-
 export const updateUser = new UpdateUser(userRepository);
+export const getAccessibleUsers = new GetAccessibleUsers(userRepository, accessPassRepository);
 
 export const getExistingOrCreateNewUser = new GetExistingOrCreateNewUser(
   userRepository,

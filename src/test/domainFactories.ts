@@ -14,6 +14,7 @@ import { TestTypeId } from '../domain/model/test/testType/TestTypeId';
 import { Test } from '../domain/model/test/Test';
 import { TestId } from '../domain/model/test/TestId';
 import { Results } from '../domain/model/test/Results';
+import { AccessPass } from '../domain/model/accessPass/AccessPass';
 import { ConfidenceLevel } from '../domain/model/test/ConfidenceLevel';
 import { InterpretationRules } from '../domain/model/test/interpretation/InterpretationRules';
 import { InterpretationTheme } from '../domain/model/test/interpretation/Interpretation';
@@ -99,6 +100,10 @@ export function aTest(
 
 export function aResult(userId = new UserId(), details = { c: true, igg: true, igm: true }, notes = 'results notes') {
   return new Results(userId, details, ConfidenceLevel.LOW, notes);
+}
+
+export function anAccessPass(actorId: UserId, subjectId: UserId, duration: number = 60) {
+  return new AccessPass(actorId, subjectId, duration);
 }
 
 export function antibodyTestType() {

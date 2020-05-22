@@ -7,18 +7,22 @@ import { accessPassRepository, userRepository } from '../../../infrastructure/pe
 import { User } from '../../../domain/model/user/User';
 import { AccessPass } from '../../../domain/model/accessPass/AccessPass';
 import { CREATE_USERS } from '../../../domain/model/authentication/Permissions';
+
 import {
   anAddress,
   aNewUser,
   aUserWithAllInformation,
+  anAccessPass,
   magicLinkAuthenticationDetails,
   estonianIdAuthenticationDetails,
 } from '../../../test/domainFactories';
+
 import { persistedUserWithRoleAndPermissions } from '../../../test/persistedEntities';
 import { getTokenForUser } from '../../../test/authentication';
 import { anApiAddress, anApiProfile } from '../../../test/apiFactories';
 import { RootController } from '../RootController';
 import { AuthenticationMethodType } from '../../../domain/model/user/AuthenticationMethod';
+import MockDate from 'mockdate';
 
 describe('user endpoints', () => {
   const app = new RootController().expressApp();
@@ -105,6 +109,31 @@ describe('user endpoints', () => {
     });
   });
 
+  describe('GET /users', () => {
+    it('returns users for whom the actor has a pass', async () => {
+      const actor = await userRepository.save(aNewUser());
+
+      const userWithAccess = await userRepository.save(aNewUser());
+      const userWithExpiredAccess = await userRepository.save(aNewUser());
+      const userWithoutAccess = await userRepository.save(aNewUser());
+
+      MockDate.set('2020-01-01T00:00:00Z');
+      await accessPassRepository.save(anAccessPass(actor.id, userWithAccess.id, 60));
+      await accessPassRepository.save(anAccessPass(actor.id, userWithExpiredAccess.id, 15));
+      MockDate.set('2020-01-01T00:30:00Z');
+
+      await request(app)
+        .get(`/api/v1/users`)
+        .set({ Authorization: `Bearer ${await getTokenForUser(actor)}` })
+        .expect(200)
+        .expect((response) => {
+          const users = response.body;
+          expect(users.length).toEqual(1);
+          expect(userWithAccess.id.value).toEqual(userWithAccess.id.value);
+        });
+    });
+  });
+
   describe('GET /users/:id', () => {
     it('returns 404 if user is not found', async () => {
       const user = await userRepository.save(aNewUser());
@@ -178,7 +207,7 @@ describe('user endpoints', () => {
       const actorUser = await userRepository.save(aNewUser());
       const subjectUser = await userRepository.save(aNewUser());
 
-      const accessPass = new AccessPass(actorUser.id, subjectUser.id, uuidv4(), new Date('1970-01-01'));
+      const accessPass = new AccessPass(actorUser.id, subjectUser.id, 60, uuidv4(), new Date('1970-01-01'));
 
       await accessPassRepository.save(accessPass);
 
