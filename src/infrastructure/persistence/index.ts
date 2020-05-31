@@ -8,6 +8,7 @@ import { PsqlPermissionRepository } from './PsqlPermissionRepository';
 import { PsqlRoleRepository } from './PsqlRoleRepository';
 import { PsqlTestRepository } from './PsqlTestRepository';
 import { PsqlReportRepository } from './PsqlReportRepository';
+import { PsqlStatisticRepository } from './PsqlStatisticRepository';
 
 export const magicLinkRepository = new PsqlMagicLinkRepository(database);
 export const userRepository = new PsqlUserRepository(database);
@@ -18,3 +19,4 @@ export const permissionRepository = new PsqlPermissionRepository(database);
 export const roleRepository = new PsqlRoleRepository(database);
 export const testRepository = new PsqlTestRepository(database, testTypeRepository);
 export const reportRepository = new PsqlReportRepository(database, testTypeRepository);
+export const statisticRepository = new PsqlStatisticRepository(database);
