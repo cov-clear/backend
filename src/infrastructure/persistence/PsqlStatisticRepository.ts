@@ -5,14 +5,22 @@ export class PsqlStatisticRepository implements StatisticRepostory {
   constructor(private db: knex) {}
 
   getTotalAmountOfUsers(): Promise<number> {
-    return this.db('user').count();
+    return this.count('user');
   }
 
   getTotalAmountOfTests(): Promise<number> {
-    return this.db('test').count();
+    return this.count('test');
   }
 
   getTotalAmountOfAccessPasses(): Promise<number> {
-    return this.db('access_pass').count();
+    return this.count('access_pass');
+  }
+
+  private async count(table: string): Promise<number> {
+    const results: { count: string }[] = await this.db(table).count();
+    if (!results || !results.length) {
+      return 0;
+    }
+    return parseInt(results[0].count, 10);
   }
 }
