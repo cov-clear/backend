@@ -23,6 +23,7 @@ import {
   userRepository,
   testRepository,
   reportRepository,
+  statisticRepository,
 } from '../../infrastructure/persistence';
 import { DokobitAuthenticationProvider } from '../../infrastructure/idAuthentication/DokobitAuthenticationProvider';
 import { GetUser } from './users/GetUser';
@@ -50,6 +51,7 @@ import { CreateTestType } from './tests/CreateTestType';
 import { AddResultsToTest } from './tests/AddResultsToTest';
 import { UpdateTestType } from './tests/UpdateTestType';
 import { GetReports } from './reports/GetReports';
+import { GetStatistics } from './statistics/GetStatistics';
 import { AuthenticatorFactory } from '../../domain/model/authentication/AuthenticatorFactory';
 
 export let emailNotifier = new LoggingEmailNotifier();
@@ -135,3 +137,4 @@ export const getTests = new GetTests(testRepository);
 export const addResultsToTest = new AddResultsToTest(testRepository);
 export const createTest = new CreateTest(testRepository, testTypeRepository, addResultsToTest);
 export const getReports = new GetReports(reportRepository);
+export const getStatistics = new GetStatistics(statisticRepository);
