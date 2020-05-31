@@ -1,6 +1,6 @@
 import { writeToStream } from '@fast-csv/format';
-import { Request, Response } from 'express';
-import { Authorized, Get, JsonController, UseBefore, Res, Req, QueryParam, CurrentUser } from 'routing-controllers';
+import { Response } from 'express';
+import { Authorized, Get, JsonController, UseBefore, Res, QueryParam, CurrentUser } from 'routing-controllers';
 import { getTestTypes, getReports } from '../../../application/service';
 import { hasPermission } from '../../middleware/hasPermission';
 import { VIEW_ADMIN_REPORTS } from '../../../domain/model/authentication/Permissions';
@@ -8,7 +8,6 @@ import { ApiError, apiErrorCodes } from '../../dtos/ApiError';
 import { transformReportTestResultsToReport } from '../../transformers/reports/transformReportTestResultsToReport';
 import log from '../../../infrastructure/logging/logger';
 import { User } from '../../../domain/model/user/User';
-import { userInfo } from 'os';
 
 @Authorized()
 @JsonController('/v1/reports')
