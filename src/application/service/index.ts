@@ -23,7 +23,6 @@ import {
   userRepository,
   testRepository,
   reportRepository,
-  statisticRepository,
 } from '../../infrastructure/persistence';
 import { DokobitAuthenticationProvider } from '../../infrastructure/idAuthentication/DokobitAuthenticationProvider';
 import { GetUser } from './users/GetUser';
@@ -137,4 +136,4 @@ export const getTests = new GetTests(testRepository);
 export const addResultsToTest = new AddResultsToTest(testRepository);
 export const createTest = new CreateTest(testRepository, testTypeRepository, addResultsToTest);
 export const getReports = new GetReports(reportRepository);
-export const getStatistics = new GetStatistics(statisticRepository);
+export const getStatistics = new GetStatistics(userRepository, testRepository, accessPassRepository);

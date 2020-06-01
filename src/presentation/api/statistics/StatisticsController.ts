@@ -14,7 +14,7 @@ export class StatisticsController {
   @Get()
   @UseBefore(hasPermission(VIEW_STATISTICS))
   async get(): Promise<StatisticDTO[]> {
-    const statistics = await this.getStatistics.getStatistics();
+    const statistics = await this.getStatistics.execute();
     return statistics.map(statisticToStatisticDTO);
   }
 }

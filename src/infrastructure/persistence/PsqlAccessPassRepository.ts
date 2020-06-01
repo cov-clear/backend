@@ -2,11 +2,16 @@ import knex from 'knex';
 import { AccessPassRepository } from '../../domain/model/accessPass/AccessPassRepository';
 import { AccessPass } from '../../domain/model/accessPass/AccessPass';
 import { UserId } from '../../domain/model/user/UserId';
+import { countRowsInTable } from './utils';
 
 const ACCESS_PASS_TABLE_NAME = 'access_pass';
 
 export class PsqlAccessPassRepository implements AccessPassRepository {
   constructor(private db: knex) {}
+
+  async getTotalAmountOfAccessPasses(): Promise<number> {
+    return countRowsInTable(this.db, ACCESS_PASS_TABLE_NAME);
+  }
 
   async findByUserIds(actorUserId: UserId, subjectUserId: UserId) {
     const linkRow: any = await this.db(ACCESS_PASS_TABLE_NAME)
