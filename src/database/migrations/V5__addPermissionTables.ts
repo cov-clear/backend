@@ -13,7 +13,7 @@ import {
   LIST_PERMISSIONS,
   LIST_ROLES,
   UPDATE_TEST_TYPE,
-  VIEW_ADMIN_REPORTS
+  VIEW_ADMIN_REPORTS,
 } from '../../domain/model/authentication/Permissions';
 import { v4 } from 'uuid';
 
@@ -75,7 +75,7 @@ async function createRolesAndPermissions(db: knex) {
     ADD_TAKE_HOME_TEST_RESULT,
     ADMINISTER_TEST_WITH_HIGH_CONFIDENCE,
     ADD_RESULTS_WITH_HIGH_CONFIDENCE,
-    VIEW_ADMIN_REPORTS
+    VIEW_ADMIN_REPORTS,
   ];
 
   await db('role').insert(roles.map((roleName) => ({ name: roleName, creation_time: date })));
