@@ -16,6 +16,7 @@ import { Role } from '../../domain/model/authentication/Role';
 import { AuthenticationDetails } from '../../domain/model/user/AuthenticationDetails';
 import { AuthenticationIdentifier } from '../../domain/model/user/AuthenticationIdentifier';
 import { AuthenticationMethod } from '../../domain/model/user/AuthenticationMethod';
+import { countRowsInTable } from './utils';
 
 const USER_TABLE_NAME = 'user';
 
@@ -32,6 +33,10 @@ const USER_TABLE_COLUMNS = [
 
 export class PsqlUserRepository implements UserRepository {
   constructor(private db: knex) {}
+
+  async getTotalAmountOfUsers(): Promise<number> {
+    return countRowsInTable(this.db, USER_TABLE_NAME);
+  }
 
   async save(user: User): Promise<User> {
     return this.db.transaction(async (transaction) => {

@@ -22,6 +22,7 @@ import { AuthenticationDetails } from '../domain/model/user/AuthenticationDetail
 import { AuthenticationMethod } from '../domain/model/user/AuthenticationMethod';
 import { AuthenticationIdentifier } from '../domain/model/user/AuthenticationIdentifier';
 import { ReportTestResult } from '../domain/model/reports/ReportTestResult';
+import { AccessPass } from '../domain/model/accessPass/AccessPass';
 
 export function aNewUser() {
   return User.create(magicLinkAuthenticationDetails());
@@ -66,6 +67,10 @@ export function aRoleWithPermissions(
 
 export function aPermission(permissionName = 'ADD_PCR_TEST') {
   return new Permission(permissionName);
+}
+
+export function anAccessPass(actorUserId = new UserId(), subjectUserId = new UserId()) {
+  return new AccessPass(actorUserId, subjectUserId);
 }
 
 export function aTestType(

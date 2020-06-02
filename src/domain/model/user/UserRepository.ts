@@ -7,6 +7,8 @@ import { AuthenticationDetails } from './AuthenticationDetails';
 export interface UserRepository {
   save(user: User): Promise<User>;
 
+  getTotalAmountOfUsers(): Promise<number>;
+
   findByUserId(userId: UserId): Promise<User | null>;
 
   findByAuthenticationDetails(authenticationDetails: AuthenticationDetails): Promise<User | null>;

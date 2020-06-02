@@ -5,6 +5,7 @@ import { UserId } from '../user/UserId';
 export interface TestRepository {
   save(test: Test): Promise<Test>;
 
+  getTotalAmountOfTests(): Promise<number>;
   findById(id: TestId): Promise<Test | null>;
   findByUserId(userId: UserId): Promise<Array<Test>>;
 }

@@ -8,6 +8,7 @@ import { UserController } from './users/UserController';
 import { TestController } from './tests/TestController';
 import { TestTypeController } from './tests/TestTypeController';
 import { CountryController } from './users/CountryController';
+import { StatisticsController } from './statistics/StatisticsController';
 import { AccessPassController } from './access-sharing/AccessPassController';
 import { SharingCodeController } from './access-sharing/SharingCodeController';
 import { AuthenticationController } from './authentication/AuthenticationController';
@@ -45,6 +46,7 @@ export class RootController {
         TestTypeController,
         UserController,
         ReportsController,
+        StatisticsController,
       ],
       defaultErrorHandler: false,
       middlewares: [ErrorHandlingMiddleware],

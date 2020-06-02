@@ -8,6 +8,7 @@ import { Results } from '../../domain/model/test/Results';
 import { ConfidenceLevel } from '../../domain/model/test/ConfidenceLevel';
 import { TestType } from '../../domain/model/test/testType/TestType';
 import { TestTypeRepository } from '../../domain/model/test/testType/TestTypeRepository';
+import { countRowsInTable } from './utils';
 
 const TEST_TABLE_NAME = 'test';
 const TEST_RESULTS_TABLE_NAME = 'test_results';
@@ -28,6 +29,10 @@ const TEST_TABLE_COLUMNS = [
 
 export class PsqlTestRepository implements TestRepository {
   constructor(private db: knex, private testTypeRepository: TestTypeRepository) {}
+
+  async getTotalAmountOfTests(): Promise<number> {
+    return countRowsInTable(this.db, TEST_TABLE_NAME);
+  }
 
   async save(test: Test) {
     const transaction = await this.db.transaction();

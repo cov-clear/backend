@@ -62,6 +62,18 @@ describe('PsqlUserRepository', () => {
     expect(persistedUser?.id).toEqual(user.id);
   });
 
+  it('reads the amount of users in the database', async () => {
+    expect(await psqlUserRepository.getTotalAmountOfUsers()).toBe(0);
+    await Promise.all([
+      psqlUserRepository.save(aNewUser()),
+      psqlUserRepository.save(aNewUser()),
+      psqlUserRepository.save(aNewUser()),
+    ]);
+    expect(await psqlUserRepository.getTotalAmountOfUsers()).toBe(3);
+    await psqlUserRepository.save(aNewUser());
+    expect(await psqlUserRepository.getTotalAmountOfUsers()).toBe(4);
+  });
+
   it('updates profile if user already exists', async () => {
     const user = await psqlUserRepository.save(User.create(magicLinkAuthenticationDetails()));
 

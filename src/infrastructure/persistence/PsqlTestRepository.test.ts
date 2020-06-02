@@ -46,6 +46,18 @@ describe('PsqlTestRepository', () => {
     expect(persistedTest?.results?.details).toEqual(details);
   });
 
+  it('reads the amount of tests in the database', async () => {
+    expect(await psqlTestRepository.getTotalAmountOfTests()).toBe(0);
+    await Promise.all([psqlTestRepository.save(aTest()), psqlTestRepository.save(aTest())]);
+    expect(await psqlTestRepository.getTotalAmountOfTests()).toBe(2);
+    await Promise.all([
+      psqlTestRepository.save(aTest()),
+      psqlTestRepository.save(aTest()),
+      psqlTestRepository.save(aTest()),
+    ]);
+    expect(await psqlTestRepository.getTotalAmountOfTests()).toBe(5);
+  });
+
   it('inserts two new tests and retrieves them by User Id', async () => {
     const userId = new UserId();
     const administeringUserId = new UserId();
