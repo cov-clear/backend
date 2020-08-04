@@ -10,6 +10,7 @@ import { getTokenForUser } from '../../../test/authentication';
 import { v4 as uuidv4 } from 'uuid';
 import { aUserWithAllInformation } from '../../../test/domainFactories';
 import { RootController } from '../RootController';
+import MockDate from 'mockdate';
 
 describe('sharing code endpoints', () => {
   const app = new RootController().expressApp();
@@ -68,8 +69,10 @@ describe('sharing code endpoints', () => {
       await userRepository.save(user1);
       await userRepository.save(user2);
 
-      const sharingCode = new SharingCode(user2.id, 60, uuidv4(), new Date());
+      const sharingCode = new SharingCode(user2.id, 120, uuidv4(), new Date());
       await sharingCodeRepository.save(sharingCode);
+
+      MockDate.set('2020-05-04T00:00:00Z');
 
       await request(app)
         .post(`/api/v1/users/${user1.id.value}/access-passes`)
@@ -79,7 +82,7 @@ describe('sharing code endpoints', () => {
         .expect((response) => {
           const accessPass = response.body;
           expect(accessPass.userId).toBe(user2.id.value);
-          expect(accessPass.expiryTime).toBeDefined();
+          expect(accessPass.expiryTime).toBe('2020-05-04T02:00:00.000Z');
         });
     });
   });

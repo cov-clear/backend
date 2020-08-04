@@ -17,7 +17,7 @@ describe('PsqlAccessPassRepository', () => {
     const actorUserId = new UserId();
     const subjectUserId = new UserId();
 
-    const accessPass = new AccessPass(actorUserId, subjectUserId);
+    const accessPass = new AccessPass(actorUserId, subjectUserId, 120);
     await psqlAccessPassRepository.save(accessPass);
 
     const persistedAccessPass = await psqlAccessPassRepository.findByUserIds(actorUserId, subjectUserId);
@@ -42,11 +42,11 @@ describe('PsqlAccessPassRepository', () => {
     const actorUserId = new UserId();
     const subjectUserId = new UserId();
 
-    const firstPass = new AccessPass(actorUserId, subjectUserId, uuidv4(), new Date('2020-01-01'));
+    const firstPass = new AccessPass(actorUserId, subjectUserId, 60, uuidv4(), new Date('2020-01-01'));
 
-    const secondPass = new AccessPass(actorUserId, subjectUserId, uuidv4(), new Date('2020-01-02'));
+    const secondPass = new AccessPass(actorUserId, subjectUserId, 120, uuidv4(), new Date('2020-01-02'));
 
-    const thirdPass = new AccessPass(actorUserId, subjectUserId, uuidv4(), new Date('2020-01-03'));
+    const thirdPass = new AccessPass(actorUserId, subjectUserId, 180, uuidv4(), new Date('2020-01-03'));
 
     await psqlAccessPassRepository.save(firstPass);
     await psqlAccessPassRepository.save(thirdPass);
