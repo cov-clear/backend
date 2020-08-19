@@ -9,7 +9,7 @@ metadata:
     app: backend
     environment: :env:
 spec:
-  replicas: 2
+  replicas: 1
   minReadySeconds: 5
   revisionHistoryLimit: 5
   progressDeadlineSeconds: 300
