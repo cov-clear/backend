@@ -67,16 +67,6 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
       - name: Setup kubeconfig
         run: aws eks --region $AWS_REGION update-kubeconfig --name $EKS_CLUSTER_NAME
-      - name: Deploy UK environment
-        env:
-          K8S_YAML_DIR: ./manifests
-          ROLE_ARN: arn:aws:iam::310398818202:role/cov-clear-uk-backend
-          COUNTRY: uk
-          DOMAIN: uk.cov-clear.com
-        run: |
-          cd $K8S_YAML_DIR
-          ./render_manifests.py "$COUNTRY" "sha-$(git rev-parse --short ${{ github.sha }})" "$DOMAIN" "$ROLE_ARN" | kubectl apply -f -
-          kubectl --namespace $COUNTRY rollout status deployments.apps/backend
       - name: Deploy EE environment
         env:
           K8S_YAML_DIR: ./manifests
