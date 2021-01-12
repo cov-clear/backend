@@ -1,0 +1,24 @@
+{
+  "ct": {
+    "v": "1.0",
+    "t": {
+      "ts": 1586915413,
+      "mod": "Biopanda Reagents RAPG-COV-019",
+      "id": "123456789ABCDEF",
+      "res": {
+        "c": true,
+        "igg": true,
+        "igm": false
+      }
+    },
+    "id": {
+      "loc": "GB",
+      "type": "passport",
+      "id": "123456789"
+    },
+    "auth": {
+      "aki": "keyid:F8:EF:7F:F2:CD:78:67:A8:DE:6F:8F:24:8D:88:F1:87:03:02:B3:EB"
+    }
+  },
+  "sig": "MIGIAkIBlskn0ACL67/pD2aenrcKz7rt9RC0N1Tr+Q8BR2H3bswwAN9bDwyly978m3zSN+2fL284rcrbU2xp5eymMBPGhJcCQgCjhdwuMuWuiWF0eKPGK64T67OCkbrtwj+Eo0mn3sT+LbBhMl0ST9MyYy3G2QtoXR9GT9uCIWvGaWK5T5xb9l0emA=="
+}
