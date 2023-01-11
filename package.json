@@ -79,7 +79,7 @@
     "isikukood": "^1.2.3",
     "js-yaml": "^3.13.1",
     "jsonwebtoken": "^8.5.1",
-    "knex": "^0.20.13",
+    "knex": "^2.4.0",
     "mailgun-js": "^0.22.0",
     "multer": "^1.4.2",
     "pg": "^8.3.0",
